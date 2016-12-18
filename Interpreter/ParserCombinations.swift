@@ -1,5 +1,5 @@
 //
-//  Parser.swift
+//  ParserCombinations.swift
 //  Interpreter
 //
 //  Created by 陈十三 on 2016/12/17.
@@ -15,19 +15,19 @@ class Parser {
         return nil
     }
     
-    static func + (left: Parser, right: Parser) -> ConcatParser {
+    static func + (left: Parser, right: Parser) -> Parser {
         return ConcatParser(left: left, right: right)
     }
     
-    static func * (left: Parser, right: Parser) -> ExpParser {
+    static func * (left: Parser, right: Parser) -> Parser {
         return ExpParser(parser: left, separator: right)
     }
     
-    static func | (left: Parser, right: Parser) -> AlternateParser {
+    static func | (left: Parser, right: Parser) -> Parser {
         return AlternateParser(left: left, right: right)
     }
     
-    static func ^ (left: Parser, right: @escaping ProcessParser.Processor) -> ProcessParser {
+    static func ^ (left: Parser, right: @escaping ProcessParser.Processor) -> Parser {
         return ProcessParser(parser: left, processor: right)
     }
  
@@ -35,14 +35,13 @@ class Parser {
 
 
 /* Combinations */
-class ReversedParser: Parser {
+class ReservedParser: Parser {
     // Parser for reversed words
     let word: String
-    let tag: TokenTag
+    let tag: TokenTag = .Reserved
     
-    init(word: String, tag: TokenTag) {
+    init(word: String) {
         self.word = word
-        self.tag = tag
     }
     
     override func parse(tokens: [Token], pos: Int) -> ParseResult? {
@@ -109,12 +108,8 @@ class ExpParser: Parser {
         if var result = (parser ^ prepareFirst).parse(tokens: tokens, pos: pos) {
             func processNext(lastResultValue: ParseResult.Value) -> ParseResult.Value {
                 var resultValue = result.value
-                let flag = resultValue.append(element: lastResultValue)
-                if flag {
-                    debugPrint("Something is wrong.")
-                    dump(self)
-                    exit(9)
-                }
+                let flag = resultValue.append(element: lastResultValue[1]!)
+                assert(flag)
                 return resultValue
             }
             let nextParser = separator + self.parser ^ processNext
@@ -191,7 +186,7 @@ class OptParser: Parser {
     }
 }
 
-class ReqParser: Parser {
+class RepParser: Parser {
     // Greed parser which will parse as much tokens as possible repeatedly
     let parser: Parser
     
@@ -210,7 +205,7 @@ class ReqParser: Parser {
                 break
             }
         } while (true)
-        return ParseResult(values: results, pos: pos)
+        return ParseResult(values: results, pos: crtPos)
     }
 }
 

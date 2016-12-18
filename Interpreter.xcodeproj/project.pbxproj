@@ -7,9 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A584C5FA1E054A800099C35B /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A584C5F91E054A800099C35B /* Parser.swift */; };
-		A5BB42371E0561F80087362D /* DataStructure.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB42361E0561F80087362D /* DataStructure.swift */; };
-		A5BB423F1E05A3FE0087362D /* Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB423E1E05A3FE0087362D /* Test.swift */; };
+		A584C5FA1E054A800099C35B /* ParserCombinations.swift in Sources */ = {isa = PBXBuildFile; fileRef = A584C5F91E054A800099C35B /* ParserCombinations.swift */; };
+		A5BB42371E0561F80087362D /* NestedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB42361E0561F80087362D /* NestedArray.swift */; };
+		A5BB42461E06335D0087362D /* LexerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB42451E06335D0087362D /* LexerTest.swift */; };
+		A5BB42491E06357D0087362D /* NestedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB42361E0561F80087362D /* NestedArray.swift */; };
+		A5BB424A1E06357D0087362D /* Lexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D6AFF61E04F32A006F04FD /* Lexer.swift */; };
+		A5BB424B1E06357D0087362D /* ParserCombinations.swift in Sources */ = {isa = PBXBuildFile; fileRef = A584C5F91E054A800099C35B /* ParserCombinations.swift */; };
+		A5BB424D1E063D110087362D /* CombinationsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB424C1E063D110087362D /* CombinationsTest.swift */; };
+		A5BB424F1E06574B0087362D /* NestedArrayTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB424E1E06574B0087362D /* NestedArrayTest.swift */; };
+		A5BB42511E066BA90087362D /* ParserExpressions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB42501E066BA90087362D /* ParserExpressions.swift */; };
+		A5BB42521E066BA90087362D /* ParserExpressions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB42501E066BA90087362D /* ParserExpressions.swift */; };
 		A5D6AFF01E04EA9D006F04FD /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D6AFEF1E04EA9D006F04FD /* main.swift */; };
 		A5D6AFF71E04F32A006F04FD /* Lexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D6AFF61E04F32A006F04FD /* Lexer.swift */; };
 /* End PBXBuildFile section */
@@ -27,11 +34,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		A584C5F91E054A800099C35B /* Parser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
-		A5BB42361E0561F80087362D /* DataStructure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStructure.swift; sourceTree = "<group>"; };
+		A584C5F91E054A800099C35B /* ParserCombinations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParserCombinations.swift; sourceTree = "<group>"; };
+		A5BB42361E0561F80087362D /* NestedArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NestedArray.swift; sourceTree = "<group>"; };
 		A5BB423C1E05A3FE0087362D /* Test.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Test.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		A5BB423E1E05A3FE0087362D /* Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test.swift; sourceTree = "<group>"; };
 		A5BB42401E05A3FE0087362D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A5BB42451E06335D0087362D /* LexerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LexerTest.swift; sourceTree = "<group>"; };
+		A5BB424C1E063D110087362D /* CombinationsTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CombinationsTest.swift; sourceTree = "<group>"; };
+		A5BB424E1E06574B0087362D /* NestedArrayTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NestedArrayTest.swift; sourceTree = "<group>"; };
+		A5BB42501E066BA90087362D /* ParserExpressions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParserExpressions.swift; sourceTree = "<group>"; };
 		A5D6AFEC1E04EA9D006F04FD /* Interpreter */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Interpreter; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5D6AFEF1E04EA9D006F04FD /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		A5D6AFF61E04F32A006F04FD /* Lexer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Lexer.swift; sourceTree = "<group>"; };
@@ -58,8 +68,10 @@
 		A5BB423D1E05A3FE0087362D /* Test */ = {
 			isa = PBXGroup;
 			children = (
-				A5BB423E1E05A3FE0087362D /* Test.swift */,
 				A5BB42401E05A3FE0087362D /* Info.plist */,
+				A5BB42451E06335D0087362D /* LexerTest.swift */,
+				A5BB424C1E063D110087362D /* CombinationsTest.swift */,
+				A5BB424E1E06574B0087362D /* NestedArrayTest.swift */,
 			);
 			path = Test;
 			sourceTree = "<group>";
@@ -67,9 +79,10 @@
 		A5BB42441E05A53C0087362D /* Lib */ = {
 			isa = PBXGroup;
 			children = (
-				A5BB42361E0561F80087362D /* DataStructure.swift */,
+				A5BB42361E0561F80087362D /* NestedArray.swift */,
 				A5D6AFF61E04F32A006F04FD /* Lexer.swift */,
-				A584C5F91E054A800099C35B /* Parser.swift */,
+				A584C5F91E054A800099C35B /* ParserCombinations.swift */,
+				A5BB42501E066BA90087362D /* ParserExpressions.swift */,
 			);
 			name = Lib;
 			sourceTree = "<group>";
@@ -191,7 +204,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A5BB423F1E05A3FE0087362D /* Test.swift in Sources */,
+				A5BB42491E06357D0087362D /* NestedArray.swift in Sources */,
+				A5BB42521E066BA90087362D /* ParserExpressions.swift in Sources */,
+				A5BB424D1E063D110087362D /* CombinationsTest.swift in Sources */,
+				A5BB424F1E06574B0087362D /* NestedArrayTest.swift in Sources */,
+				A5BB424A1E06357D0087362D /* Lexer.swift in Sources */,
+				A5BB424B1E06357D0087362D /* ParserCombinations.swift in Sources */,
+				A5BB42461E06335D0087362D /* LexerTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -200,8 +219,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				A5D6AFF01E04EA9D006F04FD /* main.swift in Sources */,
-				A5BB42371E0561F80087362D /* DataStructure.swift in Sources */,
-				A584C5FA1E054A800099C35B /* Parser.swift in Sources */,
+				A5BB42371E0561F80087362D /* NestedArray.swift in Sources */,
+				A584C5FA1E054A800099C35B /* ParserCombinations.swift in Sources */,
+				A5BB42511E066BA90087362D /* ParserExpressions.swift in Sources */,
 				A5D6AFF71E04F32A006F04FD /* Lexer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -326,6 +346,7 @@
 		A5D6AFF41E04EA9D006F04FD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				INFOPLIST_FILE = "$(SRCROOT)/Test/Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -334,6 +355,7 @@
 		A5D6AFF51E04EA9D006F04FD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				INFOPLIST_FILE = "$(SRCROOT)/Test/Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
