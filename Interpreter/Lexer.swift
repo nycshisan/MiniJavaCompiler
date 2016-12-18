@@ -11,7 +11,10 @@ import Foundation
 let LEX_ERROR = 1
 
 /* Token type */
-typealias Token = (text: String, tag: TokenTag)
+struct Token {
+    var text: String
+    var tag: TokenTag
+}
 
 enum TokenTag {
     case Reserved
@@ -24,12 +27,17 @@ enum TokenTag {
 /* Lexer Class */
 class Lexer {
     
+    static let ReservedWords = ["print", "if", "else", "while"]
+    
+    static var ReservedRegExpPattern: String {
+        return Lexer.ReservedWords.map({ word in "(\(word))" }).joined(separator: "|")
+    }
+    
     static let TokenExpressions: [(pattern: String, tag: TokenTag)] = [
-        ("[\\n;]", .Separator),
-        ("//.*[^$]", .None),
+        ("//.*$", .None),
         ("\\s+", .None),
         ("[=+-/\\*(){}]+", .Reserved),
-        ("print", .Reserved),
+        (Lexer.ReservedRegExpPattern, .Reserved),
         ("[0-9]+", .Int),
         ("[A-Za-z][A-Za-z0-9]*", .Id)
     ]
@@ -61,7 +69,7 @@ class Lexer {
     func lex() throws {
         var range = NSMakeRange(0, characters.count)
         while range.location < characters.count {
-            var token: Token = ("", .None)
+            var token = Token(text: "", tag: .None)
             var match: NSTextCheckingResult? = nil
             for (re, tag) in tokenRegExprs {
                 match = re.firstMatch(in: material, options: .anchored, range: range)
@@ -72,9 +80,10 @@ class Lexer {
                 }
             }
             if match == nil {
+                // TODO: Finish practical error handling
                 range.length = 20
                 NSLog("Lex Error at %d: %@", range.location, material_ns.substring(with: range))
-                throw NSError(domain: "MyDomain", code: LEX_ERROR, userInfo: nil)
+                throw NSError(domain: "LexerErrorDomain", code: LEX_ERROR, userInfo: nil)
             } else {
                 if token.tag != .None {
                     tokens.append(token)
