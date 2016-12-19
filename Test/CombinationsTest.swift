@@ -2,8 +2,8 @@
 //  CombinationsTest.swift
 //  Interpreter
 //
-//  Created by 陈十三 on 2016/12/18.
-//  Copyright © 2016年 陈十三. All rights reserved.
+//  Created by Nycshisan on 2016/12/18.
+//  Copyright © 2016年 Nycshisan. All rights reserved.
 //
 
 import XCTest
@@ -22,14 +22,14 @@ class CombinationsTest: XCTestCase {
     }
     
     func assertParseResultEqual(material: String, parser: Parser, expected: ParseResult.Value?) {
-        let lexer = Lexer(material: material)
-        try! lexer.lex()
-        let actual = PhraseParser(parser: parser).parse(tokens: lexer.tokens, pos: 0)
+        let tokenizer = Tokenizer()
+        let tokens = try! tokenizer.tokenize(material: material)
+        let actual = PhraseParser(parser: parser).parse(tokens: tokens, pos: 0)
         if expected == nil {
             XCTAssertNil(actual)
         } else {
             XCTAssertNotNil(actual)
-            XCTAssertTrue(actual!.value == expected!)
+            XCTAssertTrue(actual!.data == expected!)
         }
     }
     
@@ -50,14 +50,14 @@ class CombinationsTest: XCTestCase {
     }
     
     func testConcatAssociativity() {
-        var expected = ParseResult.Value(value: ParseResult.Value(values: ["x", "y"]))
-        XCTAssertTrue(expected.append(element: ParseResult.Value(value: "z")))
+        let expected = ParseResult.Value(values: [ParseResult.Value(values: ["x", "y"])])
+        expected.append(element: ParseResult.Value(value: "z"))
         let parser = idParser + idParser + idParser
         assertParseResultEqual(material: "x y z", parser: parser, expected: expected)
     }
     
     func testAlternate() {
-        let parser = idParser | intParser
+        let parser = idParser | intParser | idParser
         var expected = ParseResult.Value(value: "123")
         assertParseResultEqual(material: "123", parser: parser, expected: expected)
         expected = ParseResult.Value(value: "asd")
@@ -83,11 +83,17 @@ class CombinationsTest: XCTestCase {
         assertParseResultEqual(material: "x", parser: parser, expected: expected)
     }
     
+    func testLazy() {
+        let parser = ~{ self.idParser }
+        let expected = ParseResult.Value(value: "xx")
+        assertParseResultEqual(material: "xx", parser: parser, expected: expected)
+    }
+    
     func testExp() {
-        let parser = idParser * ReservedParser(word: "+")
+        let parser = idParser * (ReservedParser(word: "+") ^ { return ASTNode(values: [$0[0].value! + $0[1].value!]) })
         var expected = ParseResult.Value(values: ["x"])
         assertParseResultEqual(material: "x", parser: parser, expected: expected)
-        expected = ParseResult.Value(values: ["x", "y", "z"])
+        expected = ParseResult.Value(values: ["xyz"])
         assertParseResultEqual(material: "x + y +z", parser: parser, expected: expected)
     }
     

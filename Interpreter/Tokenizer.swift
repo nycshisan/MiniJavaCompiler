@@ -1,14 +1,30 @@
 //
-//  Lexer.swift
+//  Tokenizer.swift
 //  Interpreter
 //
-//  Created by 陈十三 on 2016/12/17.
-//  Copyright © 2016年 陈十三. All rights reserved.
+//  Created by Nycshisan on 2016/12/17.
+//  Copyright © 2016年 Nycshisan. All rights reserved.
 //
 
 import Foundation
 
 let LEX_ERROR = 1
+
+/* Tokenizer Inputs */
+let ReservedWords = ["print", "if", "else", "while"]
+
+var ReservedRegExpPattern: String {
+    return ReservedWords.map({ word in "(\(word))" }).joined(separator: "|")
+}
+
+let TokenExpressions: [(pattern: String, tag: TokenTag)] = [
+    ("//.*$", .None),
+    ("\\s+", .None),
+    ("[=+-/\\*(){}]+", .Reserved),
+    (ReservedRegExpPattern, .Reserved),
+    ("[0-9]+", .Int),
+    ("[A-Za-z][A-Za-z0-9]*", .Id)
+]
 
 /* Token type */
 struct Token {
@@ -24,39 +40,13 @@ enum TokenTag {
     case None
 }
 
-/* Lexer Class */
-class Lexer {
-    
-    static let ReservedWords = ["print", "if", "else", "while"]
-    
-    static var ReservedRegExpPattern: String {
-        return Lexer.ReservedWords.map({ word in "(\(word))" }).joined(separator: "|")
-    }
-    
-    static let TokenExpressions: [(pattern: String, tag: TokenTag)] = [
-        ("//.*$", .None),
-        ("\\s+", .None),
-        ("[=+-/\\*(){}]+", .Reserved),
-        (Lexer.ReservedRegExpPattern, .Reserved),
-        ("[0-9]+", .Int),
-        ("[A-Za-z][A-Za-z0-9]*", .Id)
-    ]
-    
+/* Tokenizer Class */
+class Tokenizer {
     var tokenRegExprs: [(re: NSRegularExpression, tag: TokenTag)] = []
     
-    var material: String
-    var material_ns: NSString
-    var characters: String.CharacterView
-    
-    var tokens: [Token]
-    
-    init(material: String) {
-        self.material = material
-        self.material_ns = material as NSString
-        self.characters = material.characters
-        self.tokens = []
+    init() {
         // Prepare Regular Expressions
-        for expr in Lexer.TokenExpressions {
+        for expr in TokenExpressions {
             do {
                 let re = try NSRegularExpression(pattern: expr.pattern, options: NSRegularExpression.Options.anchorsMatchLines)
                 tokenRegExprs.append((re, expr.tag))
@@ -66,7 +56,9 @@ class Lexer {
         }
     }
     
-    func lex() throws {
+    func tokenize(material: String) throws -> [Token] {
+        var tokens: [Token] = []
+        let characters = material.characters
         var range = NSMakeRange(0, characters.count)
         while range.location < characters.count {
             var token = Token(text: "", tag: .None)
@@ -74,16 +66,14 @@ class Lexer {
             for (re, tag) in tokenRegExprs {
                 match = re.firstMatch(in: material, options: .anchored, range: range)
                 if match != nil {
-                    token.text = material_ns.substring(with: match!.range)
+                    token.text = (material as NSString).substring(with: match!.range)
                     token.tag = tag
                     break
                 }
             }
             if match == nil {
-                // TODO: Finish practical error handling
-                range.length = 20
-                NSLog("Lex Error at %d: %@", range.location, material_ns.substring(with: range))
-                throw NSError(domain: "LexerErrorDomain", code: LEX_ERROR, userInfo: nil)
+                let userInfo = ["location": range.location]
+                throw NSError(domain: "TokenizerErrorDomain", code: LEX_ERROR, userInfo: userInfo)
             } else {
                 if token.tag != .None {
                     tokens.append(token)
@@ -92,6 +82,7 @@ class Lexer {
                 range.length -= match!.range.length
             }
         }
+        return tokens
     }
     
 }

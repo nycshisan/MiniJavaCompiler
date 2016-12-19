@@ -1,9 +1,9 @@
 //
-//  LexerTest.swift
+//  TokenizerTest.swift
 //  Interpreter
 //
-//  Created by 陈十三 on 2016/12/18.
-//  Copyright © 2016年 陈十三. All rights reserved.
+//  Created by Nycshisan on 2016/12/18.
+//  Copyright © 2016年 Nycshisan. All rights reserved.
 //
 
 import XCTest
@@ -14,7 +14,7 @@ extension Token: Equatable {
     }
 }
 
-class LexerTest: XCTestCase {
+class TokenizerTest: XCTestCase {
     
     override func setUp() {
         
@@ -25,9 +25,8 @@ class LexerTest: XCTestCase {
     }
     
     func assertTokenEqual(material: String, expected: [Token]) {
-        let lexer = Lexer(material: material)
-        try! lexer.lex()
-        let actual = lexer.tokens
+        let tokenizer = Tokenizer()
+        let actual = try! tokenizer.tokenize(material: material)
         XCTAssertEqual(actual, expected)
     }
     

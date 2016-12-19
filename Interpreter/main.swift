@@ -2,14 +2,42 @@
 //  main.swift
 //  Interpreter
 //
-//  Created by 陈十三 on 2016/12/17.
-//  Copyright © 2016年 陈十三. All rights reserved.
+//  Created by Nycshisan on 2016/12/17.
+//  Copyright © 2016年 Nycshisan. All rights reserved.
 //
 
 import Foundation
 
-let lexer = Lexer(material: "a = 2\nb=3\nc = a+ b\n++a\nprint a")
+let tokenizer = Tokenizer()
 
-try! lexer.lex()
+let tokens = try! tokenizer.tokenize(material: "(2 + 2) * 6")
 
-debugPrint(lexer.tokens)
+var env:[String: Any] = [:]
+env["+"] = {
+    (left: Any, right: Any) -> Any in
+    let l = left as! Int
+    let r = right as! Int
+    return l + r
+}
+env["-"] = {
+    (left: Any, right: Any) -> Any in
+    let l = left as! Int
+    let r = right as! Int
+    return l - r
+}
+env["*"] = {
+    (left: Any, right: Any) -> Any in
+    let l = left as! Int
+    let r = right as! Int
+    return l * r
+}
+env["/"] = {
+    (left: Any, right: Any) -> Any in
+    let l = left as! Int
+    let r = right as! Int
+    return l / r
+}
+
+let parser = ArithExprParserProcessor()
+let result = parser.parse(tokens: tokens, pos: 0)!
+print(result.data.eval(environment: &env) as! Int)
