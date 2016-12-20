@@ -10,9 +10,16 @@ import Foundation
 
 let tokenizer = Tokenizer()
 
-let tokens = try! tokenizer.tokenize(material: "(2 + 2) * 6")
+let material = "i = 0" + "\n" +
+            "while i < 100000 {" + "\n" +
+            "i = i + 1" + "\n" +
+            "}" + "\n" +
+            "print i"
 
-var env:[String: Any] = [:]
+let tokens = try! tokenizer.tokenize(material: material)
+
+var env: [String: Any] = [:]
+
 env["+"] = {
     (left: Any, right: Any) -> Any in
     let l = left as! Int
@@ -37,7 +44,36 @@ env["/"] = {
     let r = right as! Int
     return l / r
 }
+env[">"] = {
+    (left: Any, right: Any) -> Any in
+    let l = left as! Int
+    let r = right as! Int
+    return l > r
+}
+env["<"] = {
+    (left: Any, right: Any) -> Any in
+    let l = left as! Int
+    let r = right as! Int
+    return l < r
+}
+env["&&"] = {
+    (left: Any, right: Any) -> Any in
+    let l = left as! Bool
+    let r = right as! Bool
+    return l && r
+}
+env["||"] = {
+    (left: Any, right: Any) -> Any in
+    let l = left as! Bool
+    let r = right as! Bool
+    return l || r
+}
+env["!"] = {
+    (old: Any) -> Any in
+    let oldBool = old as! Bool
+    return !oldBool
+}
 
-let parser = ArithExprParserProcessor()
+let parser = CompStmtParser
 let result = parser.parse(tokens: tokens, pos: 0)!
-print(result.data.eval(environment: &env) as! Int)
+let _ = result.data.eval(environment: &env)

@@ -8,124 +8,111 @@
 
 /* Base Expression protocol */
 protocol Expr {
-    func eval(environment: inout [String: Any]) -> Any
+    func eval(environment: inout [String: Any]) -> Any?
 }
 
-/* Base Class of Arithmetic Expressions */
-class ArithExpr: ASTNode {}
-
 /* Arithmetic Expressions */
-class IntExpr: ArithExpr {
-    override func eval(environment: inout [String: Any]) -> Any {
+class IntExpr: ASTNode {
+    override func eval(environment: inout [String: Any]) -> Any? {
         return Int(value!)!
     }
 }
 
-class VarExpr: ArithExpr {
+class VarExpr: ASTNode {
     // Expressions for variables
-    override func eval(environment: inout [String: Any]) -> Any {
+    override func eval(environment: inout [String: Any]) -> Any? {
         return environment[value!]!
     }
 }
 
-class ArithBiOpExpr: ArithExpr {
+class BiOpExpr: ASTNode {
     // Expressions for binary operators
-    let left, right: ArithExpr
-    let oper: String
-    
-    init(oper: String, left: ArithExpr, right: ArithExpr) {
-        self.oper = oper
-        self.left = left
-        self.right = right
-        super.init(value: nil)
-    }
-    
-    override func eval(environment: inout [String : Any]) -> Any {
+    override func eval(environment: inout [String : Any]) -> Any? {
+        let left = self[0]
+        let oper = self[1].value!
+        let right = self[2]
+        
         let operFunc = environment[oper] as! (Any, Any) -> Any
         
-        return operFunc(left.eval(environment: &environment), right.eval(environment: &environment))
+        return operFunc(left.eval(environment: &environment)!, right.eval(environment: &environment)!)
     }
 }
-/*
-/* Base Class of Bool Expressions */
-class BoolExpr: ASTNode {}
+
+typealias ArithOpExpr = BiOpExpr
 
 /* Bool Expressions */
-class RelOpExpr: BoolExpr {
-    // Expressions for relationship operators
-    let left, right: ArithExpr
-    let oper: String
-    
-    init(oper: String, left: ArithExpr, right: ArithExpr) {
-        self.oper = oper
-        self.left = left
-        self.right = right
-    }
-}
+// In fact the relationship expression does the same thing as a binary operator arithmetic expression
+typealias RelOpExpr = BiOpExpr
 
-class BoolBiOpExpr: BoolExpr {
-    // Expressions for bool operators
-    let left, right: BoolExpr
-    let oper: String
-    
-    init(oper: String, left: BoolExpr, right: BoolExpr) {
-        self.oper = oper
-        self.left = left
-        self.right = right
-    }
-}
-
-class NotExpr: BoolExpr {
+class PrefixOpExpr: ASTNode {
     // Expressions for NOT operators
-    let expr: BoolExpr
-    
-    init(expr: BoolExpr) {
-        self.expr = expr
+    override func eval(environment: inout [String : Any]) -> Any? {
+        let oper = self[0].value!
+        
+        let operFunc = environment[oper] as! (Any) -> Any
+        
+        return operFunc(self[1].eval(environment: &environment)!)
     }
 }
 
-/* Base Class of Statement Expressions */
-class StmtExpr: ParseResult {}
+typealias NotExpr = PrefixOpExpr
 
-/* Statement Expressions */
-class AssignExpr: StmtExpr {
-    // Expressions for assign statements
-    let id: String
-    let expr: ArithExpr
-    
-    init(id: String, expr: ArithExpr) {
-        self.id = id
-        self.expr = expr
+/* Statements */
+class AssignStmt: ASTNode {
+    // Statements for assign statements
+    override func eval(environment: inout [String : Any]) -> Any? {
+        let id = self[0].value!
+        let expr = self[1]
+        environment[id] = expr.eval(environment: &environment)
+        return nil
     }
 }
 
-class CompExpr: StmtExpr {
-    // Expressions for compound statements
-    let exprs: [StmtExpr]
-    
-    init(exprs: [StmtExpr]) {
-        self.exprs = exprs
+class CompStmt: ASTNode {
+    // Statements for compound statements
+    override func eval(environment: inout [String : Any]) -> Any? {
+        for stmt in children! {
+            let _ = stmt.eval(environment: &environment)
+        }
+        return nil
     }
 }
 
-class IfExpr: StmtExpr {
-    // Expressions for condition statements
-    let trueStmt, falseStmt: StmtExpr
-    
-    init(trueStmt: StmtExpr, falseStmt: StmtExpr) {
-        self.trueStmt = trueStmt
-        self.falseStmt = falseStmt
+class IfStmt: ASTNode {
+    // Statements for condition statements
+    override func eval(environment: inout [String : Any]) -> Any? {
+        let condition = self[0]
+        let trueStmts = self[1]
+        if condition.eval(environment: &environment) as! Bool {
+            return trueStmts.eval(environment: &environment)
+        } else {
+            if self.children!.count == 3 {
+                let falseStmts = self[2]
+                return falseStmts.eval(environment: &environment)
+            } else {
+                return nil
+            }
+        }
     }
 }
 
-class WhileExpr: StmtExpr {
-    // Expression for while loop statements
-    let condition: BoolExpr
-    let body: StmtExpr
-    
-    init(condition: BoolExpr, body: StmtExpr) {
-        self.condition = condition
-        self.body = body
+class WhileStmt: ASTNode {
+    // Statements for while loop statements
+    override func eval(environment: inout [String : Any]) -> Any? {
+        let condition = self[0]
+        let stmts = self[1]
+        while condition.eval(environment: &environment) as! Bool {
+            let _ = stmts.eval(environment: &environment)
+        }
+        return nil
     }
 }
-*/
+
+class PrintStmt: ASTNode {
+    // Statements for printing
+    override func eval(environment: inout [String : Any]) -> Any? {
+        let expr = self[0]
+        print(expr.eval(environment: &environment)!)
+        return nil
+    }
+}

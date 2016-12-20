@@ -90,10 +90,10 @@ class CombinationsTest: XCTestCase {
     }
     
     func testExp() {
-        let parser = idParser * (ReservedParser(word: "+") ^ { return ASTNode(values: [$0[0].value! + $0[1].value!]) })
-        var expected = ParseResult.Value(values: ["x"])
+        let parser = idParser * (ReservedParser(word: "+") ^ { return ASTNode(value: $0[0].value! + $0[2].value!) })
+        var expected = ParseResult.Value(value: "x")
         assertParseResultEqual(material: "x", parser: parser, expected: expected)
-        expected = ParseResult.Value(values: ["xyz"])
+        expected = ParseResult.Value(value: "xyz")
         assertParseResultEqual(material: "x + y +z", parser: parser, expected: expected)
     }
     

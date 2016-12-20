@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		A584C5FA1E054A800099C35B /* Combinations.swift in Sources */ = {isa = PBXBuildFile; fileRef = A584C5F91E054A800099C35B /* Combinations.swift */; };
 		A58B960F1E07A38B002919C6 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A58B960E1E07A38B002919C6 /* Parser.swift */; };
+		A58B96121E08E33C002919C6 /* ParserTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A58B96101E08E33C002919C6 /* ParserTest.swift */; };
+		A58B96131E08E350002919C6 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A58B960E1E07A38B002919C6 /* Parser.swift */; };
 		A5BB42371E0561F80087362D /* ASTNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB42361E0561F80087362D /* ASTNode.swift */; };
 		A5BB42461E06335D0087362D /* LexerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB42451E06335D0087362D /* LexerTest.swift */; };
 		A5BB42491E06357D0087362D /* ASTNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB42361E0561F80087362D /* ASTNode.swift */; };
@@ -37,6 +39,7 @@
 /* Begin PBXFileReference section */
 		A584C5F91E054A800099C35B /* Combinations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Combinations.swift; sourceTree = "<group>"; };
 		A58B960E1E07A38B002919C6 /* Parser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
+		A58B96101E08E33C002919C6 /* ParserTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParserTest.swift; sourceTree = "<group>"; };
 		A5BB42361E0561F80087362D /* ASTNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASTNode.swift; sourceTree = "<group>"; };
 		A5BB423C1E05A3FE0087362D /* Test.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Test.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5BB42401E05A3FE0087362D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -93,6 +96,7 @@
 				A5BB42451E06335D0087362D /* LexerTest.swift */,
 				A5BB424C1E063D110087362D /* CombinationsTest.swift */,
 				A5BB424E1E06574B0087362D /* ASTNodeTest.swift */,
+				A58B96101E08E33C002919C6 /* ParserTest.swift */,
 			);
 			path = Test;
 			sourceTree = "<group>";
@@ -223,6 +227,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A58B96131E08E350002919C6 /* Parser.swift in Sources */,
+				A58B96121E08E33C002919C6 /* ParserTest.swift in Sources */,
 				A5BB42491E06357D0087362D /* ASTNode.swift in Sources */,
 				A5BB42521E066BA90087362D /* Expressions.swift in Sources */,
 				A5BB424D1E063D110087362D /* CombinationsTest.swift in Sources */,

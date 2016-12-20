@@ -28,7 +28,7 @@ class ASTNode: Expr {
         }
     }
     
-    init(value: String?) {
+    init(value: String) {
         self.value = value
         self.children = nil
     }
@@ -56,7 +56,7 @@ class ASTNode: Expr {
         children!.append(element)
     }
     
-    func eval(environment: inout [String : Any]) -> Any {
+    func eval(environment: inout [String : Any]) -> Any? {
         fatalError("Base `ASTNode` class does not implement the `eval` function.")
     }
 }
@@ -68,7 +68,7 @@ class ParseResult {
     var data: Value
     var pos: Int
     
-    init(value: String?, pos: Int) {
+    init(value: String, pos: Int) {
         self.data = Value(value: value)
         self.pos = pos
     }

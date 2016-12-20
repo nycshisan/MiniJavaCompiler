@@ -99,6 +99,7 @@ class ExpParser: Parser {
     init(parser: Parser, separator: ProcessParser) {
         /*
          ExpParser.processor must accect an array like [partialResult, separator, newResult]
+         and return reducedResult for next appending
          */
         self.parser = parser
         self.separator = separator.parser
@@ -117,7 +118,7 @@ class ExpParser: Parser {
             while let nextResult = nextParser.parse(tokens: tokens, pos: result.pos) {
                 result.data.append(element: nextResult.data[0])
                 result.data.append(element: nextResult.data[1])
-                result.data = processor(result.data)
+                result.data = ParseResult.Value(values: [processor(result.data)])
                 result.pos = nextResult.pos
             }
             
@@ -183,7 +184,7 @@ class OptParser: Parser {
         if let result = parser.parse(tokens: tokens, pos: pos) {
             return result
         } else {
-            return ParseResult(value: nil, pos: pos)
+            return ParseResult(value: "nil", pos: pos)
         }
     }
 }

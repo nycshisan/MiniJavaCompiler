@@ -11,7 +11,7 @@ import Foundation
 let LEX_ERROR = 1
 
 /* Tokenizer Inputs */
-let ReservedWords = ["print", "if", "else", "while"]
+let ReservedWords = ["print", "if", "else", "while", "not", "and", "or"]
 
 var ReservedRegExpPattern: String {
     return ReservedWords.map({ word in "(\(word))" }).joined(separator: "|")
@@ -20,7 +20,8 @@ var ReservedRegExpPattern: String {
 let TokenExpressions: [(pattern: String, tag: TokenTag)] = [
     ("//.*$", .None),
     ("\\s+", .None),
-    ("[=+-/\\*(){}]+", .Reserved),
+    ("[=+-/*><!&|]+", .Reserved), // Operators
+    ("[(){}]", .Reserved), // Delimiters
     (ReservedRegExpPattern, .Reserved),
     ("[0-9]+", .Int),
     ("[A-Za-z][A-Za-z0-9]*", .Id)
