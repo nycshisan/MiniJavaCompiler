@@ -13,7 +13,13 @@ protocol Expr {
 
 /* Arithmetic Expressions */
 class IntExpr: ASTNode {
+    var i: Int?
+    
     override func eval(environment: inout [String: Any]) -> Any? {
+//        if i == nil {
+//            i = Int(value!)!
+//        }
+//        return i
         return Int(value!)!
     }
 }

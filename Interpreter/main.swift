@@ -11,12 +11,12 @@ import Foundation
 let tokenizer = Tokenizer()
 
 let material = "i = 0" + "\n" +
-            "while i < 100000 {" + "\n" +
+            "while i < 1000000~ {" + "\n" +
             "i = i + 1" + "\n" +
             "}" + "\n" +
             "print i"
 
-let tokens = try! tokenizer.tokenize(material: material)
+let tokens = tokenizer.tokenizeCaughtError(material: material)
 
 var env: [String: Any] = [:]
 

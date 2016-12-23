@@ -8,7 +8,7 @@
 
 import Foundation
 
-let LEX_ERROR = 1
+let TOKENIZE_ERROR = 1
 
 /* Tokenizer Inputs */
 let ReservedWords = ["print", "if", "else", "while", "not", "and", "or"]
@@ -20,10 +20,10 @@ var ReservedRegExpPattern: String {
 let TokenExpressions: [(pattern: String, tag: TokenTag)] = [
     ("//.*$", .None),
     ("\\s+", .None),
-    ("[=+-/*><!&|]+", .Reserved), // Operators
+    ("[-+/*=><!&|%^]+", .Reserved), // Operators
     ("[(){}]", .Reserved), // Delimiters
     (ReservedRegExpPattern, .Reserved),
-    ("[0-9]+", .Int),
+    ("-?[0-9]+", .Int),
     ("[A-Za-z][A-Za-z0-9]*", .Id)
 ]
 
@@ -52,13 +52,15 @@ class Tokenizer {
                 let re = try NSRegularExpression(pattern: expr.pattern, options: NSRegularExpression.Options.anchorsMatchLines)
                 tokenRegExprs.append((re, expr.tag))
             } catch {
-                debugPrint(error)
+                debugPrint("Internal Error: ", error)
             }
         }
     }
     
     func tokenize(material: String) throws -> [Token] {
         var tokens: [Token] = []
+        var lineNum = 0
+        
         let characters = material.characters
         var range = NSMakeRange(0, characters.count)
         while range.location < characters.count {
@@ -73,12 +75,14 @@ class Tokenizer {
                 }
             }
             if match == nil {
-                let userInfo = ["location": range.location]
-                throw NSError(domain: "TokenizerErrorDomain", code: LEX_ERROR, userInfo: userInfo)
+                range.length = 1
+                let userInfo: [String : Any] = ["range": range, "lineNum": lineNum]
+                throw NSError(domain: "TokenizerErrorDomain", code: TOKENIZE_ERROR, userInfo: userInfo)
             } else {
                 if token.tag != .None {
                     tokens.append(token)
                 }
+                lineNum += token.text.count("\n")
                 range.location += match!.range.length
                 range.length -= match!.range.length
             }
@@ -86,4 +90,29 @@ class Tokenizer {
         return tokens
     }
     
+    func tokenizeCaughtError(material: String) -> [Token] {
+        do { return try tokenize(material: material) } catch let error as NSError {
+            let info = error.userInfo
+            let lineNum = info["lineNum"] as! Int
+            let range = info["range"] as! NSRange
+            print("Invalid character at line \(lineNum + 1):")
+            print("\"\(material.components(separatedBy: "\n")[lineNum])\"")
+            print("At Character:", (material as NSString).substring(with: range))
+            exit(Int32(error.code))
+        }
+    }
+    
+}
+
+/* String extension to count occurrences of a substring */
+extension String {
+    func count(_ substr: String) -> Int {
+        var ctr = 0
+        var crtRange = startIndex ..< endIndex
+        while let nextRange = range(of: substr, options: CompareOptions(rawValue: 0), range: crtRange, locale: nil) {
+            ctr += 1
+            crtRange = nextRange.upperBound ..< endIndex
+        }
+        return ctr
+    }
 }
