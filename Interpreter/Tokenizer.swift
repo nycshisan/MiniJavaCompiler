@@ -8,29 +8,38 @@
 
 import Foundation
 
-let TOKENIZE_ERROR = 1
+let InvalidCharacterError = 1
 
-/* Tokenizer Inputs */
-let ReservedWords = ["print", "if", "else", "while", "not", "and", "or"]
+/* Tokenizer Configs */
+let ReservedWords = ["print", "if", "else", "while"]
 
 var ReservedRegExpPattern: String {
     return ReservedWords.map({ word in "(\(word))" }).joined(separator: "|")
 }
 
 let TokenExpressions: [(pattern: String, tag: TokenTag)] = [
-    ("//.*$", .None),
-    ("\\s+", .None),
-    ("[-+/*=><!&|%^]+", .Reserved), // Operators
+    ("//.*$", .None), // Comments
+    ("\\s+", .None), // Blanks
+    ("[-+/*=><!&|%^~]+", .Reserved), // Operators
     ("[(){}]", .Reserved), // Delimiters
-    (ReservedRegExpPattern, .Reserved),
-    ("-?[0-9]+", .Int),
-    ("[A-Za-z][A-Za-z0-9]*", .Id)
+    (ReservedRegExpPattern, .Reserved), // Reversed words
+    ("-?[0-9]+", .Int), // Intergers
+    ("[A-Za-z][A-Za-z0-9]*", .Id) // Identifies
 ]
 
 /* Token type */
-struct Token {
+class Token {
     var text: String
     var tag: TokenTag
+    var range: NSRange
+    var lineNum: Int
+    
+    init(text: String = "", tag: TokenTag = .None, range: NSRange = NSRange(location: 0, length: 0), lineNum: Int = 0) {
+        self.text = text
+        self.tag = tag
+        self.range = range
+        self.lineNum = lineNum
+    }
 }
 
 enum TokenTag {
@@ -60,29 +69,39 @@ class Tokenizer {
     func tokenize(material: String) throws -> [Token] {
         var tokens: [Token] = []
         var lineNum = 0
+        var position = 0
         
         let characters = material.characters
         var range = NSMakeRange(0, characters.count)
         while range.location < characters.count {
-            var token = Token(text: "", tag: .None)
+            let token = Token()
             var match: NSTextCheckingResult? = nil
             for (re, tag) in tokenRegExprs {
                 match = re.firstMatch(in: material, options: .anchored, range: range)
                 if match != nil {
+                    // If matched, create token
                     token.text = (material as NSString).substring(with: match!.range)
                     token.tag = tag
+                    token.range = range
+                    token.lineNum = lineNum
                     break
                 }
             }
+            
+            // Throw error or append tokens
             if match == nil {
-                range.length = 1
-                let userInfo: [String : Any] = ["range": range, "lineNum": lineNum]
-                throw NSError(domain: "TokenizerErrorDomain", code: TOKENIZE_ERROR, userInfo: userInfo)
+                let userInfo: [String : Any] = ["position": position, "lineNum": lineNum]
+                throw NSError(domain: "TokenizerErrorDomain", code: InvalidCharacterError, userInfo: userInfo)
             } else {
+                position += token.text.characters.count
                 if token.tag != .None {
                     tokens.append(token)
                 }
-                lineNum += token.text.count("\n")
+                let newLineNum = token.text.count("\n")
+                if newLineNum > 0 {
+                    lineNum += newLineNum
+                    position = 0
+                }
                 range.location += match!.range.length
                 range.length -= match!.range.length
             }
@@ -94,10 +113,11 @@ class Tokenizer {
         do { return try tokenize(material: material) } catch let error as NSError {
             let info = error.userInfo
             let lineNum = info["lineNum"] as! Int
-            let range = info["range"] as! NSRange
-            print("Invalid character at line \(lineNum + 1):")
-            print("\"\(material.components(separatedBy: "\n")[lineNum])\"")
-            print("At Character:", (material as NSString).substring(with: range))
+            let line = material.components(separatedBy: "\n")[lineNum]
+            let position = info["position"] as! Int
+            print("Error: Invalid character at line \(lineNum + 1):")
+            print("\(line)")
+            print(String(repeating: " ", count: position) + "^")
             exit(Int32(error.code))
         }
     }

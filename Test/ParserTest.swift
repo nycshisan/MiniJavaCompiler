@@ -118,27 +118,27 @@ class ParserTest: XCTestCase {
     }
     
     func testRelOpExpr() {
-        assertParseResultEqual(material: "2 > 3", parser: BoolExprParser, expected: false)
+        assertParseResultEqual(material: "2 > 3", parser: ArithExprParser, expected: false)
     }
     
     func testNotExpr() {
-        assertParseResultEqual(material: "! 2 > 3", parser: BoolExprParser, expected: true)
+        assertParseResultEqual(material: "! (2 > 3)", parser: ArithExprParser, expected: true)
     }
     
     func testAndExpr() {
-        assertParseResultEqual(material: "4 > 3 && 2 > 1", parser: BoolExprParser, expected: true)
+        assertParseResultEqual(material: "4 > 3 && 2 > 1", parser: ArithExprParser, expected: true)
     }
     
     func testBoolExprLogic() {
-        assertParseResultEqual(material: "5 < 2 && 6 < 4 || 5 < 6", parser: BoolExprParser, expected: true)
+        assertParseResultEqual(material: "5 < 2 && 6 < 4 || 5 < 6", parser: ArithExprParser, expected: true)
     }
     
     func testBoolGroupLogic() {
-        assertParseResultEqual(material: "5 < 2 && (6 < 4 || 5 < 6)", parser: BoolExprParser, expected: false)
+        assertParseResultEqual(material: "5 < 2 && (6 < 4 || 5 < 6)", parser: ArithExprParser, expected: false)
     }
     
     func testNotPrecedence() {
-        assertParseResultEqual(material: "! 3 < 2 && 3 < 4", parser: BoolExprParser, expected: true)
+        assertParseResultEqual(material: "! (3 < 2) && 3 < 4", parser: ArithExprParser, expected: true)
     }
     
     func testAssignStmt() {

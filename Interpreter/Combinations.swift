@@ -116,8 +116,7 @@ class ExpParser: Parser {
             let nextParser = separator + parser
             
             while let nextResult = nextParser.parse(tokens: tokens, pos: result.pos) {
-                result.data.append(element: nextResult.data[0])
-                result.data.append(element: nextResult.data[1])
+                result.data.children! += nextResult.data.children! // Append new result
                 result.data = ParseResult.Value(values: [processor(result.data)])
                 result.pos = nextResult.pos
             }

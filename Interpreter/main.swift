@@ -11,7 +11,7 @@ import Foundation
 let tokenizer = Tokenizer()
 
 let material = "i = 0" + "\n" +
-            "while i < 1000000~ {" + "\n" +
+            "while !(i > 100) {" + "\n" +
             "i = i + 1" + "\n" +
             "}" + "\n" +
             "print i"
@@ -74,6 +74,5 @@ env["!"] = {
     return !oldBool
 }
 
-let parser = CompStmtParser
-let result = parser.parse(tokens: tokens, pos: 0)!
+let result = MainParser.parse(tokens: tokens, pos: 0)!
 let _ = result.data.eval(environment: &env)

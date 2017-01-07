@@ -6,7 +6,12 @@
 //  Copyright © 2016年 Nycshisan. All rights reserved.
 //
 
-/* Common used functions */
+/* Arithmetic Expressions Parsers */
+enum OperatorType {
+    case BiOp
+    case PreOp
+}
+
 func OpsParser(opers: [String]) -> Parser {
     var parsers = opers.map({ ReservedParser(word: $0) })
     let initial = parsers.removeFirst()
@@ -14,40 +19,33 @@ func OpsParser(opers: [String]) -> Parser {
     return parser
 }
 
-func BiOpExprCombiner(oldValue: ParseResult.Value) -> ParseResult.Value {
-    // This combiner is used to reduce ExpParser
-    return BiOpExpr(oldValue)
-}
-
-func BiOpExprFlatter(oldValue: ParseResult.Value) -> ParseResult.Value {
-    // This flatter is used to make a concatenated binary operator expression to a BiOpExpr node
-    let left = oldValue[0][0]
-    let oper = oldValue[0][1]
-    let right = oldValue[1]
-    return BiOpExpr(values: [left, oper, right])
-}
-
-func PrecedenceExprParser(precedence material: [[String]], termParser: Parser) -> Parser {
-    var precedence = material
-    let firstPrecedence = precedence.removeFirst()
-    let initialParser = termParser * (OpsParser(opers: firstPrecedence) ^ BiOpExprCombiner)
-    let parser = precedence.reduce(initialParser) {
-        (partialResult: Parser, nextPrecedence: [String]) -> Parser in
-        return partialResult * (OpsParser(opers: nextPrecedence) ^ BiOpExprCombiner)
+func PrecedenceExprParser(precedence: [(opers: [String], type: OperatorType)], termParser: Parser) -> Parser {
+    var parser = termParser
+    for (opers, type) in precedence {
+        switch type {
+        case .BiOp:
+            parser = parser * (OpsParser(opers: opers) ^ { BiOpExpr($0) })
+        case .PreOp:
+            parser = OptParser(parser: OpsParser(opers: opers)) + parser ^ { PreOpExpr($0) }
+        }
     }
     return parser
 }
 
 let GroupProcessor: (ParseResult.Value) -> ParseResult.Value = { $0[0][1] }
 
-/* Arithmetic Expressions Parsers */
+let precedence: [([String], OperatorType)] = [
+    (["!"], .PreOp),
+    (["*", "/"], .BiOp),
+    (["+", "-"], .BiOp),
+    ([">", ">=", ">", "<=", "<", "==", "!="], .BiOp),
+    (["&&", "||"], .BiOp)
+]
+
+let lazyArithExprParser = PrecedenceExprParser(precedence: precedence, termParser: ArithTermParser)
+
 func ArithExprParserGenerator() -> Parser {
-    let precedence = [
-        ["*", "/"],
-        ["+", "-"]
-    ]
-    
-    return PrecedenceExprParser(precedence: precedence, termParser: ArithTermParser)
+    return lazyArithExprParser
 }
 
 let ArithExprParser = ~ArithExprParserGenerator
@@ -61,32 +59,6 @@ let ArithValueParser = IntExprParser | VarExprParser
 let ArithGroupParser = ReservedParser(word: "(") + ArithExprParser + ReservedParser(word: ")") ^ GroupProcessor
 
 let ArithTermParser = ArithValueParser | ArithGroupParser
-
-/* Bool Expressions Parsers */
-func BoolExprParserGenerator() -> Parser {
-    let precedence = [
-        ["&&"],
-        ["||"]
-    ]
-    
-    return PrecedenceExprParser(precedence: precedence, termParser: BoolTermParser)
-}
-
-let BoolExprParser = ~BoolExprParserGenerator
-
-let RelOpsParser = OpsParser(opers: [">", ">=", ">", "<=", "<", "==", "!="])
-
-let RelOpExprParser = ArithExprParser + RelOpsParser + ArithExprParser ^ BiOpExprFlatter
-
-let NotExprParser = ReservedParser(word: "!") + BoolTermParser ^ { NotExpr($0) }
-
-let BoolGroupParser = ReservedParser(word: "(") + BoolExprParser + ReservedParser(word: ")") ^ GroupProcessor
-
-func BoolTermParserGenerator() -> Parser {
-    return NotExprParser | BoolGroupParser | RelOpExprParser
-}
-
-let BoolTermParser = ~BoolTermParserGenerator
 
 /* Statements Parsers */
 let StmtParser = AssignStmtParser | IfStmtParser | WhileStmtParser | PrintStmtParser
@@ -106,7 +78,7 @@ let CompStmtParser = ~CompStmtParserProcessor
 
 let BlockParser = ReservedParser(word: "{") + CompStmtParser + ReservedParser(word: "}") ^ GroupProcessor
 
-let IfStmtParser = ReservedParser(word: "if") + BoolExprParser + BlockParser + OptParser(parser: ReservedParser(word: "else") + BlockParser) ^ {
+let IfStmtParser = ReservedParser(word: "if") + ArithExprParser + BlockParser + OptParser(parser: ReservedParser(word: "else") + BlockParser) ^ {
     (oldValue: ParseResult.Value) -> ParseResult.Value in
     let condition = oldValue[0][0][1]
     let trueStmts = oldValue[0][1]
@@ -119,7 +91,7 @@ let IfStmtParser = ReservedParser(word: "if") + BoolExprParser + BlockParser + O
     return IfStmt(values: newValue)
 }
 
-let WhileStmtParser = ReservedParser(word: "while") + BoolExprParser + BlockParser ^ {
+let WhileStmtParser = ReservedParser(word: "while") + ArithExprParser + BlockParser ^ {
     (oldValue: ParseResult.Value) -> ParseResult.Value in
     let condition = oldValue[0][1]
     let stmts = oldValue[1]
@@ -128,3 +100,6 @@ let WhileStmtParser = ReservedParser(word: "while") + BoolExprParser + BlockPars
 }
 
 let PrintStmtParser = ReservedParser(word: "print") + ArithExprParser ^ { PrintStmt(values: [$0[1]]) }
+
+/* Main Parser */
+let MainParser = PhraseParser(parser: CompStmtParser)

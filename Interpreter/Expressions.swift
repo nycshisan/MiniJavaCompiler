@@ -44,24 +44,19 @@ class BiOpExpr: ASTNode {
     }
 }
 
-typealias ArithOpExpr = BiOpExpr
-
-/* Bool Expressions */
-// In fact the relationship expression does the same thing as a binary operator arithmetic expression
-typealias RelOpExpr = BiOpExpr
-
-class PrefixOpExpr: ASTNode {
+class PreOpExpr: ASTNode {
     // Expressions for NOT operators
     override func eval(environment: inout [String : Any]) -> Any? {
         let oper = self[0].value!
+        if oper == "nil" {
+            return self[1].eval(environment: &environment)
+        } else {
+            let operFunc = environment[oper] as! (Any) -> Any
+            return operFunc(self[1].eval(environment: &environment)!)
+        }
         
-        let operFunc = environment[oper] as! (Any) -> Any
-        
-        return operFunc(self[1].eval(environment: &environment)!)
     }
 }
-
-typealias NotExpr = PrefixOpExpr
 
 /* Statements */
 class AssignStmt: ASTNode {
