@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A507C81A1E22741A00D60DB3 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = A507C8191E22741A00D60DB3 /* Error.swift */; };
 		A56DBAE01E226E0E00971292 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56DBADF1E226E0E00971292 /* main.swift */; };
 		A56DBAE21E226E1E00971292 /* Tokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56DBAE11E226E1E00971292 /* Tokenizer.swift */; };
 		A56DBAE31E226E1E00971292 /* Tokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56DBAE11E226E1E00971292 /* Tokenizer.swift */; };
@@ -37,6 +38,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A507C8191E22741A00D60DB3 /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = SOURCE_ROOT; };
 		A56DBADF1E226E0E00971292 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = main.swift; path = SSCompiler/main.swift; sourceTree = SOURCE_ROOT; };
 		A56DBAE11E226E1E00971292 /* Tokenizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Tokenizer.swift; path = SSCompiler/Tokenizer.swift; sourceTree = SOURCE_ROOT; };
 		A56DBAE41E226E2700971292 /* ASTNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ASTNode.swift; path = SSCompiler/ASTNode.swift; sourceTree = SOURCE_ROOT; };
@@ -73,6 +75,7 @@
 		A56DBADE1E226DB900971292 /* Error */ = {
 			isa = PBXGroup;
 			children = (
+				A507C8191E22741A00D60DB3 /* Error.swift */,
 			);
 			name = Error;
 			sourceTree = "<group>";
@@ -257,6 +260,7 @@
 				A56DBAEE1E226E2700971292 /* Parsers.swift in Sources */,
 				A56DBAEA1E226E2700971292 /* Combinations.swift in Sources */,
 				A56DBAEC1E226E2700971292 /* Expressions.swift in Sources */,
+				A507C81A1E22741A00D60DB3 /* Error.swift in Sources */,
 				A56DBAE21E226E1E00971292 /* Tokenizer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

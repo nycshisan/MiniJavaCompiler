@@ -8,8 +8,6 @@
 
 import Foundation
 
-let InvalidCharacterError = 1
-
 /* Tokenizer Configs */
 let ReservedWords = ["print", "if", "else", "while", "var"]
 
@@ -38,15 +36,15 @@ enum TokenTag {
 
 /* Token type */
 class Token {
-    var text: String
-    var tag: TokenTag
-    var range: NSRange
-    var lineNum: Int
+    let text: String
+    let tag: TokenTag
+    let position: Int
+    let lineNum: Int
     
-    init(text: String = "", tag: TokenTag = .None, range: NSRange = NSRange(location: 0, length: 0), lineNum: Int = 0) {
+    init(text: String = "", tag: TokenTag = .None, position: Int = 0, lineNum: Int = 0) {
         self.text = text
         self.tag = tag
-        self.range = range
+        self.position = position
         self.lineNum = lineNum
     }
 }
@@ -75,52 +73,43 @@ class Tokenizer {
         let characters = material.characters
         var range = NSMakeRange(0, characters.count)
         while range.location < characters.count {
-            let token = Token()
-            var match: NSTextCheckingResult? = nil
+            var matched = false
             for (re, tag) in tokenRegExprs {
-                match = re.firstMatch(in: material, options: .anchored, range: range)
-                if match != nil {
-                    // If matched, create token
-                    token.text = (material as NSString).substring(with: match!.range)
-                    token.tag = tag
-                    token.range = range
-                    token.lineNum = lineNum
+                if let match = re.firstMatch(in: material, options: .anchored, range: range) {
+                    // If matched, create token, push it to tokens array and update tokenize states
+                    let text = (material as NSString).substring(with: match.range)
+                    let token = Token(text: text, tag: tag, position: position, lineNum: lineNum)
+                    
+                    position += token.text.characters.count
+                    if token.tag != .None {
+                        tokens.append(token)
+                    }
+                    let newLineNum = token.text.count("\n")
+                    if newLineNum > 0 {
+                        lineNum += newLineNum
+                        position = 0
+                    }
+                    range.location += match.range.length
+                    range.length -= match.range.length
+                    
+                    matched = true
                     break
                 }
             }
             
-            // Throw error or append tokens
-            if match == nil {
-                let userInfo: [String : Any] = ["position": position, "lineNum": lineNum]
-                throw NSError(domain: "SSCompilerErrorDomain", code: InvalidCharacterError, userInfo: userInfo)
-            } else {
-                position += token.text.characters.count
-                if token.tag != .None {
-                    tokens.append(token)
-                }
-                let newLineNum = token.text.count("\n")
-                if newLineNum > 0 {
-                    lineNum += newLineNum
-                    position = 0
-                }
-                range.location += match!.range.length
-                range.length -= match!.range.length
+            // Throw error when material does not match any of the regexs
+            if !matched {
+                throw SCError(code: InvalidCharacterError, info: "Invalid Character", position: position, lineNum: lineNum)
             }
         }
         return tokens
     }
     
     func tokenizeCaughtError(material: String) -> [Token] {
-        do { return try tokenize(material: material) } catch let error as NSError {
-            let info = error.userInfo
-            let lineNum = info["lineNum"] as! Int
-            let line = material.components(separatedBy: "\n")[lineNum]
-            let position = info["position"] as! Int
-            print("Error: Invalid character at line \(lineNum + 1):")
-            print("\(line)")
-            print(String(repeating: " ", count: position) + "^")
-            exit(Int32(error.code))
-        }
+        do { return try tokenize(material: material) } catch let error as SCError {
+            error.print()
+            exit(error.code)
+        } catch { exit(UnknownError) }
     }
     
 }

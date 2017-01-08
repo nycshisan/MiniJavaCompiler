@@ -70,6 +70,8 @@ class ParserTest: XCTestCase {
             let oldBool = old as! Bool
             return !oldBool
         }
+        env["a"] = 0
+        env["c"] = 0
     }
     
     override func tearDown() {

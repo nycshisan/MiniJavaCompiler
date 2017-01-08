@@ -16,6 +16,7 @@ let material = "i = 0" + "\n" +
             "}" + "\n" +
             "print i"
 
+SCError.material = material
 let tokens = tokenizer.tokenizeCaughtError(material: material)
 
 var env: [String: Any] = [:]
