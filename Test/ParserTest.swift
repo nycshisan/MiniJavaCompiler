@@ -81,7 +81,7 @@ class ParserTest: XCTestCase {
         let tokens = try! tokenizer.tokenize(material: material)
         let actual = PhraseParser(parser: parser).parse(tokens: tokens, pos: 0)
         XCTAssertNotNil(actual)
-        let actualValue: Any? = actual!.data.eval(environment: &env)
+        let actualValue: Any? = actual!.node.eval(environment: &env)
         if let i = expected as? Int {
             XCTAssertTrue(actualValue! == i)
         }
@@ -159,5 +159,9 @@ class ParserTest: XCTestCase {
     
     func testWhileStmt() {
         assertParseResultEqual(material: "a = 0\nwhile a < 2 {a = a + 2}", parser: CompStmtParser, expected: [("a", 2)])
+    }
+    
+    func textDeclStmt() {
+        // todo
     }
 }

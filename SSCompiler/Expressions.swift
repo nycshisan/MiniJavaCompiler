@@ -20,14 +20,14 @@ class IntExpr: ASTNode {
 //            i = Int(value!)!
 //        }
 //        return i
-        return Int(value!)!
+        return Int(token!.text)!
     }
 }
 
 class VarExpr: ASTNode {
     // Expressions for variables
     override func eval(environment: inout [String: Any]) -> Any? {
-        return environment[value!]!
+        return environment[token!.text]!
     }
 }
 
@@ -35,7 +35,7 @@ class BiOpExpr: ASTNode {
     // Expressions for binary operators
     override func eval(environment: inout [String : Any]) -> Any? {
         let left = self[0]
-        let oper = self[1].value!
+        let oper = self[1].token!.text
         let right = self[2]
         
         let operFunc = environment[oper] as! (Any, Any) -> Any
@@ -47,34 +47,37 @@ class BiOpExpr: ASTNode {
 class PreOpExpr: ASTNode {
     // Expressions for NOT operators
     override func eval(environment: inout [String : Any]) -> Any? {
-        let oper = self[0].value!
-        if oper == "nil" {
-            return self[1].eval(environment: &environment)
-        } else {
-            let operFunc = environment[oper] as! (Any) -> Any
-            return operFunc(self[1].eval(environment: &environment)!)
-        }
-        
+        let oper = self[0].token!.text
+        let operFunc = environment[oper] as! (Any) -> Any
+        return operFunc(self[1].eval(environment: &environment)!)
     }
 }
 
 /* Statements */
-class AssignStmt: ASTNode {
-    // Statements for assign statements
-    override func eval(environment: inout [String : Any]) -> Any? {
-        let id = self[0].value!
-        let expr = self[1]
-        environment[id] = expr.eval(environment: &environment)
-        return nil
-    }
-}
-
 class CompStmt: ASTNode {
     // Statements for compound statements
     override func eval(environment: inout [String : Any]) -> Any? {
         for stmt in children! {
             let _ = stmt.eval(environment: &environment)
         }
+        return nil
+    }
+}
+
+class AssignStmt: ASTNode {
+    // Statements for assign statements
+    override func eval(environment: inout [String : Any]) -> Any? {
+        let id = self[0].token!.text
+        let expr = self[1]
+        environment[id] = expr.eval(environment: &environment)
+        return nil
+    }
+}
+
+class DeclStmt: ASTNode {
+    // Statements for declaring a new variable
+    override func eval(environment: inout [String : Any]) -> Any? {
+        // todo
         return nil
     }
 }

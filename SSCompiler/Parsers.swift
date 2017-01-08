@@ -26,13 +26,20 @@ func PrecedenceExprParser(precedence: [(opers: [String], type: OperatorType)], t
         case .BiOp:
             parser = parser * (OpsParser(opers: opers) ^ { BiOpExpr($0) })
         case .PreOp:
-            parser = OptParser(parser: OpsParser(opers: opers)) + parser ^ { PreOpExpr($0) }
+            parser = OptParser(parser: OpsParser(opers: opers)) + parser ^ {
+                (oldValue: ParseResult.Node) -> ParseResult.Node in
+                if oldValue[0].token == nil {
+                    return oldValue[1]
+                } else {
+                    return PreOpExpr(oldValue)
+                }
+            }
         }
     }
     return parser
 }
 
-let GroupProcessor: (ParseResult.Value) -> ParseResult.Value = { $0[0][1] }
+let GroupProcessor: (ParseResult.Node) -> ParseResult.Node = { $0[0][1] }
 
 let precedence: [([String], OperatorType)] = [
     (["!"], .PreOp),
@@ -61,45 +68,59 @@ let ArithGroupParser = ReservedParser(word: "(") + ArithExprParser + ReservedPar
 let ArithTermParser = ArithValueParser | ArithGroupParser
 
 /* Statements Parsers */
-let StmtParser = AssignStmtParser | IfStmtParser | WhileStmtParser | PrintStmtParser
+let StmtParser = AssignStmtParser | IfStmtParser | WhileStmtParser | PrintStmtParser | DeclStmtParser
+
+func CompStmtParserGenerator() -> Parser {
+    return lazyCompStmtParser
+}
+
+let CompStmtParser = ~CompStmtParserGenerator
+
+let lazyCompStmtParser = RepParser(parser: StmtParser) ^ { CompStmt($0) }
 
 let AssignStmtParser = TagParser(tag: .Id) + ReservedParser(word: "=") + ArithExprParser ^ {
-    (oldValue: ParseResult.Value) -> ParseResult.Value in
+    (oldValue: ParseResult.Node) -> ParseResult.Node in
     let id = oldValue[0][0], expr = oldValue[1]
     let newValue = [id, expr]
-    return AssignStmt(values: newValue)
+    return AssignStmt(children: newValue)
 }
 
-func CompStmtParserProcessor() -> Parser {
-    return RepParser(parser: StmtParser) ^ { CompStmt($0) }
+let DeclStmtParser = ReservedParser(word: "let") + TagParser(tag: .Id) + ReservedParser(word: ":") + TagParser(tag: .Id) + OptParser(parser: ReservedParser(word: "=") + ArithExprParser) ^ {
+    (oldValue: ParseResult.Node) -> ParseResult.Node in
+    let id = oldValue[0][0][0][1], type = oldValue[0][1]
+    var newValue = [id, type]
+    let initial = oldValue[1]
+    if initial.type != .None {
+        let initialExpr = initial[1]
+        newValue.append(initialExpr)
+    }
+    return DeclStmt(children: newValue)
 }
-
-let CompStmtParser = ~CompStmtParserProcessor
 
 let BlockParser = ReservedParser(word: "{") + CompStmtParser + ReservedParser(word: "}") ^ GroupProcessor
 
 let IfStmtParser = ReservedParser(word: "if") + ArithExprParser + BlockParser + OptParser(parser: ReservedParser(word: "else") + BlockParser) ^ {
-    (oldValue: ParseResult.Value) -> ParseResult.Value in
+    (oldValue: ParseResult.Node) -> ParseResult.Node in
     let condition = oldValue[0][0][1]
     let trueStmts = oldValue[0][1]
     var newValue = [condition, trueStmts]
     var falseStmts = oldValue[1]
-    if falseStmts.value != "nil" {
+    if falseStmts.type != .None {
         // if `else` block exists, unwrap the concat parser result
         newValue.append(falseStmts[1])
     }
-    return IfStmt(values: newValue)
+    return IfStmt(children: newValue)
 }
 
 let WhileStmtParser = ReservedParser(word: "while") + ArithExprParser + BlockParser ^ {
-    (oldValue: ParseResult.Value) -> ParseResult.Value in
+    (oldValue: ParseResult.Node) -> ParseResult.Node in
     let condition = oldValue[0][1]
     let stmts = oldValue[1]
     let newValue = [condition, stmts]
-    return WhileStmt(values: newValue)
+    return WhileStmt(children: newValue)
 }
 
-let PrintStmtParser = ReservedParser(word: "print") + ArithExprParser ^ { PrintStmt(values: [$0[1]]) }
+let PrintStmtParser = ReservedParser(word: "print") + ArithExprParser ^ { PrintStmt(children: [$0[1]]) }
 
 /* Main Parser */
 let MainParser = PhraseParser(parser: CompStmtParser)

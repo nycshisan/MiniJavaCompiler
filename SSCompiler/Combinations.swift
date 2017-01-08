@@ -46,7 +46,7 @@ class ReservedParser: Parser {
     
     func parse(tokens: [Token], pos: Int) -> ParseResult? {
         if pos < tokens.count && tokens[pos].text == word && tokens[pos].tag == tag {
-            return ParseResult(value: tokens[pos].text, pos: pos + 1)
+            return ParseResult(token: tokens[pos], pos: pos + 1)
         } else {
             return nil
         }
@@ -63,7 +63,7 @@ class TagParser: Parser {
     
     func parse(tokens: [Token], pos: Int) -> ParseResult? {
         if pos < tokens.count && tokens[pos].tag == tag {
-            return ParseResult(value: tokens[pos].text, pos: pos + 1)
+            return ParseResult(token: tokens[pos], pos: pos + 1)
         } else {
             return nil
         }
@@ -82,7 +82,7 @@ class ConcatParser: Parser {
     func parse(tokens: [Token], pos: Int) -> ParseResult? {
         if let leftResult = left.parse(tokens: tokens, pos: pos) {
             if let rightResult = right.parse(tokens: tokens, pos: leftResult.pos) {
-                return ParseResult(values: [leftResult.data, rightResult.data], pos: rightResult.pos)
+                return ParseResult(children: [leftResult.node, rightResult.node], pos: rightResult.pos)
             }
         }
         return nil
@@ -106,9 +106,9 @@ class ExpParser: Parser {
         self.processor = separator.processor
     }
     
-    func prepareFirst(value: ParseResult.Value) -> ParseResult.Value {
+    func prepareFirst(value: ParseResult.Node) -> ParseResult.Node {
         // Convert the first parse result value to an array for appending
-        return ParseResult.Value(values: [value])
+        return ParseResult.Node(children: [value])
     }
     
     func parse(tokens: [Token], pos: Int) -> ParseResult? {
@@ -116,13 +116,13 @@ class ExpParser: Parser {
             let nextParser = separator + parser
             
             while let nextResult = nextParser.parse(tokens: tokens, pos: result.pos) {
-                result.data.children! += nextResult.data.children! // Append new result
-                result.data = ParseResult.Value(values: [processor(result.data)])
+                result.node.children! += nextResult.node.children! // Append new result
+                result.node = ParseResult.Node(children: [processor(result.node)])
                 result.pos = nextResult.pos
             }
             
             // Unwrap the result
-            result.data = result.data[0]
+            result.node = result.node[0]
             return result
         } else {
             return nil
@@ -151,7 +151,7 @@ class AlternateParser: Parser {
 
 class ProcessParser: Parser {
     // Wrapped parser which will return a processed result after successfully parsing
-    typealias Processor = (ParseResult.Value) -> ParseResult.Value
+    typealias Processor = (ParseResult.Node) -> ParseResult.Node
     
     let parser: Parser
     let processor: Processor
@@ -163,7 +163,7 @@ class ProcessParser: Parser {
     
     func parse(tokens: [Token], pos: Int) -> ParseResult? {
         if let result = parser.parse(tokens: tokens, pos: pos) {
-            result.data = processor(result.data)
+            result.node = processor(result.node)
             return result
         } else {
             return nil
@@ -183,7 +183,7 @@ class OptParser: Parser {
         if let result = parser.parse(tokens: tokens, pos: pos) {
             return result
         } else {
-            return ParseResult(value: "nil", pos: pos)
+            return ParseResult(token: nil, pos: pos)
         }
     }
 }
@@ -197,17 +197,17 @@ class RepParser: Parser {
     }
     
     func parse(tokens: [Token], pos: Int) -> ParseResult? {
-        var results: [ParseResult.Value] = []
+        var results: [ParseResult.Node] = []
         var crtPos = pos
         repeat {
             if let result = parser.parse(tokens: tokens, pos: crtPos) {
-                results.append(result.data)
+                results.append(result.node)
                 crtPos = result.pos
             } else {
                 break
             }
         } while (true)
-        return ParseResult(values: results, pos: crtPos)
+        return ParseResult(children: results, pos: crtPos)
     }
 }
 

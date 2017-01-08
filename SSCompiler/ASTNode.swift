@@ -7,19 +7,19 @@
 //
 
 enum ASTNodeType {
-    case Value
+    case Token
     case Array
     case None
 }
 
 class ASTNode: Expr {
-    var value: String?
+    var token: Token?
     var children: [ASTNode]?
     
     var type: ASTNodeType {
         get {
-            if value != nil {
-                return .Value
+            if token != nil {
+                return .Token
             }
             if children != nil {
                 return .Array
@@ -28,18 +28,18 @@ class ASTNode: Expr {
         }
     }
     
-    init(value: String) {
-        self.value = value
+    init(token: Token?) {
+        self.token = token
         self.children = nil
     }
     
-    init(values: [ASTNode]) {
-        self.value = nil
-        self.children = values
+    init(children: [ASTNode]) {
+        self.token = nil
+        self.children = children
     }
     
     init(_ anotherNode: ASTNode) {
-        self.value = anotherNode.value
+        self.token = anotherNode.token
         self.children = anotherNode.children
     }
     
@@ -63,18 +63,18 @@ class ASTNode: Expr {
 
 /* Base Parser Result Class */
 class ParseResult {
-    typealias Value = ASTNode
+    typealias Node = ASTNode
     
-    var data: Value
+    var node: Node
     var pos: Int
     
-    init(value: String, pos: Int) {
-        self.data = Value(value: value)
+    init(token: Token?, pos: Int) {
+        self.node = Node(token: token)
         self.pos = pos
     }
     
-    init(values: [Value], pos: Int) {
-        self.data = Value(values: values)
+    init(children: [Node], pos: Int) {
+        self.node = Node(children: children)
         self.pos = pos
     }
 }

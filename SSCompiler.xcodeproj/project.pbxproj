@@ -7,21 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A584C5FA1E054A800099C35B /* Combinations.swift in Sources */ = {isa = PBXBuildFile; fileRef = A584C5F91E054A800099C35B /* Combinations.swift */; };
-		A58B960F1E07A38B002919C6 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A58B960E1E07A38B002919C6 /* Parser.swift */; };
+		A56DBAE01E226E0E00971292 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56DBADF1E226E0E00971292 /* main.swift */; };
+		A56DBAE21E226E1E00971292 /* Tokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56DBAE11E226E1E00971292 /* Tokenizer.swift */; };
+		A56DBAE31E226E1E00971292 /* Tokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56DBAE11E226E1E00971292 /* Tokenizer.swift */; };
+		A56DBAE81E226E2700971292 /* ASTNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56DBAE41E226E2700971292 /* ASTNode.swift */; };
+		A56DBAE91E226E2700971292 /* ASTNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56DBAE41E226E2700971292 /* ASTNode.swift */; };
+		A56DBAEA1E226E2700971292 /* Combinations.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56DBAE51E226E2700971292 /* Combinations.swift */; };
+		A56DBAEB1E226E2700971292 /* Combinations.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56DBAE51E226E2700971292 /* Combinations.swift */; };
+		A56DBAEC1E226E2700971292 /* Expressions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56DBAE61E226E2700971292 /* Expressions.swift */; };
+		A56DBAED1E226E2700971292 /* Expressions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56DBAE61E226E2700971292 /* Expressions.swift */; };
+		A56DBAEE1E226E2700971292 /* Parsers.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56DBAE71E226E2700971292 /* Parsers.swift */; };
+		A56DBAEF1E226E2700971292 /* Parsers.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56DBAE71E226E2700971292 /* Parsers.swift */; };
 		A58B96121E08E33C002919C6 /* ParserTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A58B96101E08E33C002919C6 /* ParserTest.swift */; };
-		A58B96131E08E350002919C6 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A58B960E1E07A38B002919C6 /* Parser.swift */; };
-		A5BB42371E0561F80087362D /* ASTNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB42361E0561F80087362D /* ASTNode.swift */; };
 		A5BB42461E06335D0087362D /* LexerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB42451E06335D0087362D /* LexerTest.swift */; };
-		A5BB42491E06357D0087362D /* ASTNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB42361E0561F80087362D /* ASTNode.swift */; };
-		A5BB424A1E06357D0087362D /* Tokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D6AFF61E04F32A006F04FD /* Tokenizer.swift */; };
-		A5BB424B1E06357D0087362D /* Combinations.swift in Sources */ = {isa = PBXBuildFile; fileRef = A584C5F91E054A800099C35B /* Combinations.swift */; };
 		A5BB424D1E063D110087362D /* CombinationsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB424C1E063D110087362D /* CombinationsTest.swift */; };
 		A5BB424F1E06574B0087362D /* ASTNodeTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB424E1E06574B0087362D /* ASTNodeTest.swift */; };
-		A5BB42511E066BA90087362D /* Expressions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB42501E066BA90087362D /* Expressions.swift */; };
-		A5BB42521E066BA90087362D /* Expressions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB42501E066BA90087362D /* Expressions.swift */; };
-		A5D6AFF01E04EA9D006F04FD /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D6AFEF1E04EA9D006F04FD /* main.swift */; };
-		A5D6AFF71E04F32A006F04FD /* Tokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D6AFF61E04F32A006F04FD /* Tokenizer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -37,19 +37,19 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		A584C5F91E054A800099C35B /* Combinations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Combinations.swift; sourceTree = "<group>"; };
-		A58B960E1E07A38B002919C6 /* Parser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
+		A56DBADF1E226E0E00971292 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = main.swift; path = SSCompiler/main.swift; sourceTree = SOURCE_ROOT; };
+		A56DBAE11E226E1E00971292 /* Tokenizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Tokenizer.swift; path = SSCompiler/Tokenizer.swift; sourceTree = SOURCE_ROOT; };
+		A56DBAE41E226E2700971292 /* ASTNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ASTNode.swift; path = SSCompiler/ASTNode.swift; sourceTree = SOURCE_ROOT; };
+		A56DBAE51E226E2700971292 /* Combinations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Combinations.swift; path = SSCompiler/Combinations.swift; sourceTree = SOURCE_ROOT; };
+		A56DBAE61E226E2700971292 /* Expressions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Expressions.swift; path = SSCompiler/Expressions.swift; sourceTree = SOURCE_ROOT; };
+		A56DBAE71E226E2700971292 /* Parsers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Parsers.swift; path = SSCompiler/Parsers.swift; sourceTree = SOURCE_ROOT; };
 		A58B96101E08E33C002919C6 /* ParserTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParserTest.swift; sourceTree = "<group>"; };
-		A5BB42361E0561F80087362D /* ASTNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASTNode.swift; sourceTree = "<group>"; };
 		A5BB423C1E05A3FE0087362D /* Test.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Test.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5BB42401E05A3FE0087362D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A5BB42451E06335D0087362D /* LexerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = LexerTest.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A5BB424C1E063D110087362D /* CombinationsTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CombinationsTest.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A5BB424E1E06574B0087362D /* ASTNodeTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASTNodeTest.swift; sourceTree = "<group>"; };
-		A5BB42501E066BA90087362D /* Expressions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Expressions.swift; sourceTree = "<group>"; };
-		A5D6AFEC1E04EA9D006F04FD /* Interpreter */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Interpreter; sourceTree = BUILT_PRODUCTS_DIR; };
-		A5D6AFEF1E04EA9D006F04FD /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
-		A5D6AFF61E04F32A006F04FD /* Tokenizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Tokenizer.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		A5D6AFEC1E04EA9D006F04FD /* SSCompiler */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SSCompiler; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,10 +70,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A56DBADE1E226DB900971292 /* Error */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Error;
+			sourceTree = "<group>";
+		};
 		A58B960C1E07A1F9002919C6 /* Tokenizer */ = {
 			isa = PBXGroup;
 			children = (
-				A5D6AFF61E04F32A006F04FD /* Tokenizer.swift */,
+				A56DBAE11E226E1E00971292 /* Tokenizer.swift */,
 			);
 			name = Tokenizer;
 			sourceTree = "<group>";
@@ -81,10 +88,10 @@
 		A58B960D1E07A200002919C6 /* Parser */ = {
 			isa = PBXGroup;
 			children = (
-				A5BB42361E0561F80087362D /* ASTNode.swift */,
-				A584C5F91E054A800099C35B /* Combinations.swift */,
-				A5BB42501E066BA90087362D /* Expressions.swift */,
-				A58B960E1E07A38B002919C6 /* Parser.swift */,
+				A56DBAE41E226E2700971292 /* ASTNode.swift */,
+				A56DBAE51E226E2700971292 /* Combinations.swift */,
+				A56DBAE71E226E2700971292 /* Parsers.swift */,
+				A56DBAE61E226E2700971292 /* Expressions.swift */,
 			);
 			name = Parser;
 			sourceTree = "<group>";
@@ -94,8 +101,8 @@
 			children = (
 				A5BB42401E05A3FE0087362D /* Info.plist */,
 				A5BB42451E06335D0087362D /* LexerTest.swift */,
-				A5BB424C1E063D110087362D /* CombinationsTest.swift */,
 				A5BB424E1E06574B0087362D /* ASTNodeTest.swift */,
+				A5BB424C1E063D110087362D /* CombinationsTest.swift */,
 				A58B96101E08E33C002919C6 /* ParserTest.swift */,
 			);
 			path = Test;
@@ -104,6 +111,7 @@
 		A5BB42441E05A53C0087362D /* Lib */ = {
 			isa = PBXGroup;
 			children = (
+				A56DBADE1E226DB900971292 /* Error */,
 				A58B960C1E07A1F9002919C6 /* Tokenizer */,
 				A58B960D1E07A200002919C6 /* Parser */,
 			);
@@ -113,7 +121,7 @@
 		A5D6AFE31E04EA9D006F04FD = {
 			isa = PBXGroup;
 			children = (
-				A5D6AFEE1E04EA9D006F04FD /* Interpreter */,
+				A5D6AFEE1E04EA9D006F04FD /* SSCompiler */,
 				A5BB423D1E05A3FE0087362D /* Test */,
 				A5D6AFED1E04EA9D006F04FD /* Products */,
 			);
@@ -122,18 +130,19 @@
 		A5D6AFED1E04EA9D006F04FD /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A5D6AFEC1E04EA9D006F04FD /* Interpreter */,
+				A5D6AFEC1E04EA9D006F04FD /* SSCompiler */,
 				A5BB423C1E05A3FE0087362D /* Test.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		A5D6AFEE1E04EA9D006F04FD /* Interpreter */ = {
+		A5D6AFEE1E04EA9D006F04FD /* SSCompiler */ = {
 			isa = PBXGroup;
 			children = (
+				A56DBADF1E226E0E00971292 /* main.swift */,
 				A5BB42441E05A53C0087362D /* Lib */,
-				A5D6AFEF1E04EA9D006F04FD /* main.swift */,
 			);
+			name = SSCompiler;
 			path = Interpreter;
 			sourceTree = "<group>";
 		};
@@ -157,9 +166,9 @@
 			productReference = A5BB423C1E05A3FE0087362D /* Test.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		A5D6AFEB1E04EA9D006F04FD /* Interpreter */ = {
+		A5D6AFEB1E04EA9D006F04FD /* SSCompiler */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A5D6AFF31E04EA9D006F04FD /* Build configuration list for PBXNativeTarget "Interpreter" */;
+			buildConfigurationList = A5D6AFF31E04EA9D006F04FD /* Build configuration list for PBXNativeTarget "SSCompiler" */;
 			buildPhases = (
 				A5D6AFE81E04EA9D006F04FD /* Sources */,
 				A5D6AFE91E04EA9D006F04FD /* Frameworks */,
@@ -169,9 +178,9 @@
 			);
 			dependencies = (
 			);
-			name = Interpreter;
+			name = SSCompiler;
 			productName = Interpreter;
-			productReference = A5D6AFEC1E04EA9D006F04FD /* Interpreter */;
+			productReference = A5D6AFEC1E04EA9D006F04FD /* SSCompiler */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -194,7 +203,7 @@
 					};
 				};
 			};
-			buildConfigurationList = A5D6AFE71E04EA9D006F04FD /* Build configuration list for PBXProject "Interpreter" */;
+			buildConfigurationList = A5D6AFE71E04EA9D006F04FD /* Build configuration list for PBXProject "SSCompiler" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -206,7 +215,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A5D6AFEB1E04EA9D006F04FD /* Interpreter */,
+				A5D6AFEB1E04EA9D006F04FD /* SSCompiler */,
 				A5BB423B1E05A3FE0087362D /* Test */,
 			);
 		};
@@ -227,15 +236,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A58B96131E08E350002919C6 /* Parser.swift in Sources */,
+				A56DBAEB1E226E2700971292 /* Combinations.swift in Sources */,
+				A56DBAE31E226E1E00971292 /* Tokenizer.swift in Sources */,
 				A58B96121E08E33C002919C6 /* ParserTest.swift in Sources */,
-				A5BB42491E06357D0087362D /* ASTNode.swift in Sources */,
-				A5BB42521E066BA90087362D /* Expressions.swift in Sources */,
+				A56DBAEF1E226E2700971292 /* Parsers.swift in Sources */,
+				A56DBAE91E226E2700971292 /* ASTNode.swift in Sources */,
 				A5BB424D1E063D110087362D /* CombinationsTest.swift in Sources */,
 				A5BB424F1E06574B0087362D /* ASTNodeTest.swift in Sources */,
-				A5BB424A1E06357D0087362D /* Tokenizer.swift in Sources */,
-				A5BB424B1E06357D0087362D /* Combinations.swift in Sources */,
 				A5BB42461E06335D0087362D /* LexerTest.swift in Sources */,
+				A56DBAED1E226E2700971292 /* Expressions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -243,12 +252,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A5D6AFF01E04EA9D006F04FD /* main.swift in Sources */,
-				A5BB42371E0561F80087362D /* ASTNode.swift in Sources */,
-				A58B960F1E07A38B002919C6 /* Parser.swift in Sources */,
-				A584C5FA1E054A800099C35B /* Combinations.swift in Sources */,
-				A5BB42511E066BA90087362D /* Expressions.swift in Sources */,
-				A5D6AFF71E04F32A006F04FD /* Tokenizer.swift in Sources */,
+				A56DBAE01E226E0E00971292 /* main.swift in Sources */,
+				A56DBAE81E226E2700971292 /* ASTNode.swift in Sources */,
+				A56DBAEE1E226E2700971292 /* Parsers.swift in Sources */,
+				A56DBAEA1E226E2700971292 /* Combinations.swift in Sources */,
+				A56DBAEC1E226E2700971292 /* Expressions.swift in Sources */,
+				A56DBAE21E226E1E00971292 /* Tokenizer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -399,7 +408,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A5D6AFE71E04EA9D006F04FD /* Build configuration list for PBXProject "Interpreter" */ = {
+		A5D6AFE71E04EA9D006F04FD /* Build configuration list for PBXProject "SSCompiler" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A5D6AFF11E04EA9D006F04FD /* Debug */,
@@ -408,7 +417,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A5D6AFF31E04EA9D006F04FD /* Build configuration list for PBXNativeTarget "Interpreter" */ = {
+		A5D6AFF31E04EA9D006F04FD /* Build configuration list for PBXNativeTarget "SSCompiler" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A5D6AFF41E04EA9D006F04FD /* Debug */,

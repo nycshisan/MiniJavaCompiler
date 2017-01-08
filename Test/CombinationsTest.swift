@@ -21,7 +21,7 @@ class CombinationsTest: XCTestCase {
         
     }
     
-    func assertParseResultEqual(material: String, parser: Parser, expected: ParseResult.Value?) {
+    func assertParseResultEqual(material: String, parser: Parser, expected: ParseResult.Node?) {
         let tokenizer = Tokenizer()
         let tokens = try! tokenizer.tokenize(material: material)
         let actual = PhraseParser(parser: parser).parse(tokens: tokens, pos: 0)
@@ -29,71 +29,71 @@ class CombinationsTest: XCTestCase {
             XCTAssertNil(actual)
         } else {
             XCTAssertNotNil(actual)
-            XCTAssertTrue(actual!.data == expected!)
+            XCTAssertTrue(actual!.node == expected!)
         }
     }
     
     func testTag() {
-        let expected = ParseResult.Value(value: "if")
+        let expected = ParseResult.Node(token: Token(text: "if"))
         assertParseResultEqual(material: "if", parser: TagParser(tag: .Reserved), expected: expected)
     }
     
     func testReserved() {
-        let expected = ParseResult.Value(value: "if")
+        let expected = ParseResult.Node(token: Token(text: "if"))
         assertParseResultEqual(material: "if", parser: ReservedParser(word: "if"), expected: expected)
     }
     
     func testConcat() {
-        let expected = ParseResult.Value(values: ["x", "y"])
+        let expected = ParseResult.Node(children: ["x", "y"])
         let parser = idParser + idParser
         assertParseResultEqual(material: "x y", parser: parser, expected: expected)
     }
     
     func testConcatAssociativity() {
-        let expected = ParseResult.Value(values: [ParseResult.Value(values: ["x", "y"])])
-        expected.append(element: ParseResult.Value(value: "z"))
+        let expected = ParseResult.Node(children: [ParseResult.Node(children: ["x", "y"])])
+        expected.append(element: ParseResult.Node(token: Token(text: "z")))
         let parser = idParser + idParser + idParser
         assertParseResultEqual(material: "x y z", parser: parser, expected: expected)
     }
     
     func testAlternate() {
         let parser = idParser | intParser | idParser
-        var expected = ParseResult.Value(value: "123")
+        var expected = ParseResult.Node(token: Token(text: "123"))
         assertParseResultEqual(material: "123", parser: parser, expected: expected)
-        expected = ParseResult.Value(value: "asd")
+        expected = ParseResult.Node(token: Token(text: "asd"))
         assertParseResultEqual(material: "asd", parser: parser, expected: expected)
     }
     
     func testOpt() {
         let parser = OptParser(parser: idParser)
-        let expected = ParseResult.Value(value: "asd")
+        let expected = ParseResult.Node(token: Token(text: "asd"))
         assertParseResultEqual(material: "asd", parser: parser, expected: expected)
         assertParseResultEqual(material: "123", parser: parser, expected: nil)
     }
     
     func testRep() {
         let parser = RepParser(parser: idParser)
-        let expected = ParseResult.Value(values: ["x", "y", "z"])
+        let expected = ParseResult.Node(children: ["x", "y", "z"])
         assertParseResultEqual(material: "x y z", parser: parser, expected: expected)
     }
     
     func testProcess() {
-        let parser = idParser ^ { ParseResult.Value(value: $0.value! + $0.value!) }
-        let expected = ParseResult.Value(value: "xx")
+        let parser = idParser ^ { ParseResult.Node(token: Token(text: $0.token!.text + $0.token!.text)) }
+        let expected = ParseResult.Node(token: Token(text: "xx"))
         assertParseResultEqual(material: "x", parser: parser, expected: expected)
     }
     
     func testLazy() {
         let parser = ~{ self.idParser }
-        let expected = ParseResult.Value(value: "xx")
+        let expected = ParseResult.Node(token: Token(text: "xx"))
         assertParseResultEqual(material: "xx", parser: parser, expected: expected)
     }
     
     func testExp() {
-        let parser = idParser * (ReservedParser(word: "+") ^ { return ASTNode(value: $0[0].value! + $0[2].value!) })
-        var expected = ParseResult.Value(value: "x")
+        let parser = idParser * (ReservedParser(word: "+") ^ { return ASTNode(token: Token(text: $0[0].token!.text + $0[2].token!.text)) })
+        var expected = ParseResult.Node(token: Token(text: "x"))
         assertParseResultEqual(material: "x", parser: parser, expected: expected)
-        expected = ParseResult.Value(value: "xyz")
+        expected = ParseResult.Node(token: Token(text: "xyz"))
         assertParseResultEqual(material: "x + y +z", parser: parser, expected: expected)
     }
     

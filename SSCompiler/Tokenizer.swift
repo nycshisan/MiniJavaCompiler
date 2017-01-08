@@ -11,7 +11,7 @@ import Foundation
 let InvalidCharacterError = 1
 
 /* Tokenizer Configs */
-let ReservedWords = ["print", "if", "else", "while"]
+let ReservedWords = ["print", "if", "else", "while", "var"]
 
 var ReservedRegExpPattern: String {
     return ReservedWords.map({ word in "(\(word))" }).joined(separator: "|")
@@ -21,11 +21,20 @@ let TokenExpressions: [(pattern: String, tag: TokenTag)] = [
     ("//.*$", .None), // Comments
     ("\\s+", .None), // Blanks
     ("[-+/*=><!&|%^~]+", .Reserved), // Operators
-    ("[(){}]", .Reserved), // Delimiters
+    ("[(){}:]", .Reserved), // Delimiters
     (ReservedRegExpPattern, .Reserved), // Reversed words
     ("-?[0-9]+", .Int), // Intergers
-    ("[A-Za-z][A-Za-z0-9]*", .Id) // Identifies
+    ("[A-Za-z_][A-Za-z0-9_]*", .Id) // Identifies
 ]
+
+enum TokenTag {
+    case Reserved
+    case Separator
+    case Int
+    case Id
+    case None
+}
+
 
 /* Token type */
 class Token {
@@ -40,14 +49,6 @@ class Token {
         self.range = range
         self.lineNum = lineNum
     }
-}
-
-enum TokenTag {
-    case Reserved
-    case Separator
-    case Int
-    case Id
-    case None
 }
 
 /* Tokenizer Class */
@@ -91,7 +92,7 @@ class Tokenizer {
             // Throw error or append tokens
             if match == nil {
                 let userInfo: [String : Any] = ["position": position, "lineNum": lineNum]
-                throw NSError(domain: "TokenizerErrorDomain", code: InvalidCharacterError, userInfo: userInfo)
+                throw NSError(domain: "SSCompilerErrorDomain", code: InvalidCharacterError, userInfo: userInfo)
             } else {
                 position += token.text.characters.count
                 if token.tag != .None {

@@ -10,14 +10,14 @@ import XCTest
 
 // Extensions for debugging
 extension ASTNode: Equatable {
-    convenience init(values: [String]) {
-        let children = values.map { value in ASTNode(value: value) }
-        self.init(values: children)
+    convenience init(children: [String]) {
+        let children = children.map { child in ASTNode(token: Token(text: child)) }
+        self.init(children: children)
     }
     
     static func == (lhs: ASTNode, rhs: ASTNode) -> Bool {
-        if lhs.value != nil && rhs.value != nil {
-            return lhs.value! == rhs.value!
+        if lhs.token != nil && rhs.token != nil {
+            return lhs.token!.text == rhs.token!.text
         }
         if lhs.children != nil && rhs.children != nil && lhs.children!.count == rhs.children!.count {
             for i in 0 ..< lhs.children!.count {
@@ -37,11 +37,11 @@ extension ASTNode: Equatable {
 
 class ASTNodeTest: XCTestCase {
     
-    var nestedArray: ASTNode!
+    var node: ASTNode!
     
     override func setUp() {
-        nestedArray = ASTNode(values: ["asd", "qwe"])
-        nestedArray.append(element: ASTNode(value: "zxc"))
+        node = ASTNode(children: ["asd", "qwe"])
+        node.append(element: ASTNode(token: Token(text: "zxc")))
     }
     
     override func tearDown() {
@@ -49,12 +49,12 @@ class ASTNodeTest: XCTestCase {
     }
     
     func testEqual() {
-        var expected = ASTNode(value: "zxc")
-        var actual = nestedArray[2]
+        var expected = ASTNode(token: Token(text: "zxc"))
+        var actual = node[2]
         XCTAssertTrue(actual == expected)
-        expected = nestedArray
-        actual = ASTNode(values: ["asd", "qwe"])
-        actual.append(element: ASTNode(value: "zxc"))
+        expected = node
+        actual = ASTNode(children: ["asd", "qwe"])
+        actual.append(element: ASTNode(token: Token(text: "zxc")))
         XCTAssertTrue(actual == expected)
     }
     

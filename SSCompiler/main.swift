@@ -75,4 +75,4 @@ env["!"] = {
 }
 
 let result = MainParser.parse(tokens: tokens, pos: 0)!
-let _ = result.data.eval(environment: &env)
+let _ = result.node.eval(environment: &env)
