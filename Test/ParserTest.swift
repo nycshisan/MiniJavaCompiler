@@ -144,23 +144,23 @@ class ParserTest: XCTestCase {
     }
     
     func testAssignStmt() {
-        assertParseResultEqual(material: "a = 2", parser: CompStmtParser, expected: [("a", 2)])
+        assertParseResultEqual(material: "a = 2;", parser: CompStmtParser, expected: [("a", 2)])
     }
     
     func testCompStmt() {
-        assertParseResultEqual(material: "a = 2\nc = 3", parser: CompStmtParser, expected: [("a", 2), ("c", 3)])
+        assertParseResultEqual(material: "a = 2;\nc = 3;", parser: CompStmtParser, expected: [("a", 2), ("c", 3)])
     }
     
     func testIfStmt() {
-        assertParseResultEqual(material: "if 5 > 3 { a = 3}", parser: CompStmtParser, expected: [("a", 3)])
+        assertParseResultEqual(material: "if (5 > 3) { a = 3;};", parser: CompStmtParser, expected: [("a", 3)])
     }
     
     func testIfElseStmt() {
-        assertParseResultEqual(material: "if 2 > 3 { a = 3} else { a = 5}", parser: CompStmtParser, expected: [("a", 5)])
+        assertParseResultEqual(material: "if (2 > 3) { a = 3 ;} else { a = 5;};", parser: CompStmtParser, expected: [("a", 5)])
     }
     
     func testWhileStmt() {
-        assertParseResultEqual(material: "a = 0\nwhile a < 2 {a = a + 2}", parser: CompStmtParser, expected: [("a", 2)])
+        assertParseResultEqual(material: "a = 0;\nwhile (a < 2) {a = a + 2;};", parser: CompStmtParser, expected: [("a", 2)])
     }
     
     func textDeclStmt() {

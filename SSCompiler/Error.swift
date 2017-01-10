@@ -10,6 +10,8 @@ import Foundation
 
 let UnknownError: Int32 = 555
 let InvalidCharacterError: Int32 = 1
+let ExpectedUnconformityError: Int32 = 2
+let TokenNotExhaustedError: Int32 = 3
 
 class SCError: Error {
     static var material: String = ""

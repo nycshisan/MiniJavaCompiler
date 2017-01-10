@@ -6,19 +6,28 @@
 //  Copyright © 2016年 Nycshisan. All rights reserved.
 //
 
+import Foundation
+
 /* Base Parser */
-protocol Parser {
+class Parser {
+    var errorInfo: String? = nil
     
-    func parse(tokens: [Token], pos: Int) -> ParseResult?
- 
+    func parse(tokens: [Token], pos: Int) -> ParseResult? { return nil }
+
+    func throwError(tokens: [Token], pos: Int) {
+        if errorInfo != nil && pos < tokens.count {
+            let error = SCError(code: ExpectedUnconformityError, info: errorInfo!, token: tokens[pos])
+            error.print()
+        }
+    }
 }
 
 /* Some sugar for parser combinations */
-func + (left: Parser, right: Parser) -> Parser {
+func + (left: Parser, right: Parser) -> ConcatParser {
     return ConcatParser(left: left, right: right)
 }
 
-func * (left: Parser, right: ProcessParser) -> Parser {
+func * (left: Parser, right: Parser) -> ExpParser {
     return ExpParser(parser: left, separator: right)
 }
 
@@ -28,6 +37,22 @@ func | (left: Parser, right: Parser) -> Parser {
 
 func ^ (left: Parser, right: @escaping ProcessParser.Processor) -> ProcessParser {
     return ProcessParser(parser: left, processor: right)
+}
+
+func % (left: ExpParser, right: @escaping ExpParser.Processor) -> ExpParser {
+    left.processor = right
+    return left
+}
+
+func % (left: ExpParser, right: (ExpParser.Initializer, ExpParser.Processor)) -> ExpParser {
+    left.initializer = right.0
+    left.processor = right.1
+    return left
+}
+
+func - (left: Parser, right: String) -> Parser {
+    left.errorInfo = right
+    return left
 }
 
 prefix func ~ (generator: @escaping () -> Parser) -> Parser {
@@ -44,10 +69,11 @@ class ReservedParser: Parser {
         self.word = word
     }
     
-    func parse(tokens: [Token], pos: Int) -> ParseResult? {
+    override func parse(tokens: [Token], pos: Int) -> ParseResult? {
         if pos < tokens.count && tokens[pos].text == word && tokens[pos].tag == tag {
             return ParseResult(token: tokens[pos], pos: pos + 1)
         } else {
+            throwError(tokens: tokens, pos: pos)
             return nil
         }
     }
@@ -61,10 +87,11 @@ class TagParser: Parser {
         self.tag = tag
     }
     
-    func parse(tokens: [Token], pos: Int) -> ParseResult? {
+    override func parse(tokens: [Token], pos: Int) -> ParseResult? {
         if pos < tokens.count && tokens[pos].tag == tag {
             return ParseResult(token: tokens[pos], pos: pos + 1)
         } else {
+            throwError(tokens: tokens, pos: pos)
             return nil
         }
     }
@@ -79,52 +106,66 @@ class ConcatParser: Parser {
         self.right = right
     }
     
-    func parse(tokens: [Token], pos: Int) -> ParseResult? {
+    override func parse(tokens: [Token], pos: Int) -> ParseResult? {
         if let leftResult = left.parse(tokens: tokens, pos: pos) {
             if let rightResult = right.parse(tokens: tokens, pos: leftResult.pos) {
                 return ParseResult(children: [leftResult.node, rightResult.node], pos: rightResult.pos)
+            } else {
+                throwError(tokens: tokens, pos: leftResult.pos)
+                return nil
             }
+        } else {
+            throwError(tokens: tokens, pos: pos)
+            return nil
         }
-        return nil
     }
     
 }
 
 class ExpParser: Parser {
     // Parser to parse a combination of tokens
+    typealias Processor = (ParseResult.Node, ParseResult.Node, ParseResult.Node) -> ParseResult.Node
+    /*
+     ExpParser.processor must accect an array like [partial, separator, new]
+     and return reduced result for next loop
+     */
+    typealias Initializer = ProcessParser.Processor
+    /*
+     ExpParser.initializer must accept the first parse result and return the first partial result
+     */
+    
     let parser: Parser
     let separator: Parser
-    let processor: ProcessParser.Processor
-    
-    init(parser: Parser, separator: ProcessParser) {
-        /*
-         ExpParser.processor must accect an array like [partialResult, separator, newResult]
-         and return reducedResult for next appending
-         */
-        self.parser = parser
-        self.separator = separator.parser
-        self.processor = separator.processor
+    var processor: Processor =  {
+        (partial: ParseResult.Node, separator: ParseResult.Node, new: ParseResult.Node) -> ParseResult.Node in
+        // Default processor, discard the separator's result and append the parse result to result array.
+        partial.append(new)
+        return partial
     }
-    
-    func prepareFirst(value: ParseResult.Node) -> ParseResult.Node {
-        // Convert the first parse result value to an array for appending
+    var initializer: Initializer = {
+        (value: ParseResult.Node) -> ParseResult.Node in
+        // Default initializer, convert the first parse result value to an array for appending
         return ParseResult.Node(children: [value])
     }
     
-    func parse(tokens: [Token], pos: Int) -> ParseResult? {
-        if let result = (parser ^ prepareFirst).parse(tokens: tokens, pos: pos) {
+    init(parser: Parser, separator: Parser) {
+        self.parser = parser
+        self.separator = separator
+    }
+    
+    override func parse(tokens: [Token], pos: Int) -> ParseResult? {
+        if let result = (parser ^ initializer).parse(tokens: tokens, pos: pos) {
             let nextParser = separator + parser
             
             while let nextResult = nextParser.parse(tokens: tokens, pos: result.pos) {
-                result.node.children! += nextResult.node.children! // Append new result
-                result.node = ParseResult.Node(children: [processor(result.node)])
+                let separatorResult = nextResult.node[0]
+                let parseResult = nextResult.node[1]
+                result.node = processor(result.node, separatorResult, parseResult)
                 result.pos = nextResult.pos
             }
-            
-            // Unwrap the result
-            result.node = result.node[0]
             return result
         } else {
+            throwError(tokens: tokens, pos: pos)
             return nil
         }
     }
@@ -139,11 +180,14 @@ class AlternateParser: Parser {
         self.right = right
     }
     
-    func parse(tokens: [Token], pos: Int) -> ParseResult? {
+    override func parse(tokens: [Token], pos: Int) -> ParseResult? {
         if let leftResult = left.parse(tokens: tokens, pos: pos) {
             return leftResult
         } else {
             let rightResult = right.parse(tokens: tokens, pos: pos)
+            if rightResult == nil {
+                throwError(tokens: tokens, pos: pos)
+            }
             return rightResult
         }
     }
@@ -161,11 +205,12 @@ class ProcessParser: Parser {
         self.processor = processor
     }
     
-    func parse(tokens: [Token], pos: Int) -> ParseResult? {
+    override func parse(tokens: [Token], pos: Int) -> ParseResult? {
         if let result = parser.parse(tokens: tokens, pos: pos) {
             result.node = processor(result.node)
             return result
         } else {
+            throwError(tokens: tokens, pos: pos)
             return nil
         }
     }
@@ -179,7 +224,7 @@ class OptParser: Parser {
         self.parser = parser
     }
     
-    func parse(tokens: [Token], pos: Int) -> ParseResult? {
+    override func parse(tokens: [Token], pos: Int) -> ParseResult? {
         if let result = parser.parse(tokens: tokens, pos: pos) {
             return result
         } else {
@@ -196,7 +241,7 @@ class RepParser: Parser {
         self.parser = parser
     }
     
-    func parse(tokens: [Token], pos: Int) -> ParseResult? {
+    override func parse(tokens: [Token], pos: Int) -> ParseResult? {
         var results: [ParseResult.Node] = []
         var crtPos = pos
         repeat {
@@ -219,9 +264,13 @@ class LazyParser: Parser {
         self.generator = generator
     }
     
-    func parse(tokens: [Token], pos: Int) -> ParseResult? {
+    override func parse(tokens: [Token], pos: Int) -> ParseResult? {
         let parser = generator()
-        return parser.parse(tokens: tokens, pos: pos)
+        let result = parser.parse(tokens: tokens, pos: pos)
+        if result == nil {
+            throwError(tokens: tokens, pos: pos)
+        }
+        return result
     }
 }
 
@@ -233,12 +282,15 @@ class PhraseParser: Parser {
         self.parser = parser
     }
     
-    func parse(tokens: [Token], pos: Int) -> ParseResult? {
+    override func parse(tokens: [Token], pos: Int) -> ParseResult? {
         if let result = parser.parse(tokens: tokens, pos: pos) {
             if result.pos == tokens.count {
                 return result
+            } else {
+                let error = SCError(code: TokenNotExhaustedError, info: "Tokens are not exhausted", token: tokens[result.pos])
+                error.print()
             }
         }
-        return nil
+        exit(TokenNotExhaustedError)
     }
 }

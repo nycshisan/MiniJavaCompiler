@@ -7,7 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A507C81A1E22741A00D60DB3 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = A507C8191E22741A00D60DB3 /* Error.swift */; };
+		A507C81E1E232F5D00D60DB3 /* TypeCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = A507C81D1E232F5D00D60DB3 /* TypeCheck.swift */; };
+		A507C81F1E232F5D00D60DB3 /* TypeCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = A507C81D1E232F5D00D60DB3 /* TypeCheck.swift */; };
+		A507C8211E232F6E00D60DB3 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = A507C8201E232F6E00D60DB3 /* Error.swift */; };
+		A507C8221E232F6E00D60DB3 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = A507C8201E232F6E00D60DB3 /* Error.swift */; };
 		A56DBAE01E226E0E00971292 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56DBADF1E226E0E00971292 /* main.swift */; };
 		A56DBAE21E226E1E00971292 /* Tokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56DBAE11E226E1E00971292 /* Tokenizer.swift */; };
 		A56DBAE31E226E1E00971292 /* Tokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56DBAE11E226E1E00971292 /* Tokenizer.swift */; };
@@ -38,7 +41,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		A507C8191E22741A00D60DB3 /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = SOURCE_ROOT; };
+		A507C81D1E232F5D00D60DB3 /* TypeCheck.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TypeCheck.swift; path = SSCompiler/TypeCheck.swift; sourceTree = SOURCE_ROOT; };
+		A507C8201E232F6E00D60DB3 /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Error.swift; path = SSCompiler/Error.swift; sourceTree = SOURCE_ROOT; };
 		A56DBADF1E226E0E00971292 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = main.swift; path = SSCompiler/main.swift; sourceTree = SOURCE_ROOT; };
 		A56DBAE11E226E1E00971292 /* Tokenizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Tokenizer.swift; path = SSCompiler/Tokenizer.swift; sourceTree = SOURCE_ROOT; };
 		A56DBAE41E226E2700971292 /* ASTNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ASTNode.swift; path = SSCompiler/ASTNode.swift; sourceTree = SOURCE_ROOT; };
@@ -72,10 +76,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A507C81C1E232D1300D60DB3 /* SemanticAnalysis */ = {
+			isa = PBXGroup;
+			children = (
+				A56DBAE61E226E2700971292 /* Expressions.swift */,
+				A507C81D1E232F5D00D60DB3 /* TypeCheck.swift */,
+			);
+			name = SemanticAnalysis;
+			sourceTree = "<group>";
+		};
 		A56DBADE1E226DB900971292 /* Error */ = {
 			isa = PBXGroup;
 			children = (
-				A507C8191E22741A00D60DB3 /* Error.swift */,
+				A507C8201E232F6E00D60DB3 /* Error.swift */,
 			);
 			name = Error;
 			sourceTree = "<group>";
@@ -94,7 +107,6 @@
 				A56DBAE41E226E2700971292 /* ASTNode.swift */,
 				A56DBAE51E226E2700971292 /* Combinations.swift */,
 				A56DBAE71E226E2700971292 /* Parsers.swift */,
-				A56DBAE61E226E2700971292 /* Expressions.swift */,
 			);
 			name = Parser;
 			sourceTree = "<group>";
@@ -117,6 +129,7 @@
 				A56DBADE1E226DB900971292 /* Error */,
 				A58B960C1E07A1F9002919C6 /* Tokenizer */,
 				A58B960D1E07A200002919C6 /* Parser */,
+				A507C81C1E232D1300D60DB3 /* SemanticAnalysis */,
 			);
 			name = Lib;
 			sourceTree = "<group>";
@@ -124,9 +137,9 @@
 		A5D6AFE31E04EA9D006F04FD = {
 			isa = PBXGroup;
 			children = (
+				A5D6AFED1E04EA9D006F04FD /* Products */,
 				A5D6AFEE1E04EA9D006F04FD /* SSCompiler */,
 				A5BB423D1E05A3FE0087362D /* Test */,
-				A5D6AFED1E04EA9D006F04FD /* Products */,
 			);
 			sourceTree = "<group>";
 		};
@@ -242,12 +255,14 @@
 				A56DBAEB1E226E2700971292 /* Combinations.swift in Sources */,
 				A56DBAE31E226E1E00971292 /* Tokenizer.swift in Sources */,
 				A58B96121E08E33C002919C6 /* ParserTest.swift in Sources */,
+				A507C8221E232F6E00D60DB3 /* Error.swift in Sources */,
 				A56DBAEF1E226E2700971292 /* Parsers.swift in Sources */,
 				A56DBAE91E226E2700971292 /* ASTNode.swift in Sources */,
 				A5BB424D1E063D110087362D /* CombinationsTest.swift in Sources */,
 				A5BB424F1E06574B0087362D /* ASTNodeTest.swift in Sources */,
 				A5BB42461E06335D0087362D /* LexerTest.swift in Sources */,
 				A56DBAED1E226E2700971292 /* Expressions.swift in Sources */,
+				A507C81F1E232F5D00D60DB3 /* TypeCheck.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -257,10 +272,11 @@
 			files = (
 				A56DBAE01E226E0E00971292 /* main.swift in Sources */,
 				A56DBAE81E226E2700971292 /* ASTNode.swift in Sources */,
+				A507C81E1E232F5D00D60DB3 /* TypeCheck.swift in Sources */,
 				A56DBAEE1E226E2700971292 /* Parsers.swift in Sources */,
 				A56DBAEA1E226E2700971292 /* Combinations.swift in Sources */,
 				A56DBAEC1E226E2700971292 /* Expressions.swift in Sources */,
-				A507C81A1E22741A00D60DB3 /* Error.swift in Sources */,
+				A507C8211E232F6E00D60DB3 /* Error.swift in Sources */,
 				A56DBAE21E226E1E00971292 /* Tokenizer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

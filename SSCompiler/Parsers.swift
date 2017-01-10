@@ -24,7 +24,7 @@ func PrecedenceExprParser(precedence: [(opers: [String], type: OperatorType)], t
     for (opers, type) in precedence {
         switch type {
         case .BiOp:
-            parser = parser * (OpsParser(opers: opers) ^ { BiOpExpr($0) })
+            parser = (parser * (OpsParser(opers: opers)) % ({ $0 }, { BiOpExpr(children: [$0, $1, $2]) }))
         case .PreOp:
             parser = OptParser(parser: OpsParser(opers: opers)) + parser ^ {
                 (oldValue: ParseResult.Node) -> ParseResult.Node in
@@ -49,7 +49,7 @@ let precedence: [([String], OperatorType)] = [
     (["&&", "||"], .BiOp)
 ]
 
-let lazyArithExprParser = PrecedenceExprParser(precedence: precedence, termParser: ArithTermParser)
+let lazyArithExprParser = PrecedenceExprParser(precedence: precedence, termParser: ArithTermParser) - "Expected arithmetic expression"
 
 func ArithExprParserGenerator() -> Parser {
     return lazyArithExprParser
@@ -61,14 +61,28 @@ let IntExprParser = TagParser(tag: .Int) ^ { IntExpr($0) }
 
 let VarExprParser = TagParser(tag: .Id) ^ { VarExpr($0) }
 
+let TypeExprParser = TagParser(tag: .Id) ^ { TypeExpr($0) }
+
 let ArithValueParser = IntExprParser | VarExprParser
 
 let ArithGroupParser = ReservedParser(word: "(") + ArithExprParser + ReservedParser(word: ")") ^ GroupProcessor
 
 let ArithTermParser = ArithValueParser | ArithGroupParser
 
+/* Functions Parser */
+let FuncDeclArgTermParser = VarExprParser + ReservedParser(word: ":") + TypeExprParser ^ {
+    (oldValue: ParseResult.Node) -> ParseResult.Node in
+    return ASTNode(children: [oldValue[0][0], oldValue[1]])
+}
+let FuncDeclArgsParser = FuncDeclArgTermParser * (ReservedParser(word: ",") ^ { $0 })
+let FuncDeclParser = 0
+
+let FuncCallArgTermParser = 0
+let FuncCallArgsParser = 0
+let FuncCallParser = 0
+
 /* Statements Parsers */
-let StmtParser = AssignStmtParser | IfStmtParser | WhileStmtParser | PrintStmtParser | DeclStmtParser
+let StmtParser = (AssignStmtParser | IfStmtParser | WhileStmtParser | PrintStmtParser | VarDeclStmtParser) + (ReservedParser(word: ";") - "Missing semicolon") ^ { return $0[0] }
 
 func CompStmtParserGenerator() -> Parser {
     return lazyCompStmtParser
@@ -85,7 +99,7 @@ let AssignStmtParser = TagParser(tag: .Id) + ReservedParser(word: "=") + ArithEx
     return AssignStmt(children: newValue)
 }
 
-let DeclStmtParser = ReservedParser(word: "let") + TagParser(tag: .Id) + ReservedParser(word: ":") + TagParser(tag: .Id) + OptParser(parser: ReservedParser(word: "=") + ArithExprParser) ^ {
+let VarDeclStmtParser = ReservedParser(word: "var") + VarExprParser + ReservedParser(word: ":") + TypeExprParser + OptParser(parser: ReservedParser(word: "=") + ArithExprParser) ^ {
     (oldValue: ParseResult.Node) -> ParseResult.Node in
     let id = oldValue[0][0][0][1], type = oldValue[0][1]
     var newValue = [id, type]
@@ -94,12 +108,12 @@ let DeclStmtParser = ReservedParser(word: "let") + TagParser(tag: .Id) + Reserve
         let initialExpr = initial[1]
         newValue.append(initialExpr)
     }
-    return DeclStmt(children: newValue)
+    return VarDeclStmt(children: newValue)
 }
 
 let BlockParser = ReservedParser(word: "{") + CompStmtParser + ReservedParser(word: "}") ^ GroupProcessor
 
-let IfStmtParser = ReservedParser(word: "if") + ArithExprParser + BlockParser + OptParser(parser: ReservedParser(word: "else") + BlockParser) ^ {
+let IfStmtParser = ReservedParser(word: "if") + ArithGroupParser + BlockParser + OptParser(parser: ReservedParser(word: "else") + BlockParser) ^ {
     (oldValue: ParseResult.Node) -> ParseResult.Node in
     let condition = oldValue[0][0][1]
     let trueStmts = oldValue[0][1]
@@ -112,7 +126,7 @@ let IfStmtParser = ReservedParser(word: "if") + ArithExprParser + BlockParser + 
     return IfStmt(children: newValue)
 }
 
-let WhileStmtParser = ReservedParser(word: "while") + ArithExprParser + BlockParser ^ {
+let WhileStmtParser = ReservedParser(word: "while") + ArithGroupParser + BlockParser ^ {
     (oldValue: ParseResult.Node) -> ParseResult.Node in
     let condition = oldValue[0][1]
     let stmts = oldValue[1]

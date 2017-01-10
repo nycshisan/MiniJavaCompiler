@@ -10,11 +10,11 @@ import Foundation
 
 let tokenizer = Tokenizer()
 
-let material = "i = 0" + "\n" +
-            "while !(i > 100) {" + "\n" +
-            "i = i + 1" + "\n" +
-            "}" + "\n" +
-            "print i"
+let material = "i = 0;" + "\n" +
+            "while (!(i > 100)) {" + "\n" +
+            "i = i + 1;" + "\n" +
+            "};" + "\n" +
+            "print i;"
 
 SCError.material = material
 let tokens = tokenizer.tokenizeCaughtError(material: material)

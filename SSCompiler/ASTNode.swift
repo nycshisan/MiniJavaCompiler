@@ -52,7 +52,7 @@ class ASTNode: Expr {
         }
     }
     
-    func append(element: ASTNode) {
+    func append(_ element: ASTNode) {
         children!.append(element)
     }
     

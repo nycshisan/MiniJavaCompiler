@@ -31,6 +31,14 @@ class VarExpr: ASTNode {
     }
 }
 
+class TypeExpr: ASTNode {
+    // Expressions for types
+    override func eval(environment: inout [String : Any]) -> Any? {
+        // todo
+        return nil
+    }
+}
+
 class BiOpExpr: ASTNode {
     // Expressions for binary operators
     override func eval(environment: inout [String : Any]) -> Any? {
@@ -74,7 +82,7 @@ class AssignStmt: ASTNode {
     }
 }
 
-class DeclStmt: ASTNode {
+class VarDeclStmt: ASTNode {
     // Statements for declaring a new variable
     override func eval(environment: inout [String : Any]) -> Any? {
         // todo

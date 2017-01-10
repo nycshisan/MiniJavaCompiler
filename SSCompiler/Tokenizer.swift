@@ -19,7 +19,7 @@ let TokenExpressions: [(pattern: String, tag: TokenTag)] = [
     ("//.*$", .None), // Comments
     ("\\s+", .None), // Blanks
     ("[-+/*=><!&|%^~]+", .Reserved), // Operators
-    ("[(){}:]", .Reserved), // Delimiters
+    ("[(){}:,;\"]", .Reserved), // Delimiters
     (ReservedRegExpPattern, .Reserved), // Reversed words
     ("-?[0-9]+", .Int), // Intergers
     ("[A-Za-z_][A-Za-z0-9_]*", .Id) // Identifies

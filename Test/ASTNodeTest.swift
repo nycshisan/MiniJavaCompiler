@@ -15,6 +15,11 @@ extension ASTNode: Equatable {
         self.init(children: children)
     }
     
+    convenience init(token: String) {
+        let token = Token(text: token)
+        self.init(token: token)
+    }
+    
     static func == (lhs: ASTNode, rhs: ASTNode) -> Bool {
         if lhs.token != nil && rhs.token != nil {
             return lhs.token!.text == rhs.token!.text
@@ -41,7 +46,7 @@ class ASTNodeTest: XCTestCase {
     
     override func setUp() {
         node = ASTNode(children: ["asd", "qwe"])
-        node.append(element: ASTNode(token: Token(text: "zxc")))
+        node.append(ASTNode(token: Token(text: "zxc")))
     }
     
     override func tearDown() {
@@ -54,8 +59,7 @@ class ASTNodeTest: XCTestCase {
         XCTAssertTrue(actual == expected)
         expected = node
         actual = ASTNode(children: ["asd", "qwe"])
-        actual.append(element: ASTNode(token: Token(text: "zxc")))
+        actual.append(ASTNode(token: Token(text: "zxc")))
         XCTAssertTrue(actual == expected)
-    }
-    
+    }    
 }

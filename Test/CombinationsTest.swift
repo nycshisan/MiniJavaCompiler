@@ -24,9 +24,9 @@ class CombinationsTest: XCTestCase {
     func assertParseResultEqual(material: String, parser: Parser, expected: ParseResult.Node?) {
         let tokenizer = Tokenizer()
         let tokens = try! tokenizer.tokenize(material: material)
-        let actual = PhraseParser(parser: parser).parse(tokens: tokens, pos: 0)
+        let actual = parser.parse(tokens: tokens, pos: 0)
         if expected == nil {
-            XCTAssertNil(actual)
+            XCTAssertTrue(actual!.node.type == .None)
         } else {
             XCTAssertNotNil(actual)
             XCTAssertTrue(actual!.node == expected!)
@@ -51,8 +51,8 @@ class CombinationsTest: XCTestCase {
     
     func testConcatAssociativity() {
         let expected = ParseResult.Node(children: [ParseResult.Node(children: ["x", "y"])])
-        expected.append(element: ParseResult.Node(token: Token(text: "z")))
-        let parser = idParser + idParser + idParser
+        expected.append(ParseResult.Node(token: Token(text: "z")))
+        let parser = (idParser + idParser) as Parser + idParser // I do not know why here the concatenation of the first two idParser must be cast to Parser, one of me and Swift compiler must be stupid
         assertParseResultEqual(material: "x y z", parser: parser, expected: expected)
     }
     
@@ -90,11 +90,18 @@ class CombinationsTest: XCTestCase {
     }
     
     func testExp() {
-        let parser = idParser * (ReservedParser(word: "+") ^ { return ASTNode(token: Token(text: $0[0].token!.text + $0[2].token!.text)) })
+        let parser = idParser * ReservedParser(word: "+")
+        var expected = ParseResult.Node(children: ["x"])
+        assertParseResultEqual(material: "x", parser: parser, expected: expected)
+        expected = ParseResult.Node(children: ["x", "y", "z"])
+        assertParseResultEqual(material: "x + y +z", parser: parser, expected: expected)
+    }
+    
+    func testCustomExp() {
+        let parser = (idParser * (ReservedParser(word: "+")) % ({ return $0 }, { return ASTNode(token: Token(text: $0.token!.text + $2.token!.text)) }))
         var expected = ParseResult.Node(token: Token(text: "x"))
         assertParseResultEqual(material: "x", parser: parser, expected: expected)
         expected = ParseResult.Node(token: Token(text: "xyz"))
         assertParseResultEqual(material: "x + y +z", parser: parser, expected: expected)
     }
-    
 }
