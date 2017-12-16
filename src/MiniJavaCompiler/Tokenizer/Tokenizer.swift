@@ -1,6 +1,6 @@
 //
 //  Tokenizer.swift
-//  Interpreter
+//  MiniJavaCompiler
 //
 //  Created by Nycshisan on 2016/12/17.
 //  Copyright © 2016年 Nycshisan. All rights reserved.
@@ -70,7 +70,7 @@ class Tokenizer {
         var lineNum = 0
         var position = 0
         
-        let characters = material.characters
+        let characters = material
         var range = NSMakeRange(0, characters.count)
         while range.location < characters.count {
             var matched = false
@@ -80,7 +80,7 @@ class Tokenizer {
                     let text = (material as NSString).substring(with: match.range)
                     let token = Token(text: text, tag: tag, position: position, lineNum: lineNum)
                     
-                    position += token.text.characters.count
+                    position += token.text.count
                     if token.tag != .None {
                         tokens.append(token)
                     }
