@@ -9,7 +9,11 @@
 import Foundation
 
 /* Tokenizer Configs */
-let ReservedWords = ["print", "if", "else", "while", "var"]
+let ReservedWords = [
+                    "class", "public", "static", "void", "main", "String", "extends",
+                    "return", "int", "boolean", "if", "else", "while", "System.out.println",
+                    "length", "true", "false", "this", "new"
+                    ]
 
 var ReservedRegExpPattern: String {
     return ReservedWords.map({ word in "(\(word))" }).joined(separator: "|")
@@ -18,7 +22,7 @@ var ReservedRegExpPattern: String {
 let TokenExpressions: [(pattern: String, tag: TokenTag)] = [
     ("//.*$", .None), // Comments
     ("\\s+", .None), // Blanks
-    ("[-+/*=><!&|%^~]+", .Reserved), // Operators
+    ("[-+/*=><!&|%^~\\[\\]\\.]+", .Reserved), // Operators
     ("[(){}:,;\"]", .Reserved), // Delimiters
     (ReservedRegExpPattern, .Reserved), // Reversed words
     ("-?[0-9]+", .Int), // Intergers
@@ -60,7 +64,8 @@ class Tokenizer {
                 let re = try NSRegularExpression(pattern: expr.pattern, options: NSRegularExpression.Options.anchorsMatchLines)
                 tokenRegExprs.append((re, expr.tag))
             } catch {
-                debugPrint("Internal Error: ", error)
+                print("Internal Error of Tokenizer Regular Expressions: \(error.localizedDescription)")
+                exit(EXIT_FAILURE)
             }
         }
     }
@@ -80,15 +85,16 @@ class Tokenizer {
                     let text = (material as NSString).substring(with: match.range)
                     let token = Token(text: text, tag: tag, position: position, lineNum: lineNum)
                     
-                    position += token.text.count
                     if token.tag != .None {
                         tokens.append(token)
                     }
+                    
                     let newLineNum = token.text.count("\n")
                     if newLineNum > 0 {
                         lineNum += newLineNum
                         position = 0
                     }
+                    position += token.text.count - newLineNum
                     range.location += match.range.length
                     range.length -= match.range.length
                     

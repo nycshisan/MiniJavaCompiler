@@ -1,6 +1,6 @@
 //
 //  Error.swift
-//  SSCompiler
+//  MiniJavaCompiler
 //
 //  Created by Nycshisan on 2017/1/8.
 //  Copyright © 2017年 Nycshisan. All rights reserved.

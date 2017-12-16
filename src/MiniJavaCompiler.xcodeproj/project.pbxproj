@@ -92,7 +92,6 @@
 				A50266341FE51A160016D847 /* main.swift */,
 				A50266461FE51DB70016D847 /* Misc */,
 				A50266501FE533C90016D847 /* Tokenizer */,
-				A502662D1FE51A160016D847 /* Error.swift */,
 				A502662E1FE51A160016D847 /* Expressions.swift */,
 				A502662F1FE51A160016D847 /* TypeCheck.swift */,
 				A50266311FE51A160016D847 /* ASTNode.swift */,
@@ -107,6 +106,7 @@
 			children = (
 				A50266471FE51E0A0016D847 /* CommandLineArgumentsParser.swift */,
 				A502664A1FE530180016D847 /* File.swift */,
+				A502662D1FE51A160016D847 /* Error.swift */,
 			);
 			path = Misc;
 			sourceTree = "<group>";

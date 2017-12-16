@@ -78,10 +78,15 @@ import Foundation
 //let result = MainParser.parse(tokens: tokens, pos: 0)!
 //let _ = result.node.eval(environment: &env)
 
+// read file and setup context
 var commandLineArguments = CommandLineArguments()
 commandLineArguments.parseArgs()
-let text = openFile(commandLineArguments.filename!)
-if (text == nil) {
+guard let text = openFile(commandLineArguments.filename!) else {
     exit(EXIT_FAILURE)
 }
-print(text)
+SCError.material = text
+
+
+let tokenizer = Tokenizer()
+let tokens = tokenizer.tokenizeCaughtError(material: text)
+print(tokens)
