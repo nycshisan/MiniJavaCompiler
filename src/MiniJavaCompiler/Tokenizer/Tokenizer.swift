@@ -22,10 +22,10 @@ var ReservedRegExpPattern: String {
 let TokenExpressions: [(pattern: String, tag: TokenTag)] = [
     ("//.*$", .None), // Comments
     ("\\s+", .None), // Blanks
-    ("[-+/*=><!&|%^~\\[\\]\\.]+", .Reserved), // Operators
-    ("[(){}:,;\"]", .Reserved), // Delimiters
-    (ReservedRegExpPattern, .Reserved), // Reversed words
     ("-?[0-9]+", .Int), // Intergers
+    ("[+\\-*<&!?=\\[\\]\\.]+", .Reserved), // Operators
+    ("[(){},;]", .Reserved), // Delimiters
+    (ReservedRegExpPattern, .Reserved), // Reversed words
     ("[A-Za-z_][A-Za-z0-9_]*", .Id) // Identifies
 ]
 
@@ -75,9 +75,8 @@ class Tokenizer {
         var lineNum = 0
         var position = 0
         
-        let characters = material
-        var range = NSMakeRange(0, characters.count)
-        while range.location < characters.count {
+        var range = NSMakeRange(0, material.count)
+        while range.location < material.count {
             var matched = false
             for (re, tag) in tokenRegExprs {
                 if let match = re.firstMatch(in: material, options: .anchored, range: range) {

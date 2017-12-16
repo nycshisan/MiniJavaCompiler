@@ -1,6 +1,6 @@
 //
 //  Parser.swift
-//  Interpreter
+//  MiniJavaCompiler
 //
 //  Created by Nycshisan on 2016/12/19.
 //  Copyright © 2016年 Nycshisan. All rights reserved.

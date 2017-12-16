@@ -1,6 +1,6 @@
 //
 //  Combinations.swift
-//  Interpreter
+//  MiniJavaCompiler
 //
 //  Created by Nycshisan on 2016/12/17.
 //  Copyright © 2016年 Nycshisan. All rights reserved.
