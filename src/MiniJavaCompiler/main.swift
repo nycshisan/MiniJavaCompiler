@@ -89,4 +89,3 @@ SCError.material = text
 
 let tokenizer = Tokenizer()
 let tokens = tokenizer.tokenizeCaughtError(material: text)
-print(tokens)
