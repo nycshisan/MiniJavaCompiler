@@ -25,6 +25,8 @@
 		A50266521FE571E80016D847 /* ASTNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50266311FE51A160016D847 /* ASTNode.swift */; };
 		A50266531FE624160016D847 /* Combinators.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50266321FE51A160016D847 /* Combinators.swift */; };
 		A50266541FE624180016D847 /* Parsers.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50266331FE51A160016D847 /* Parsers.swift */; };
+		A50266571FE62BD30016D847 /* SemanticActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50266561FE62BD30016D847 /* SemanticActions.swift */; };
+		A50266581FE62BD30016D847 /* SemanticActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50266561FE62BD30016D847 /* SemanticActions.swift */; };
 		A58B96121E08E33C002919C6 /* ParserTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A58B96101E08E33C002919C6 /* ParserTest.swift */; };
 		A5BB42461E06335D0087362D /* LexerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB42451E06335D0087362D /* LexerTest.swift */; };
 		A5BB424D1E063D110087362D /* CombinationsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB424C1E063D110087362D /* CombinationsTest.swift */; };
@@ -55,6 +57,7 @@
 		A50266471FE51E0A0016D847 /* CommandLineArgumentsParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandLineArgumentsParser.swift; sourceTree = "<group>"; };
 		A502664A1FE530180016D847 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		A502664E1FE5330D0016D847 /* factorial.java */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.java; path = factorial.java; sourceTree = "<group>"; };
+		A50266561FE62BD30016D847 /* SemanticActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SemanticActions.swift; sourceTree = "<group>"; };
 		A58B96101E08E33C002919C6 /* ParserTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParserTest.swift; sourceTree = "<group>"; };
 		A5BB423C1E05A3FE0087362D /* Test.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Test.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5BB42401E05A3FE0087362D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -126,6 +129,7 @@
 				A50266311FE51A160016D847 /* ASTNode.swift */,
 				A50266321FE51A160016D847 /* Combinators.swift */,
 				A50266331FE51A160016D847 /* Parsers.swift */,
+				A50266561FE62BD30016D847 /* SemanticActions.swift */,
 			);
 			path = Parser;
 			sourceTree = "<group>";
@@ -253,6 +257,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A502663E1FE51A160016D847 /* ASTNode.swift in Sources */,
+				A50266581FE62BD30016D847 /* SemanticActions.swift in Sources */,
 				A58B96121E08E33C002919C6 /* ParserTest.swift in Sources */,
 				A50266441FE51A160016D847 /* main.swift in Sources */,
 				A50266421FE51A160016D847 /* Parsers.swift in Sources */,
@@ -272,6 +277,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A50266571FE62BD30016D847 /* SemanticActions.swift in Sources */,
 				A50266541FE624180016D847 /* Parsers.swift in Sources */,
 				A50266531FE624160016D847 /* Combinators.swift in Sources */,
 				A50266521FE571E80016D847 /* ASTNode.swift in Sources */,

@@ -6,32 +6,34 @@
 //  Copyright © 2016年 Nycshisan. All rights reserved.
 //
 
-///* Arithmetic Expressions Parsers */
+/* Arithmetic Expressions Parsers */
 //enum OperatorType {
 //    case BiOp
 //    case PreOp
 //}
 //
-//func OpsParser(opers: [String]) -> Parser {
+//func OpsParser(opers: [String]) -> BaseParser {
 //    var parsers = opers.map({ ReservedParser(word: $0) })
 //    let initial = parsers.removeFirst()
 //    let parser = parsers.reduce(initial) { $0 | $1 }
 //    return parser
 //}
 //
-//func PrecedenceExprParser(precedence: [(opers: [String], type: OperatorType)], termParser: Parser) -> Parser {
+//func PrecedenceExprParser(precedence: [(opers: [String], type: OperatorType)], termParser: BaseParser) -> BaseParser {
 //    var parser = termParser
 //    for (opers, type) in precedence {
 //        switch type {
 //        case .BiOp:
-//            parser = (parser * (OpsParser(opers: opers)) % ({ $0 }, { BiOpExpr(children: [$0, $1, $2]) }))
+//            print(123)
+////            parser = (parser * (OpsParser(opers: opers)) % ({ $0 }, { BiOpExpr(children: [$0, $1, $2]) }))
 //        case .PreOp:
 //            parser = OptParser(parser: OpsParser(opers: opers)) + parser ^ {
 //                (oldValue: ParseResult) -> ParseResult in
 //                if oldValue[0].token == nil {
 //                    return oldValue[1]
 //                } else {
-//                    return PreOpExpr(oldValue)
+//                    return oldValue
+////                    return PreOpExpr(oldValue)
 //                }
 //            }
 //        }
@@ -51,24 +53,26 @@
 //
 //let lazyArithExprParser = PrecedenceExprParser(precedence: precedence, termParser: ArithTermParser) - "Expected arithmetic expression"
 //
-//func ArithExprParserGenerator() -> Parser {
+//func ArithExprParserGenerator() -> BaseParser {
 //    return lazyArithExprParser
 //}
-//
+
 //let ArithExprParser = ~ArithExprParserGenerator
-//
-//let IntExprParser = TagParser(tag: .Int) ^ { IntExpr($0) }
-//
-//let VarExprParser = TagParser(tag: .Id) ^ { VarExpr($0) }
-//
-//let TypeExprParser = TagParser(tag: .Id) ^ { TypeExpr($0) }
-//
+
+let IntLiteralParser = TagParser(tag: .Int) ^ { IntLiteralAction($0) }
+
+let IdentifierParser = TagParser(tag: .Id) ^ { IdentifierAction($0) }
+
+
+
+let TypeExprParser = TagParser(tag: .Id) ^ { TypeExpr($0) }
+
 //let ArithValueParser = IntExprParser | VarExprParser
 //
 //let ArithGroupParser = ReservedParser(word: "(") + ArithExprParser + ReservedParser(word: ")") ^ GroupProcessor
 //
 //let ArithTermParser = ArithValueParser | ArithGroupParser
-//
+
 ///* Functions Parser */
 //let FuncDeclArgTermParser = VarExprParser + ReservedParser(word: ":") + TypeExprParser ^ {
 //    (oldValue: ParseResult) -> ParseResult in

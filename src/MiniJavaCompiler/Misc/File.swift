@@ -3,7 +3,7 @@
 //  MiniJavaCompiler
 //
 //  Created by Nycshisan on 2017/12/16.
-//  Copyright © 2017年 陈十三. All rights reserved.
+//  Copyright © 2017年 Nycshisan. All rights reserved.
 //
 
 import Foundation

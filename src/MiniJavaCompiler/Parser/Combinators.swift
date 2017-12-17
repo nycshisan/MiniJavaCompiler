@@ -11,8 +11,10 @@ import Foundation
 typealias ParseResult = BaseASTNode
 
 /* Base Grammar Parser */
-class Parser {
-    func parse(tokens: inout [Token], pos: Int) -> ParseResult? { return nil }
+class BaseParser {
+    func parse(tokens: inout [Token], pos: Int) -> ParseResult? {
+        fatalError("virtual parse function is invoked")
+    }
 
     func throwError(tokens: inout [Token], pos: Int, errorInfo: String) {
         if pos < tokens.count {
@@ -23,19 +25,19 @@ class Parser {
 }
 
 /* Some sugar for parser combinators */
-func + (left: Parser, right: Parser) -> ConcatParser {
+func + (left: BaseParser, right: BaseParser) -> ConcatParser {
     return ConcatParser(left: left, right: right)
 }
 
-func * (left: Parser, right: Parser) -> ExpParser {
+func * (left: BaseParser, right: BaseParser) -> ExpParser {
     return ExpParser(parser: left, separator: right)
 }
 
-func | (left: Parser, right: Parser) -> Parser {
+func | (left: BaseParser, right: BaseParser) -> BaseParser {
     return AlternateParser(left: left, right: right)
 }
 
-func ^ (left: Parser, right: @escaping ProcessParser.Processor) -> ProcessParser {
+func ^ (left: BaseParser, right: @escaping ProcessParser.Processor) -> ProcessParser {
     return ProcessParser(parser: left, processor: right)
 }
 
@@ -50,12 +52,12 @@ func % (left: ExpParser, right: (ExpParser.Initializer, ExpParser.Processor)) ->
     return left
 }
 
-prefix func ~ (generator: @escaping () -> Parser) -> Parser {
+prefix func ~ (generator: @escaping () -> BaseParser) -> BaseParser {
     return LazyParser(generator: generator)
 }
 
 /* Combinators */
-class ReservedParser: Parser {
+class ReservedParser: BaseParser {
     // Parser for reversed words
     let word: String
     let tag: TokenTag
@@ -67,14 +69,16 @@ class ReservedParser: Parser {
     
     override func parse(tokens: inout [Token], pos: Int) -> ParseResult? {
         if pos < tokens.count && tokens[pos].text == word && tokens[pos].tag == tag {
-            return ParseResult(token: tokens[pos], pos: pos + 1)
+            let result = ParseResult(token: tokens[pos], pos: pos + 1)
+            result.desc = tokens[pos].text
+            return result
         } else {
             return nil
         }
     }
 }
 
-class TagParser: Parser {
+class TagParser: BaseParser {
     // Parser for tokens of specific tags
     let tag: TokenTag
     
@@ -84,18 +88,20 @@ class TagParser: Parser {
     
     override func parse(tokens: inout [Token], pos: Int) -> ParseResult? {
         if pos < tokens.count && tokens[pos].tag == tag {
-            return ParseResult(token: tokens[pos], pos: pos + 1)
+            let result = ParseResult(token: tokens[pos], pos: pos + 1)
+            result.desc = tokens[pos].text
+            return result
         } else {
             return nil
         }
     }
 }
 
-class ConcatParser: Parser {
+class ConcatParser: BaseParser {
     // Parser to concatenate two component parser, which should all be parsed successfully
-    let left, right: Parser
+    let left, right: BaseParser
     
-    init(left: Parser, right: Parser) {
+    init(left: BaseParser, right: BaseParser) {
         self.left = left
         self.right = right
     }
@@ -114,7 +120,7 @@ class ConcatParser: Parser {
     
 }
 
-class ExpParser: Parser {
+class ExpParser: BaseParser {
     // Parser to parse a combinator of tokens
     typealias Processor = (ParseResult, ParseResult, ParseResult) -> ParseResult
     /*
@@ -126,8 +132,8 @@ class ExpParser: Parser {
      ExpParser.initializer must accept the first parse result and return the first partial result
      */
     
-    let parser: Parser
-    let separator: Parser
+    let parser: BaseParser
+    let separator: BaseParser
     var processor: Processor =  {
         (partial: ParseResult, separator: ParseResult, new: ParseResult) -> ParseResult in
         // Default processor, discard the separator's result and append the parse result to result array.
@@ -140,19 +146,19 @@ class ExpParser: Parser {
         return ParseResult(children: [value], pos: value.pos)
     }
     
-    init(parser: Parser, separator: Parser) {
+    init(parser: BaseParser, separator: BaseParser) {
         self.parser = parser
         self.separator = separator
     }
     
     override func parse(tokens: inout [Token], pos: Int) -> ParseResult? {
-        if let result = (parser ^ initializer).parse(tokens: &tokens, pos: pos) {
+        if var result = (parser ^ initializer).parse(tokens: &tokens, pos: pos) {
             let nextParser = separator + parser
             
             while let nextResult = nextParser.parse(tokens: &tokens, pos: result.pos) {
                 let separatorResult = nextResult[0]
                 let parseResult = nextResult[1]
-                result.node = processor(result.node, separatorResult, parseResult)
+                result = processor(result, separatorResult, parseResult)
                 result.pos = nextResult.pos
             }
             return result
@@ -162,11 +168,11 @@ class ExpParser: Parser {
     }
 }
 
-class AlternateParser: Parser {
+class AlternateParser: BaseParser {
     // Parser to concatenate two component parser, and the first parser will cover the second one if the former succeeds
-    let left, right: Parser
+    let left, right: BaseParser
     
-    init(left: Parser, right: Parser) {
+    init(left: BaseParser, right: BaseParser) {
         self.left = left
         self.right = right
     }
@@ -183,21 +189,21 @@ class AlternateParser: Parser {
     }
 }
 
-class ProcessParser: Parser {
-    // Wrapped parser which will return a processed result after successfully parsing
+class ProcessParser: BaseParser {
+    // Wrapped parser which will return a processed result after successfully parsing, similar to semantic actions
     typealias Processor = (ParseResult) -> ParseResult
     
-    let parser: Parser
+    let parser: BaseParser
     let processor: Processor
     
-    init(parser: Parser, processor: @escaping Processor) {
+    init(parser: BaseParser, processor: @escaping Processor) {
         self.parser = parser
         self.processor = processor
     }
     
     override func parse(tokens: inout [Token], pos: Int) -> ParseResult? {
-        if let result = parser.parse(tokens: &tokens, pos: pos) {
-            result = processor(result.node)
+        if var result = parser.parse(tokens: &tokens, pos: pos) {
+            result = processor(result)
             return result
         } else {
             return nil
@@ -205,11 +211,11 @@ class ProcessParser: Parser {
     }
 }
 
-class OptParser: Parser {
+class OptParser: BaseParser {
     // Optional parser which will cause no effect when parsing failing
-    let parser: Parser
+    let parser: BaseParser
     
-    init(parser: Parser) {
+    init(parser: BaseParser) {
         self.parser = parser
     }
     
@@ -222,11 +228,11 @@ class OptParser: Parser {
     }
 }
 
-class RepParser: Parser {
+class RepParser: BaseParser {
     // Greed parser which will parse as much tokens as possible repeatedly
-    let parser: Parser
+    let parser: BaseParser
     
-    init(parser: Parser) {
+    init(parser: BaseParser) {
         self.parser = parser
     }
     
@@ -235,7 +241,7 @@ class RepParser: Parser {
         var crtPos = pos
         repeat {
             if let result = parser.parse(tokens: &tokens, pos: crtPos) {
-                results.append(result.node)
+                results.append(result)
                 crtPos = result.pos
             } else {
                 break
@@ -245,11 +251,11 @@ class RepParser: Parser {
     }
 }
 
-class LazyParser: Parser {
+class LazyParser: BaseParser {
     // Lazy parser to avoid infinite recursion
-    let generator: () -> Parser
+    let generator: () -> BaseParser
     
-    init(generator: @escaping () -> Parser) {
+    init(generator: @escaping () -> BaseParser) {
         self.generator = generator
     }
     
@@ -262,11 +268,11 @@ class LazyParser: Parser {
     }
 }
 
-class PhraseParser: Parser {
+class PhraseParser: BaseParser {
     // Parser which will only succeed when exhaust all tokens
-    let parser: Parser
+    let parser: BaseParser
     
-    init(parser: Parser) {
+    init(parser: BaseParser) {
         self.parser = parser
     }
     
