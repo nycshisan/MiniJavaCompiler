@@ -11,7 +11,7 @@ import Foundation
 typealias SemanticAction = (BaseASTNode) -> BaseASTNode
 
 class SemanticActionFactory {
-    // Construct an action that simply make the input node to be wrapped(fathered) by a null node
+    // Construct an action that makes the input node to be wrapped(fathered) by a null node
     // whose description is the construction argument
     static func constructWrapAction(description: String) -> SemanticAction {
         let action: SemanticAction = {
@@ -23,31 +23,39 @@ class SemanticActionFactory {
         return action
     }
     
-    // Construct an action that flatten the input subtree to be the children of a null node
-    // whose description is the construction argument
-    static func constructFlattenAction(description: String) -> SemanticAction {
+    // Construct an action that simply fill the description
+    static func constructDescAction(description: String) -> SemanticAction {
         let action: SemanticAction = {
             (inNode: BaseASTNode) in
-            let outNode = BaseASTNode(children: inNode.flatten(), pos: inNode.pos)
-            outNode.desc = description
-            return outNode
+            inNode.desc = description
+            return inNode
         }
         return action
     }
 }
 
-let NewObjectAction: SemanticAction = {
+let GroupAction: SemanticAction = {
     (inNode: BaseASTNode) in
-    let identifierNode = inNode[0][1]
-    let outNode = BaseASTNode(children: [identifierNode], pos: inNode.pos)
-    outNode.desc = "New Object"
+    let innerNode = inNode[1]
+    let outNode = BaseASTNode(children: [innerNode], pos: inNode.pos)
+    outNode.desc = "Group"
     return outNode
 }
 
-let GroupAction: SemanticAction = {
+let BiOpAction: SemanticAction = {
     (inNode: BaseASTNode) in
+    fatalError()
     let innerNode = inNode[0][1]
     let outNode = BaseASTNode(children: [innerNode], pos: inNode.pos)
     outNode.desc = "Group"
     return outNode
+}
+
+let PreOpAction: SemanticAction = {
+    (inNode: BaseASTNode) in
+    guard let operToken = inNode[0].token else {
+        return inNode[1]
+    }
+    inNode.desc = "Prefix Operator \(operToken.text)"
+    return inNode
 }

@@ -41,18 +41,4 @@ class BaseASTNode {
         assert(children != nil)
         children!.append(element)
     }
-    
-    func flatten() -> [BaseASTNode] {
-        if self.token != nil {
-            return [self]
-        } else if self.children != nil {
-            var result: [BaseASTNode] = []
-            for child in self.children! {
-                result += child.flatten()
-            }
-            return result
-        } else {
-            fatalError("unknown type AST node")
-        }
-    }
 }

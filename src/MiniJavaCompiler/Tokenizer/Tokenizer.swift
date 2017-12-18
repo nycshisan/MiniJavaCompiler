@@ -110,7 +110,7 @@ class Tokenizer {
         return tokens
     }
     
-    func tokenizeCaughtError(material: String) -> [Token] {
+    func forceTokenize(material: String) -> [Token] {
         do { return try tokenize(material: material) } catch let error as SCError {
             error.print()
             exit(error.code)

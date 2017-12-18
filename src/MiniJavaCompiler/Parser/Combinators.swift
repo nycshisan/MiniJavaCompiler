@@ -106,14 +106,28 @@ class ConcatParser: BaseParser {
         self.right = right
     }
     
-    override func parse(tokens: inout [Token], pos: Int) -> ParseResult? {
-        if let leftResult = left.parse(tokens: &tokens, pos: pos) {
-            if let rightResult = right.parse(tokens: &tokens, pos: leftResult.pos) {
-                return ParseResult(children: [leftResult, rightResult], pos: rightResult.pos)
+    func flattenParse(parser: BaseParser, tokens: inout [Token], pos: Int) -> [ParseResult]? {
+        if let result = parser.parse(tokens: &tokens, pos: pos) {
+            if parser is ConcatParser && result.children != nil {
+                return result.children
             } else {
+                return [result]
+            }
+        } else {
+            return nil
+        }
+    }
+    
+    override func parse(tokens: inout [Token], pos: Int) -> ParseResult? {
+        if let leftResult = flattenParse(parser: left, tokens: &tokens, pos: pos) {
+            if let rightResult = flattenParse(parser: right, tokens: &tokens, pos: leftResult.last!.pos) {
+                return ParseResult(children: leftResult + rightResult, pos: rightResult.last!.pos)
+            } else {
+                // right parser error
                 return nil
             }
         } else {
+            // left parser error
             return nil
         }
     }
