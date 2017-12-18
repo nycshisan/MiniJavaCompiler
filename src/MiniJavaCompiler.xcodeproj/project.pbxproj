@@ -26,6 +26,7 @@
 		A50266541FE624180016D847 /* Parsers.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50266331FE51A160016D847 /* Parsers.swift */; };
 		A50266571FE62BD30016D847 /* SemanticActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50266561FE62BD30016D847 /* SemanticActions.swift */; };
 		A50266581FE62BD30016D847 /* SemanticActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50266561FE62BD30016D847 /* SemanticActions.swift */; };
+		A54933341FE796D500A4A8DD /* CombinationsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB424C1E063D110087362D /* CombinationsTest.swift */; };
 		A5BB42461E06335D0087362D /* TokenizerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB42451E06335D0087362D /* TokenizerTest.swift */; };
 /* End PBXBuildFile section */
 
@@ -248,6 +249,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A54933341FE796D500A4A8DD /* CombinationsTest.swift in Sources */,
 				A502663E1FE51A160016D847 /* ASTNode.swift in Sources */,
 				A50266581FE62BD30016D847 /* SemanticActions.swift in Sources */,
 				A50266441FE51A160016D847 /* main.swift in Sources */,
