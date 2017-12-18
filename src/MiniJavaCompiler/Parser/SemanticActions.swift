@@ -36,6 +36,18 @@ class SemanticActionFactory {
     }
 }
 
-let IntLiteralAction = SemanticActionFactory.constructWrapAction(description: "IntLiteral")
+let NewObjectAction: SemanticAction = {
+    (inNode: BaseASTNode) in
+    let identifierNode = inNode[0][1]
+    let outNode = BaseASTNode(children: [identifierNode], pos: inNode.pos)
+    outNode.desc = "New Object"
+    return outNode
+}
 
-let IdentifierAction = SemanticActionFactory.constructWrapAction(description: "Identifier")
+let GroupAction: SemanticAction = {
+    (inNode: BaseASTNode) in
+    let innerNode = inNode[0][1]
+    let outNode = BaseASTNode(children: [innerNode], pos: inNode.pos)
+    outNode.desc = "Group"
+    return outNode
+}

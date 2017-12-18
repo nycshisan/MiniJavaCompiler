@@ -6,72 +6,74 @@
 //  Copyright © 2016年 Nycshisan. All rights reserved.
 //
 
-/* Arithmetic Expressions Parsers */
-//enum OperatorType {
-//    case BiOp
-//    case PreOp
-//}
-//
-//func OpsParser(opers: [String]) -> BaseParser {
-//    var parsers = opers.map({ ReservedParser(word: $0) })
-//    let initial = parsers.removeFirst()
-//    let parser = parsers.reduce(initial) { $0 | $1 }
-//    return parser
-//}
-//
-//func PrecedenceExprParser(precedence: [(opers: [String], type: OperatorType)], termParser: BaseParser) -> BaseParser {
-//    var parser = termParser
-//    for (opers, type) in precedence {
-//        switch type {
-//        case .BiOp:
-//            print(123)
-////            parser = (parser * (OpsParser(opers: opers)) % ({ $0 }, { BiOpExpr(children: [$0, $1, $2]) }))
-//        case .PreOp:
-//            parser = OptParser(parser: OpsParser(opers: opers)) + parser ^ {
-//                (oldValue: ParseResult) -> ParseResult in
-//                if oldValue[0].token == nil {
-//                    return oldValue[1]
-//                } else {
-//                    return oldValue
-////                    return PreOpExpr(oldValue)
-//                }
-//            }
-//        }
-//    }
-//    return parser
-//}
-//
-//let GroupProcessor: (ParseResult) -> ParseResult = { $0[0][1] }
-//
-//let precedence: [([String], OperatorType)] = [
-//    (["!"], .PreOp),
-//    (["*", "/"], .BiOp),
-//    (["+", "-"], .BiOp),
-//    ([">", ">=", ">", "<=", "<", "==", "!="], .BiOp),
-//    (["&&", "||"], .BiOp)
-//]
-//
-//let lazyArithExprParser = PrecedenceExprParser(precedence: precedence, termParser: ArithTermParser) - "Expected arithmetic expression"
-//
-//func ArithExprParserGenerator() -> BaseParser {
-//    return lazyArithExprParser
-//}
+/* Type Parsers */
+let IntArrayTypeParser = ReservedParser("int") + ReservedParser("(") + ReservedParser(")") ^ SemanticActionFactory.constructFlattenAction(description: "New Int Array")
 
-//let ArithExprParser = ~ArithExprParserGenerator
+let TypeParser = IntArrayTypeParser | ReservedParser("boolean") | ReservedParser("int") | IdentifierParser ^ SemanticActionFactory.constructWrapAction(description: "Type")
 
-let IntLiteralParser = TagParser(tag: .Int) ^ { IntLiteralAction($0) }
+/* Expression Parsers */
+// Priority Support
+enum OperatorType {
+    case BiOp
+    case PreOp
+}
 
-let IdentifierParser = TagParser(tag: .Id) ^ { IdentifierAction($0) }
+func OpsParser(opers: [String]) -> BaseParser {
+    var parsers = opers.map({ ReservedParser($0) })
+    let initial = parsers.removeFirst()
+    let parser = parsers.reduce(initial) { $0 | $1 }
+    return parser
+}
 
+func PrecedenceExprParser(precedence: [(opers: [String], type: OperatorType)], termParser: BaseParser) -> BaseParser {
+    var parser = termParser
+    for (opers, type) in precedence {
+        switch type {
+        case .BiOp:
+            print(123)
+        //            parser = (parser * (OpsParser(opers: opers)) % ({ $0 }, { BiOpExpr(children: [$0, $1, $2]) }))
+        case .PreOp:
+            parser = OptParser(parser: OpsParser(opers: opers)) + parser ^ {
+                (oldValue: ParseResult) -> ParseResult in
+                if oldValue[0].token == nil {
+                    return oldValue[1]
+                } else {
+                    return oldValue
+                    //                    return PreOpExpr(oldValue)
+                }
+            }
+        }
+    }
+    return parser
+}
 
+let precedence: [([String], OperatorType)] = [
+    (["!"], .PreOp),
+    (["*", "/"], .BiOp),
+    (["+", "-"], .BiOp),
+    ([">", ">=", ">", "<=", "<", "==", "!="], .BiOp),
+    (["&&", "||"], .BiOp)
+]
 
-let TypeExprParser = TagParser(tag: .Id) ^ { TypeExpr($0) }
+let lazyExprParser = PrecedenceExprParser(precedence: precedence, termParser: ExprTermParser)
 
-//let ArithValueParser = IntExprParser | VarExprParser
-//
-//let ArithGroupParser = ReservedParser(word: "(") + ArithExprParser + ReservedParser(word: ")") ^ GroupProcessor
-//
-//let ArithTermParser = ArithValueParser | ArithGroupParser
+func ExprParserGenerator() -> BaseParser {
+    return lazyExprParser
+}
+
+let ExprParser = ~ExprParserGenerator
+
+// Parser for non-left-recursion expressions
+let IntLiteralParser = TagParser(.Int) ^ SemanticActionFactory.constructWrapAction(description: "Int Literal")
+let NewIntArrayParser = ReservedParser("new")
+let NewObjectParser = ReservedParser("new") + IdentifierParser + ReservedParser("(") + ReservedParser(")") ^ NewObjectAction
+
+let ExprValueParser = IntLiteralParser | ReservedParser("true") | ReservedParser("false") | IdentifierParser | ReservedParser("this") | NewIntArrayParser | NewObjectParser
+let ExprGroupParser = ReservedParser("(") + ExprParser + ReservedParser(")") ^ GroupAction
+let ExprTermParser = ExprValueParser | ExprGroupParser
+
+/* Identifier Parser */
+let IdentifierParser = TagParser(.Id) ^ SemanticActionFactory.constructWrapAction(description: "Identifier")
 
 ///* Functions Parser */
 //let FuncDeclArgTermParser = VarExprParser + ReservedParser(word: ":") + TypeExprParser ^ {

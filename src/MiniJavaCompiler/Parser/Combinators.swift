@@ -62,7 +62,7 @@ class ReservedParser: BaseParser {
     let word: String
     let tag: TokenTag
     
-    init(word: String, tag: TokenTag = .Reserved) {
+    init(_ word: String, tag: TokenTag = .Reserved) {
         self.word = word
         self.tag = tag
     }
@@ -82,7 +82,7 @@ class TagParser: BaseParser {
     // Parser for tokens of specific tags
     let tag: TokenTag
     
-    init(tag: TokenTag) {
+    init(_ tag: TokenTag) {
         self.tag = tag
     }
     
