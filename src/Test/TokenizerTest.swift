@@ -51,5 +51,4 @@ class TokenizerTest: XCTestCase {
             assertTokenEqual(material: oper, expected: [Token(text: oper, tag: .Reserved)])
         }
     }
-    
 }

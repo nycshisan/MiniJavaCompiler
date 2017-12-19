@@ -9,9 +9,9 @@
 /* Main Parsers */
 let GoalParser = PhraseParser(parser: MainClassParser + RepParser(parser: ClassDeclarationParser))
 
-let MainClassParser = ReservedParser("class") + IdentifierParser + ReservedParser("{") + ReservedParser("public") + ReservedParser("static") + ReservedParser("void") + ReservedParser("main") + ReservedParser("(") + ReservedParser("String") + ReservedParser("[") + ReservedParser("]") + IdentifierParser + ReservedParser(")") + StmtParser + ReservedParser("}")
+let MainClassParser = ReservedParser("class") + IdentifierParser + ReservedParser("{") + ReservedParser("public") + ReservedParser("static") + ReservedParser("void") + ReservedParser("main") + ReservedParser("(") + ReservedParser("String") + ReservedParser("[") + ReservedParser("]") + IdentifierParser + ReservedParser(")") + StmtParser + ReservedParser("}") ^ SemanticActionFactory.constructWrapAction(description: "Main Class")
 
-let ClassDeclarationParser = ReservedParser("class") + IdentifierParser + OptParser(parser: ReservedParser("extends") + IdentifierParser) + ReservedParser("{") + RepParser(parser: VarDeclarationParser) + RepParser(parser: MethodDeclarationParser) + ReservedParser("}")
+let ClassDeclarationParser = ReservedParser("class") + IdentifierParser + OptParser(parser: ReservedParser("extends") + IdentifierParser) + ReservedParser("{") + RepParser(parser: VarDeclarationParser) + RepParser(parser: MethodDeclarationParser) + ReservedParser("}") ^ SemanticActionFactory.constructWrapAction(description: "Class Declaration")
 
 let VarDeclarationParser = TypeParser + IdentifierParser + ReservedParser(";") ^ SemanticActionFactory.constructWrapAction(description: "Variable Declaration")
 
@@ -47,8 +47,9 @@ let StmtParser = ~StmtParserGenerator
 /* Expression Parsers */
 // Priority Support
 enum OperatorType {
-    // Hold expansibility for postfix operators
+    case PreOp
     case BiOp
+    // Hold expansibility for postfix operators
     case PostOp
 }
 func OpsParser(opers: [String]) -> BaseParser {
@@ -61,8 +62,17 @@ func constructPrecedenceExprParser(precedence: [(opers: [String], type: Operator
     var parser = termParser
     for (opers, type) in precedence {
         switch type {
+        case .PreOp:
+            parser = OptParser(parser: OpsParser(opers: opers)) + parser ^ PreOpAction
+            (parser as! SemanticActionParser).force = true
         case .BiOp:
-            parser = (parser * (OpsParser(opers: opers)) % ({ $0 }, { BaseASTNode(children: [$0, $1, $2], pos: $2.pos) })) ^ SemanticActionFactory.constructWrapAction(description: "Binary Operator")
+            parser = (parser * (OpsParser(opers: opers)) % {
+                (partial: ParseResult, separator: ParseResult, new: ParseResult) -> ParseResult in
+                partial.append(separator)
+                partial.append(new)
+                return partial
+            }) ^ BiOpAction
+            (parser as! SemanticActionParser).force = true
         case .PostOp:
             fatalError()
         }
@@ -70,6 +80,7 @@ func constructPrecedenceExprParser(precedence: [(opers: [String], type: Operator
     return parser
 }
 let Precedence: [([String], OperatorType)] = [
+    (["!"], .PreOp),
     (["*", "/"], .BiOp),
     (["+", "-"], .BiOp),
     ([">", ">=", ">", "<=", "<", "==", "!="], .BiOp),
@@ -92,14 +103,11 @@ let NewIntArrayParser = ReservedParser("new") + ReservedParser("int") + Reserved
 
 let NewObjectParser = ReservedParser("new") + IdentifierParser + ReservedParser("(") + ReservedParser(")") ^ SemanticActionFactory.constructWrapAction(description: "New Object")
 
-let PreOps = ["!"]
-let PreOpParser = OptParser(parser: OpsParser(opers: PreOps)) + ExprParser ^ SemanticActionFactory.constructWrapAction(description: "Prefix Operator")
-
 let ExprValueParser = IntLiteralParser | ReservedParser("true") | ReservedParser("false") | IdentifierParser | ReservedParser("this") | NewIntArrayParser | NewObjectParser
 
 let ExprGroupParser = ReservedParser("(") + ExprParser + ReservedParser(")") ^ GroupAction
 
-let ExprTermParser = ExprValueParser | ExprGroupParser | PreOpParser
+let ExprTermParser = ExprValueParser | ExprGroupParser
 
 // Lazy Expression Parser
 func ExprParserGenerator() -> BaseParser {

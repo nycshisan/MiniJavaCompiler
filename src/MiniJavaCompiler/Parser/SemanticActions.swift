@@ -44,11 +44,11 @@ let GroupAction: SemanticAction = {
 
 let BiOpAction: SemanticAction = {
     (inNode: BaseASTNode) in
-    fatalError()
-    let innerNode = inNode[0][1]
-    let outNode = BaseASTNode(children: [innerNode], pos: inNode.pos)
-    outNode.desc = "Group"
-    return outNode
+    if inNode.children!.count == 1 {
+        return inNode[0]
+    }
+    inNode.desc = "Binary Operator"
+    return inNode
 }
 
 let PreOpAction: SemanticAction = {

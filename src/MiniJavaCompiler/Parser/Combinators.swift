@@ -37,8 +37,8 @@ func | (left: BaseParser, right: BaseParser) -> BaseParser {
     return AlternateParser(left: left, right: right)
 }
 
-func ^ (left: BaseParser, right: @escaping ProcessParser.Processor) -> ProcessParser {
-    return ProcessParser(parser: left, processor: right)
+func ^ (left: BaseParser, right: @escaping SemanticAction) -> SemanticActionParser {
+    return SemanticActionParser(parser: left, processor: right)
 }
 
 func % (left: ExpParser, right: @escaping ExpParser.Processor) -> ExpParser {
@@ -141,7 +141,7 @@ class ExpParser: BaseParser {
      ExpParser.processor must accect an array like [partial, separator, new]
      and return reduced result for next loop
      */
-    typealias Initializer = ProcessParser.Processor
+    typealias Initializer = (ParseResult) -> ParseResult
     /*
      ExpParser.initializer must accept the first parse result and return the first partial result
      */
@@ -166,7 +166,8 @@ class ExpParser: BaseParser {
     }
     
     override func parse(tokens: inout [Token], pos: Int) -> ParseResult? {
-        if var result = (parser ^ initializer).parse(tokens: &tokens, pos: pos) {
+        if var result = parser.parse(tokens: &tokens, pos: pos) {
+            result = initializer(result)
             let nextParser = separator + parser
             
             while let nextResult = nextParser.parse(tokens: &tokens, pos: result.pos) {
@@ -203,21 +204,25 @@ class AlternateParser: BaseParser {
     }
 }
 
-class ProcessParser: BaseParser {
+class SemanticActionParser: BaseParser {
+    static var DEBUG_DISABLE_SEMANTIC_ACTION = false
+    
     // Wrapped parser which will return a processed result after successfully parsing, similar to semantic actions
-    typealias Processor = (ParseResult) -> ParseResult
-    
     let parser: BaseParser
-    let processor: Processor
+    let action: SemanticAction
+    var force: Bool = false // A workaround for debugging arithmetic expressions
     
-    init(parser: BaseParser, processor: @escaping Processor) {
+    init(parser: BaseParser, processor: @escaping SemanticAction) {
         self.parser = parser
-        self.processor = processor
+        self.action = processor
     }
     
     override func parse(tokens: inout [Token], pos: Int) -> ParseResult? {
         if var result = parser.parse(tokens: &tokens, pos: pos) {
-            result = processor(result)
+            if !force && SemanticActionParser.DEBUG_DISABLE_SEMANTIC_ACTION {
+                return result
+            }
+            result = action(result)
             return result
         } else {
             return nil

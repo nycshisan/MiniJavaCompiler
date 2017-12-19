@@ -89,7 +89,7 @@ class CombinationsTest: XCTestCase {
         assertParseResultEqual(material: "x y z", parser: parser, expected: expected)
     }
 
-    func testProcess() {
+    func testAction() {
         let parser = idParser ^ { ParseResult(token: $0.token!.text + $0.token!.text) }
         let expected = ParseResult(token: "xx")
         assertParseResultEqual(material: "x", parser: parser, expected: expected)
