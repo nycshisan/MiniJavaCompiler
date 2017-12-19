@@ -78,6 +78,12 @@ import Foundation
 //let result = MainParser.parse(tokens: tokens, pos: 0)!
 //let _ = result.node.eval(environment: &env)
 
+
+let n = SerializableASTNode(title: "123", children: [])
+n.visualizeToHTML(filename: "test.html")
+exit(3)
+
+
 // read file and setup context
 var commandLineArguments = CommandLineArguments()
 commandLineArguments.parseArgs()
