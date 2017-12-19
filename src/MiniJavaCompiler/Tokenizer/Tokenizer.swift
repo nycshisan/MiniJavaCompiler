@@ -23,8 +23,8 @@ let TokenExpressions: [(pattern: String, tag: TokenTag)] = [
     ("//.*$", .None), // Comments
     ("\\s+", .None), // Blanks
     ("-?[0-9]+", .Int), // Intergers
-    ("[+\\-*<&!=\\[\\]\\.]+", .Reserved), // Operators
-    ("[(){},;]", .Reserved), // Delimiters
+    ("[+\\-*<&!=\\.]+", .Reserved), // Operators
+    ("[(){},;\\[\\]]", .Reserved), // Delimiters
     (ReservedRegExpPattern, .Reserved), // Reversed words
     ("[A-Za-z_][A-Za-z0-9_]*", .Id) // Identifies
 ]

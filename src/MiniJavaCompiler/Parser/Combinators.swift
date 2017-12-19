@@ -41,6 +41,13 @@ func ^ (left: BaseParser, right: @escaping SemanticAction) -> SemanticActionPars
     return SemanticActionParser(parser: left, processor: right)
 }
 
+infix operator ^!: AdditionPrecedence
+func ^! (left: BaseParser, right: @escaping SemanticAction) -> SemanticActionParser {
+    let parser = SemanticActionParser(parser: left, processor: right)
+    parser.force = true
+    return parser
+}
+
 func % (left: ExpParser, right: @escaping ExpParser.Processor) -> ExpParser {
     left.processor = right
     return left
@@ -168,17 +175,17 @@ class ExpParser: BaseParser {
     override func parse(tokens: inout [Token], pos: Int) -> ParseResult? {
         if var result = parser.parse(tokens: &tokens, pos: pos) {
             result = initializer(result)
-            let nextParser = separator + parser
+            let nextParser = separator + (parser ^! { $0 })
             
             while let nextResult = nextParser.parse(tokens: &tokens, pos: result.pos) {
                 let separatorResult = nextResult[0]
-                let parseResult = nextResult[1]
-                result = processor(result, separatorResult, parseResult)
+                let newResult = nextResult[1]
+                result = processor(result, separatorResult, newResult)
                 result.pos = nextResult.pos
             }
             return result
         } else {
-            return nil
+            return ParseResult(children: [] , pos: pos)
         }
     }
 }
@@ -304,6 +311,6 @@ class PhraseParser: BaseParser {
                 error.print()
             }
         }
-        exit(TokenNotExhaustedError)
+        return nil
     }
 }

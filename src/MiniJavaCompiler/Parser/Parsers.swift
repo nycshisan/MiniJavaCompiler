@@ -15,26 +15,26 @@ let ClassDeclarationParser = ReservedParser("class") + IdentifierParser + OptPar
 
 let VarDeclarationParser = TypeParser + IdentifierParser + ReservedParser(";") ^ SemanticActionFactory.constructWrapAction(description: "Variable Declaration")
 
-let MethodDeclarationArgumentsParser = TypeParser
-let MethodDeclarationParser = ReservedParser("public") + TypeParser + IdentifierParser + ReservedParser("(") + MethodDeclarationArgumentsParser + ReservedParser(")") + ReservedParser("{") + RepParser(parser: VarDeclarationParser) + RepParser(parser: StmtParser) + ReservedParser("}") ^ SemanticActionFactory.constructWrapAction(description: "Method Declaration")
+let MethodDeclarationArgumentsParser = (TypeParser + IdentifierParser) * ReservedParser(",")
+let MethodDeclarationParser = ReservedParser("public") + TypeParser + IdentifierParser + ((ReservedParser("(") + MethodDeclarationArgumentsParser + ReservedParser(")")) ^! GroupAction) + ReservedParser("{") + RepParser(parser: VarDeclarationParser) + RepParser(parser: StmtParser) + ReservedParser("}") ^ SemanticActionFactory.constructWrapAction(description: "Method Declaration")
 
 /* Type Parsers */
-let IntArrayTypeParser = ReservedParser("int") + ReservedParser("(") + ReservedParser(")") ^ SemanticActionFactory.constructDescAction(description: "New Int Array")
+let IntArrayTypeParser = ReservedParser("int") + ReservedParser("[") + ReservedParser("]") ^ SemanticActionFactory.constructDescAction(description: "New Int Array")
 
 let TypeParser = IntArrayTypeParser | ReservedParser("boolean") | ReservedParser("int") | IdentifierParser ^ SemanticActionFactory.constructWrapAction(description: "Type")
 
 /* Statement Parsers */
-let CompoundStmtParser = ReservedParser("{") + RepParser(parser: StmtParser) + ReservedParser("}") ^ GroupAction
+let CompoundStmtParser = ReservedParser("{") + RepParser(parser: StmtParser) + ReservedParser("}") ^! GroupAction
 
-let IfStmtParser = ReservedParser("if") + ReservedParser("(") + ExprParser + ReservedParser(")") + StmtParser + ReservedParser("else") + StmtParser ^ SemanticActionFactory.constructWrapAction(description: "If Statement")
+let IfStmtParser = ReservedParser("if") + ExprGroupParser + StmtParser + ReservedParser("else") + StmtParser ^ SemanticActionFactory.constructWrapAction(description: "If Statement")
 
-let WhileStmtParser = ReservedParser("while") + ReservedParser("(") + ExprParser + ReservedParser(")") + StmtParser ^ SemanticActionFactory.constructWrapAction(description: "While Statement")
+let WhileStmtParser = ReservedParser("while") + ExprGroupParser + StmtParser ^ SemanticActionFactory.constructWrapAction(description: "While Statement")
 
-let PrintStmtParser = ReservedParser("System.out.println") + ReservedParser("(") + ExprParser + ReservedParser(")") + ReservedParser(";") ^ SemanticActionFactory.constructWrapAction(description: "Print Statement")
+let PrintStmtParser = ReservedParser("System.out.println") + ExprGroupParser + ReservedParser(";") ^ SemanticActionFactory.constructWrapAction(description: "Print Statement")
 
-let AssignmentStmtParser = IdentifierParser + ReservedParser("=") + ExprParser ^ SemanticActionFactory.constructWrapAction(description: "Assignment Statement")
+let AssignmentStmtParser = IdentifierParser + ReservedParser("=") + ExprParser + ReservedParser(";") ^ SemanticActionFactory.constructWrapAction(description: "Assignment Statement")
 
-let SubscriptAssignmentStmtParser = IdentifierParser + ReservedParser("[") + ExprParser + ReservedParser("]") + ReservedParser("=") + ExprParser ^ SemanticActionFactory.constructWrapAction(description: "Subscript Assignment Statement")
+let SubscriptAssignmentStmtParser = IdentifierParser + ReservedParser("[") + ExprParser + ReservedParser("]") + ReservedParser("=") + ExprParser + ReservedParser(";") ^ SemanticActionFactory.constructWrapAction(description: "Subscript Assignment Statement")
 
 let ReturnStmtParser = ReservedParser("return") + ExprParser + ReservedParser(";") ^ SemanticActionFactory.constructWrapAction(description: "Return Statement")
 
@@ -63,16 +63,14 @@ func constructPrecedenceExprParser(precedence: [(opers: [String], type: Operator
     for (opers, type) in precedence {
         switch type {
         case .PreOp:
-            parser = OptParser(parser: OpsParser(opers: opers)) + parser ^ PreOpAction
-            (parser as! SemanticActionParser).force = true
+            parser = OptParser(parser: OpsParser(opers: opers)) + parser ^! PreOpAction
         case .BiOp:
             parser = (parser * (OpsParser(opers: opers)) % {
                 (partial: ParseResult, separator: ParseResult, new: ParseResult) -> ParseResult in
                 partial.append(separator)
                 partial.append(new)
                 return partial
-            }) ^ BiOpAction
-            (parser as! SemanticActionParser).force = true
+            }) ^! BiOpAction
         case .PostOp:
             fatalError()
         }
@@ -105,13 +103,13 @@ let NewObjectParser = ReservedParser("new") + IdentifierParser + ReservedParser(
 
 let ExprValueParser = IntLiteralParser | ReservedParser("true") | ReservedParser("false") | IdentifierParser | ReservedParser("this") | NewIntArrayParser | NewObjectParser
 
-let ExprGroupParser = ReservedParser("(") + ExprParser + ReservedParser(")") ^ GroupAction
+let ExprGroupParser = ReservedParser("(") + ExprParser + ReservedParser(")") ^! GroupAction
 
 let ExprTermParser = ExprValueParser | ExprGroupParser
 
 // Lazy Expression Parser
 func ExprParserGenerator() -> BaseParser {
-    return PrecedenceExprParser | SubscriptExprParser | LengthExprParser | MethodInvocationExprParser ^ SemanticActionFactory.constructWrapAction(description: "Expression")
+    return SubscriptExprParser | LengthExprParser | MethodInvocationExprParser | PrecedenceExprParser ^ SemanticActionFactory.constructWrapAction(description: "Expression")
 }
 let ExprParser = ~ExprParserGenerator
 

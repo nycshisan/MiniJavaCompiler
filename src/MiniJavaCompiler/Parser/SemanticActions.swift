@@ -36,9 +36,8 @@ class SemanticActionFactory {
 
 let GroupAction: SemanticAction = {
     (inNode: BaseASTNode) in
-    let innerNode = inNode[1]
-    let outNode = BaseASTNode(children: [innerNode], pos: inNode.pos)
-    outNode.desc = "Group"
+    let outNode = inNode[1]
+    outNode.pos = inNode[2].pos
     return outNode
 }
 

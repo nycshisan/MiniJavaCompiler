@@ -10,8 +10,12 @@ import XCTest
 
 extension BaseASTNode: Equatable {
     static func == (lhs: BaseASTNode, rhs: BaseASTNode) -> Bool {
-        if !(lhs.token == nil && rhs.token == nil) && (lhs.token! != rhs.token!) { return false }
-        if !(lhs.children == nil && rhs.children == nil) && (lhs.children! != rhs.children!) { return false }
+        if !(lhs.token == nil && rhs.token == nil) && (lhs.token! != rhs.token!) {
+            return false
+        }
+        if !(lhs.children == nil && rhs.children == nil) && (lhs.children! != rhs.children!) {
+            return false
+        }
         return true
     }
 }
@@ -107,6 +111,15 @@ class CombinationsTest: XCTestCase {
         assertParseResultEqual(material: "x", parser: parser, expected: expected)
         expected = ParseResult(children: ["x", "y", "z"])
         assertParseResultEqual(material: "x + y +z", parser: parser, expected: expected)
+    }
+    
+    func testCompoundExp() {
+        let parser = (idParser + idParser) * ReservedParser("+")
+        var expected = ParseResult(children: [ParseResult(children: ["x", "x"])])
+        assertParseResultEqual(material: "x x", parser: parser, expected: expected)
+        expected = ParseResult(children: [ParseResult(children: ["x", "x"]), ParseResult(children: ["x", "x"])])
+        assertParseResultEqual(material: "x x + x x", parser: parser, expected: expected)
+        
     }
 
     func testCustomExp() {
