@@ -31,7 +31,7 @@ class TokenizerTest: XCTestCase {
     }
     
     func testInt() {
-        assertTokenEqual(material: "123\n-456", expected: [Token(text: "123", tag: .Int), Token(text: "-456", tag: .Int)])
+        assertTokenEqual(material: "123\n456", expected: [Token(text: "123", tag: .Int), Token(text: "456", tag: .Int)])
     }
     
     func testId() {

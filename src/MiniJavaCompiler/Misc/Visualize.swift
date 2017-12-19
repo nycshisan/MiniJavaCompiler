@@ -8,6 +8,20 @@
 
 import Foundation
 
+extension BaseASTNode {
+    func serialize() -> SerializableASTNode {
+        var title = desc
+        if token != nil {
+            title += " - Token: \(token!.text)"
+        }
+        var serializedChildren: [SerializableASTNode] = []
+        if children != nil {
+            serializedChildren = children!.map { $0.serialize() }
+        }
+        return SerializableASTNode(title: title, children: serializedChildren)
+    }
+}
+
 class SerializableASTNode: Codable {
     let icon = false
     var title: String
@@ -22,9 +36,9 @@ class SerializableASTNode: Codable {
         let HTMLContain = """
         <!doctype html>
         <head>
-          <link href="ui.fancytree.min.css" rel="stylesheet">
-          <script src="jquery-3.2.1.min.js"></script>
-          <script src="jquery.fancytree-all-deps.min.js"></script>
+          <link href="www/skin-win8/ui.fancytree.min.css" rel="stylesheet">
+          <script src="www/jquery-3.2.1.min.js"></script>
+          <script src="www/jquery.fancytree-all-deps.min.js"></script>
           <script type="text/javascript">
             $(function(){
               $("#tree").fancytree({

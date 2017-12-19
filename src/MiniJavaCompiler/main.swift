@@ -8,82 +8,6 @@
 
 import Foundation
 
-//let tokenizer = Tokenizer()
-//
-//let material = "i = 0;" + "\n" +
-//            "while (!(i > 100)) {" + "\n" +
-//            "i = i + 1;" + "\n" +
-//            "};" + "\n" +
-//            "print i;"
-//
-//SCError.material = material
-//let tokens = tokenizer.tokenizeCaughtError(material: material)
-//
-//var env: [String: Any] = [:]
-//
-//env["+"] = {
-//    (left: Any, right: Any) -> Any in
-//    let l = left as! Int
-//    let r = right as! Int
-//    return l + r
-//}
-//env["-"] = {
-//    (left: Any, right: Any) -> Any in
-//    let l = left as! Int
-//    let r = right as! Int
-//    return l - r
-//}
-//env["*"] = {
-//    (left: Any, right: Any) -> Any in
-//    let l = left as! Int
-//    let r = right as! Int
-//    return l * r
-//}
-//env["/"] = {
-//    (left: Any, right: Any) -> Any in
-//    let l = left as! Int
-//    let r = right as! Int
-//    return l / r
-//}
-//env[">"] = {
-//    (left: Any, right: Any) -> Any in
-//    let l = left as! Int
-//    let r = right as! Int
-//    return l > r
-//}
-//env["<"] = {
-//    (left: Any, right: Any) -> Any in
-//    let l = left as! Int
-//    let r = right as! Int
-//    return l < r
-//}
-//env["&&"] = {
-//    (left: Any, right: Any) -> Any in
-//    let l = left as! Bool
-//    let r = right as! Bool
-//    return l && r
-//}
-//env["||"] = {
-//    (left: Any, right: Any) -> Any in
-//    let l = left as! Bool
-//    let r = right as! Bool
-//    return l || r
-//}
-//env["!"] = {
-//    (old: Any) -> Any in
-//    let oldBool = old as! Bool
-//    return !oldBool
-//}
-//
-//let result = MainParser.parse(tokens: tokens, pos: 0)!
-//let _ = result.node.eval(environment: &env)
-
-
-let n = SerializableASTNode(title: "123", children: [])
-n.visualizeToHTML(filename: "test.html")
-exit(3)
-
-
 // read file and setup context
 var commandLineArguments = CommandLineArguments()
 commandLineArguments.parseArgs()
@@ -92,6 +16,14 @@ guard let text = openFile(commandLineArguments.filename!) else {
 }
 SCError.material = text
 
-
+// Tokenizing
 let tokenizer = Tokenizer()
-let tokens = tokenizer.forceTokenize(material: text)
+var tokens = tokenizer.forceTokenize(material: text)
+
+// Grammar Parsing
+let parseResult = GoalParser.parse(tokens: &tokens, pos: 0)
+
+
+// Visualization
+let outFilename = commandLineArguments.filename! + ".html"
+parseResult!.serialize().visualizeToHTML(filename: outFilename)

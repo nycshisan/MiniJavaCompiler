@@ -353,9 +353,9 @@ class ParserTest: XCTestCase {
     
     func testMethodInvocation() {
         let parser = MethodInvocationExprParser
-        let material = "i.m(x, 1)"
+        let material = "this.m(x, 1)"
         let expected = ParseResult(children: [])
-        expected.append(ParseResult(token: "i"))
+        expected.append(ParseResult(token: Token(text: "this", tag: .Reserved)))
         expected.append(ParseResult(token: Token(text: ".", tag: .Reserved)))
         expected.append(ParseResult(token: "m"))
         expected.append(ParseResult(token: Token(text: "(", tag: .Reserved)))
