@@ -8,7 +8,7 @@
 
 /* Base Abstract Syntax Tree Node */
 class BaseASTNode {
-    var desc: String = "Nil Desc"
+    var desc: String = "Nil"
     
     var token: Token?
     var pos: Int // The position of next parsing token

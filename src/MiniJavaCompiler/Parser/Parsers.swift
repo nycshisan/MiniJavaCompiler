@@ -21,7 +21,7 @@ let MethodDeclarationParser = ReservedParser("public") + TypeParser + Identifier
 let RepMethodDeclarationParser = RepParser(parser: MethodDeclarationParser, desc: "Method Declarations")
 
 /* Type Parsers */
-let IntArrayTypeParser = ReservedParser("int") + ReservedParser("[") + ReservedParser("]") ^ SemanticActionFactory.DescAction(description: "New Int Array")
+let IntArrayTypeParser = ReservedParser("int") + ReservedParser("[") + ReservedParser("]") ^ SemanticActionFactory.DescAction(description: "New Int Array") ^ IntArrayTypeAction
 
 let TypeParser = IntArrayTypeParser | ReservedParser("boolean") | ReservedParser("int") | IdentifierParser ^ SemanticActionFactory.WrapAction(description: "Type")
 
@@ -30,13 +30,13 @@ let CompoundStmtParser = ReservedParser("{") + RepStmtParser + ReservedParser("}
 
 let IfStmtParser = ReservedParser("if") + ExprGroupParser + StmtParser + ReservedParser("else") + StmtParser ^ SemanticActionFactory.DescAction(description: "If Statement") ^ IfStmtAction
 
-let WhileStmtParser = ReservedParser("while") + ExprGroupParser + StmtParser ^ SemanticActionFactory.WrapAction(description: "While Statement")
+let WhileStmtParser = ReservedParser("while") + ExprGroupParser + StmtParser ^ SemanticActionFactory.DescAction(description: "While Statement") ^ WhileStmtAction
 
 let PrintStmtParser = ReservedParser("System.out.println") + ExprGroupParser + ReservedParser(";") ^ SemanticActionFactory.DescAction(description: "Print Statement") ^ PrintStmtAction
 
 let AssignmentStmtParser = IdentifierParser + ReservedParser("=") + ExprParser + ReservedParser(";") ^ SemanticActionFactory.DescAction(description: "Assignment Statement") ^ AssignmentStmtAction
 
-let SubscriptAssignmentStmtParser = IdentifierParser + ReservedParser("[") + ExprParser + ReservedParser("]") + ReservedParser("=") + ExprParser + ReservedParser(";") ^ SemanticActionFactory.WrapAction(description: "Subscript Assignment Statement")
+let SubscriptAssignmentStmtParser = IdentifierParser + ReservedParser("[") + ExprParser + ReservedParser("]") + ReservedParser("=") + ExprParser + ReservedParser(";") ^ SemanticActionFactory.DescAction(description: "Subscript Assignment Statement") ^ SubscriptAssignmentStmtAction
 
 let ReturnStmtParser = ReservedParser("return") + ExprParser + ReservedParser(";") ^ SemanticActionFactory.DescAction(description: "Return Statement") ^ ReturnStmtAction
 
@@ -50,7 +50,7 @@ let RepStmtParser = RepParser(parser: StmtParser, desc: "Statements")
 /* Expression Parsers */
 // Priority Support
 enum OperatorType {
-    case PreOp
+    //case PreOp
     case BiOp
     // Hold expansibility for postfix operators
     case PostOp
@@ -65,8 +65,6 @@ func ConstructPrecedenceExprParser(precedence: [(opers: [String], type: Operator
     var parser = termParser
     for (opers, type) in precedence {
         switch type {
-        case .PreOp:
-            parser = OptParser(parser: OpsParser(opers: opers)) + parser ^! PreOpAction
         case .BiOp:
             parser = (parser * (OpsParser(opers: opers)) % {
                 (partial: ParseResult, separator: ParseResult, new: ParseResult) -> ParseResult in
@@ -81,7 +79,6 @@ func ConstructPrecedenceExprParser(precedence: [(opers: [String], type: Operator
     return parser
 }
 let Precedence: [([String], OperatorType)] = [
-    (["!"], .PreOp),
     (["*", "/"], .BiOp),
     (["+", "-"], .BiOp),
     ([">", ">=", ">", "<=", "<", "==", "!="], .BiOp),
@@ -90,17 +87,17 @@ let Precedence: [([String], OperatorType)] = [
 let PrecedenceExprParser = ConstructPrecedenceExprParser(precedence: Precedence, termParser: ExprTermParser)
 
 // Parser for left-recursion expressions
-let SubscriptExprParser = ExprTermParser + ReservedParser("[") + ExprParser + ReservedParser("]") ^ SemanticActionFactory.WrapAction(description: "Subscript Expression")
+let SubscriptExprParser = ExprTermParser + ReservedParser("[") + ExprParser + ReservedParser("]") ^ SemanticActionFactory.DescAction(description: "Subscript Expression") ^ SubscriptExprAction
 
-let LengthExprParser = ExprTermParser + ReservedParser(".") + ReservedParser("length") ^ SemanticActionFactory.WrapAction(description: "Length Expression")
+let LengthExprParser = ExprTermParser + ReservedParser(".") + ReservedParser("length") ^ SemanticActionFactory.DescAction(description: "Length Expression") ^ LengthExprAction
 
-let MethodInvocationArgumentsParser = ExpParser(parser: ExprParser, separator: ReservedParser(","), desc: "Arguments")
+let MethodInvocationArgumentsParser = ExpParser(parser: ExprParser, separator: ReservedParser(","), desc: "Arguments") ^ MethodInvocationArgumentsAction
 let MethodInvocationExprParser = ExprTermParser + ReservedParser(".") + IdentifierParser + ReservedParser("(") + MethodInvocationArgumentsParser + ReservedParser(")") ^ SemanticActionFactory.DescAction(description: "Method Invocation Expression") ^ MethodInvocationExprAction
 
 // Parser for non-left-recursion expressions
 let IntLiteralParser = TagParser(.Int) ^ SemanticActionFactory.WrapAction(description: "Int Literal")
 
-let NewIntArrayParser = ReservedParser("new") + ReservedParser("int") + ReservedParser("[") + ExprParser + ReservedParser("]") ^ SemanticActionFactory.WrapAction(description: "New Int Array")
+let NewIntArrayParser = ReservedParser("new") + ReservedParser("int") + ReservedParser("[") + ExprParser + ReservedParser("]") ^ SemanticActionFactory.DescAction(description: "New Int Array")
 
 let NewObjectParser = ReservedParser("new") + IdentifierParser + ReservedParser("(") + ReservedParser(")") ^ SemanticActionFactory.DescAction(description: "New Object Expression") ^ NewObjectAction
 
@@ -108,7 +105,10 @@ let ExprValueParser = IntLiteralParser | ReservedParser("true") | ReservedParser
 
 let ExprGroupParser = ReservedParser("(") + ExprParser + ReservedParser(")") ^! GroupAction
 
-let ExprTermParser = ExprValueParser | ExprGroupParser
+let PreOps = ["!"]
+let ExprPreOpParser = OpsParser(opers: PreOps) + ExprParser ^ SemanticActionFactory.DescAction(description: "Prefix Operator Expression")
+
+let ExprTermParser = ExprValueParser | ExprGroupParser | ExprPreOpParser
 
 // Lazy Expression Parser
 func ExprParserGenerator() -> BaseParser {

@@ -108,3 +108,7 @@ fastlane/test_output
 *.xcscmblueprint
 
 *.pdf
+
+*.html
+
+*.java

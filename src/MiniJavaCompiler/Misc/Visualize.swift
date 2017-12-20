@@ -16,7 +16,7 @@ extension BaseASTNode {
         } else {
             title = desc
         }
-        if desc == "Nil Desc" && token != nil {
+        if desc == "Nil" && token != nil {
             title += " - Token: \(token!.text)"
         }
         var serializedChildren: [SerializableASTNode] = []

@@ -30,7 +30,7 @@ func + (left: BaseParser, right: BaseParser) -> ConcatParser {
 }
 
 func * (left: BaseParser, right: BaseParser) -> ExpParser {
-    return ExpParser(parser: left, separator: right, desc: "Nil Desc")
+    return ExpParser(parser: left, separator: right, desc: "Nil")
 }
 
 func | (left: BaseParser, right: BaseParser) -> BaseParser {
@@ -64,6 +64,8 @@ prefix func ~ (generator: @escaping () -> BaseParser) -> BaseParser {
 }
 
 /* Combinators */
+var DEBUG_MAX_POS = 0
+
 class ReservedParser: BaseParser {
     // Parser for reversed words
     let word: String
@@ -77,6 +79,7 @@ class ReservedParser: BaseParser {
     override func parse(tokens: inout [Token], pos: Int) -> ParseResult? {
         if pos < tokens.count && tokens[pos].text == word && tokens[pos].tag == tag {
             let result = ParseResult(token: tokens[pos], pos: pos + 1)
+            if pos > DEBUG_MAX_POS { DEBUG_MAX_POS = pos }
             result.desc = tokens[pos].text
             return result
         } else {
@@ -96,6 +99,7 @@ class TagParser: BaseParser {
     override func parse(tokens: inout [Token], pos: Int) -> ParseResult? {
         if pos < tokens.count && tokens[pos].tag == tag {
             let result = ParseResult(token: tokens[pos], pos: pos + 1)
+            if pos > DEBUG_MAX_POS { DEBUG_MAX_POS = pos }
             result.desc = tokens[pos].text
             return result
         } else {

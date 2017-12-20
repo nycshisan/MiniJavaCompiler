@@ -39,31 +39,6 @@ let IdleAction: SemanticAction = {
     return inNode
 }
 
-let GroupAction: SemanticAction = {
-    (inNode: BaseASTNode) in
-    let outNode = inNode[1]
-    outNode.pos = inNode[2].pos
-    return outNode
-}
-
-let BiOpAction: SemanticAction = {
-    (inNode: BaseASTNode) in
-    if inNode.children!.count == 1 {
-        return inNode[0]
-    }
-    inNode.desc = "Binary Operator"
-    return inNode
-}
-
-let PreOpAction: SemanticAction = {
-    (inNode: BaseASTNode) in
-    guard let operToken = inNode[0].token else {
-        return inNode[1]
-    }
-    inNode.desc = "Prefix Operator \(operToken.text)"
-    return inNode
-}
-
 let MainCLassAction: SemanticAction = {
     (inNode: BaseASTNode) in
     inNode.children = [inNode[1], inNode[11], inNode[13]]
@@ -100,9 +75,21 @@ let MethodDeclarationAction: SemanticAction = {
     return inNode
 }
 
+let IntArrayTypeAction: SemanticAction = {
+    (inNode: BaseASTNode) in
+    inNode.children = []
+    return inNode
+}
+
 let IfStmtAction: SemanticAction = {
     (inNode: BaseASTNode) in
     inNode.children = [inNode[1], inNode[2], inNode[4]]
+    return inNode
+}
+
+let WhileStmtAction: SemanticAction = {
+    (inNode: BaseASTNode) in
+    inNode.children!.removeFirst()
     return inNode
 }
 
@@ -118,9 +105,35 @@ let AssignmentStmtAction: SemanticAction = {
     return inNode
 }
 
+let SubscriptAssignmentStmtAction: SemanticAction = {
+    (inNode: BaseASTNode) in
+    inNode.children = [inNode[0], inNode[2], inNode[5]]
+    return inNode
+}
+
 let ReturnStmtAction: SemanticAction = {
     (inNode: BaseASTNode) in
     inNode.children = [inNode[1]]
+    return inNode
+}
+
+let SubscriptExprAction: SemanticAction = {
+    (inNode: BaseASTNode) in
+    inNode.children = [inNode[0], inNode[2]]
+    return inNode
+}
+
+let LengthExprAction: SemanticAction = {
+    (inNode: BaseASTNode) in
+    inNode.children = [inNode[0]]
+    return inNode
+}
+
+let MethodInvocationArgumentsAction: SemanticAction = {
+    (inNode: BaseASTNode) in
+    if inNode.children!.count == 1 && inNode[0].children != nil && inNode[0].children!.count == 0 && inNode[0].desc == "Nil" {
+        inNode.children = []
+    }
     return inNode
 }
 
@@ -133,5 +146,29 @@ let MethodInvocationExprAction: SemanticAction = {
 let NewObjectAction: SemanticAction = {
     (inNode: BaseASTNode) in
     inNode.children = [inNode[1]]
+    return inNode
+}
+
+let NewIntArrayAction: SemanticAction = {
+    (inNode: BaseASTNode) in
+    inNode.children = [inNode[1], inNode[3]]
+    return inNode
+}
+
+let GroupAction: SemanticAction = {
+    (inNode: BaseASTNode) in
+    let outNode = inNode[1]
+    outNode.pos = inNode[2].pos
+    return outNode
+}
+
+let BiOpAction: SemanticAction = {
+    (inNode: BaseASTNode) in
+    if inNode.children!.count == 1 {
+        return inNode[0]
+    }
+    if inNode.children!.count != 0 {
+        inNode.desc = "Binary Operator Expression"
+    }
     return inNode
 }

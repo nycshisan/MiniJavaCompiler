@@ -15,8 +15,12 @@ let ReservedWords = [
                     "length", "true", "false", "this", "new"
                     ]
 
+let SpecialReservedWords = [
+    "System.out.println"
+]
+
 var ReservedRegExpPattern: String {
-    return ReservedWords.map({ word in "(\(word))" }).joined(separator: "|")
+    return SpecialReservedWords.map({ word in "(\(word))" }).joined(separator: "|")
 }
 
 let TokenExpressions: [(pattern: String, tag: TokenTag)] = [
@@ -24,9 +28,9 @@ let TokenExpressions: [(pattern: String, tag: TokenTag)] = [
     ("\\s+", .None), // Blanks
     ("[+\\-*<&!=\\.]+", .Reserved), // Operators
     ("[(){},;\\[\\]]", .Reserved), // Delimiters
-    (ReservedRegExpPattern, .Reserved), // Reversed words
+    (ReservedRegExpPattern, .Reserved), // Special Reversed words
     ("[A-Za-z_][A-Za-z0-9_]*", .Id), // Identifies
-    ("[1-9][0-9]*", .Int), // Intergers
+    ("[0-9]+", .Int), // Intergers
 ]
 
 enum TokenTag {
@@ -41,7 +45,7 @@ enum TokenTag {
 /* Token type */
 class Token {
     let text: String
-    let tag: TokenTag
+    var tag: TokenTag
     let position: Int
     let lineNum: Int
     
@@ -84,6 +88,9 @@ class Tokenizer {
                     let text = (material as NSString).substring(with: match.range)
                     let token = Token(text: text, tag: tag, position: position, lineNum: lineNum)
                     
+                    if ReservedWords.contains(token.text) {
+                        token.tag = .Reserved
+                    }
                     if token.tag != .None {
                         tokens.append(token)
                     }
@@ -93,7 +100,8 @@ class Tokenizer {
                         lineNum += newLineNum
                         position = 0
                     }
-                    position += token.text.count - newLineNum
+                    let lastLine = token.text.components(separatedBy: CharacterSet(charactersIn: "\n")).last!
+                    position += lastLine.count + 3 * lastLine.count("\t")
                     range.location += match.range.length
                     range.length -= match.range.length
                     

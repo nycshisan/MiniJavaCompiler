@@ -238,6 +238,7 @@
 				TargetAttributes = {
 					A5BB423B1E05A3FE0087362D = {
 						CreatedOnToolsVersion = 8.1;
+						LastSwiftMigration = 0920;
 						ProvisioningStyle = Automatic;
 					};
 					A5D6AFEB1E04EA9D006F04FD = {
@@ -323,7 +324,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "Shisan-Chen.Test";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -336,7 +338,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "Shisan-Chen.Test";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};

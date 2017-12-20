@@ -8,7 +8,7 @@
 
 import Foundation
 
-let DEBUG_FILENAME: String? = "SamplePrograms/binarysearch.java"
+let DEBUG_FILENAME: String? = "SamplePrograms/factorial.java"
 
 // read file and setup context
 var commandLineArguments = CommandLineArguments()
@@ -24,7 +24,9 @@ var tokens = tokenizer.forceTokenize(material: text)
 
 // Grammar Parsing
 guard let parseResult = GoalParser.parse(tokens: &tokens, pos: 0) else {
-    print("Parse Error")
+    let token = tokens[DEBUG_MAX_POS]
+    let error = SCError(code: UnknownError, info: "Parse Error on Token \(DEBUG_MAX_POS) - \(token.text)", token: token)
+    error.print()
     exit(EXIT_FAILURE)
 }
 
