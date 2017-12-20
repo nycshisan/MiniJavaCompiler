@@ -8,10 +8,12 @@
 
 import Foundation
 
+let DEBUG_FILENAME: String? = "SamplePrograms/binarysearch.java"
+
 // read file and setup context
 var commandLineArguments = CommandLineArguments()
 commandLineArguments.parseArgs()
-guard let text = openFile(commandLineArguments.filename!) else {
+guard let text = openFile(DEBUG_FILENAME ?? commandLineArguments.filename!) else {
     exit(EXIT_FAILURE)
 }
 SCError.material = text

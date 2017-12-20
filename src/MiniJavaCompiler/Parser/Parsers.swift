@@ -11,13 +11,13 @@ let GoalParser = PhraseParser(parser: MainClassParser + RepParser(parser: ClassD
 
 let MainClassParser = ReservedParser("class") + IdentifierParser + ReservedParser("{") + ReservedParser("public") + ReservedParser("static") + ReservedParser("void") + ReservedParser("main") + ReservedParser("(") + ReservedParser("String") + ReservedParser("[") + ReservedParser("]") + IdentifierParser + ReservedParser(")") + StmtParser + ReservedParser("}") ^ SemanticActionFactory.DescAction(description: "Main Class") ^ MainCLassAction
 
-let ClassDeclarationParser = ReservedParser("class") + IdentifierParser + OptParser(parser: ReservedParser("extends") + IdentifierParser) + ReservedParser("{") + RepVarDeclarationParser + RepMethodDeclarationParser + ReservedParser("}") ^ SemanticActionFactory.WrapAction(description: "Class Declaration")
+let ClassDeclarationParser = ReservedParser("class") + IdentifierParser + OptParser(parser: ReservedParser("extends") + IdentifierParser) + ReservedParser("{") + RepVarDeclarationParser + RepMethodDeclarationParser + ReservedParser("}") ^ SemanticActionFactory.DescAction(description: "Class Declaration") ^ ClassDeclarationAction
 
-let VarDeclarationParser = TypeParser + IdentifierParser + ReservedParser(";") ^ SemanticActionFactory.WrapAction(description: "Variable Declaration")
+let VarDeclarationParser = TypeParser + IdentifierParser + ReservedParser(";") ^ SemanticActionFactory.DescAction(description: "Variable Declaration") ^ VarDeclarationAction
 let RepVarDeclarationParser = RepParser(parser: VarDeclarationParser, desc: "Variable Declarations")
 
-let MethodDeclarationArgumentsParser = ExpParser(parser: TypeParser + IdentifierParser, separator: ReservedParser(","), desc: "Arguments")
-let MethodDeclarationParser = ReservedParser("public") + TypeParser + IdentifierParser + ((ReservedParser("(") + MethodDeclarationArgumentsParser + ReservedParser(")")) ^! GroupAction) + ReservedParser("{") + RepVarDeclarationParser + RepStmtParser + ReservedParser("}") ^ SemanticActionFactory.WrapAction(description: "Method Declaration")
+let MethodDeclarationArgumentsParser = ExpParser(parser: TypeParser + IdentifierParser, separator: ReservedParser(","), desc: "Arguments") ^ MethodDeclarationArgumentsAction
+let MethodDeclarationParser = ReservedParser("public") + TypeParser + IdentifierParser + ((ReservedParser("(") + MethodDeclarationArgumentsParser + ReservedParser(")")) ^! GroupAction) + ReservedParser("{") + RepVarDeclarationParser + RepStmtParser + ReservedParser("}") ^ SemanticActionFactory.DescAction(description: "Method Declaration") ^ MethodDeclarationAction
 let RepMethodDeclarationParser = RepParser(parser: MethodDeclarationParser, desc: "Method Declarations")
 
 /* Type Parsers */
@@ -28,17 +28,17 @@ let TypeParser = IntArrayTypeParser | ReservedParser("boolean") | ReservedParser
 /* Statement Parsers */
 let CompoundStmtParser = ReservedParser("{") + RepStmtParser + ReservedParser("}") ^! GroupAction
 
-let IfStmtParser = ReservedParser("if") + ExprGroupParser + StmtParser + ReservedParser("else") + StmtParser ^ SemanticActionFactory.WrapAction(description: "If Statement")
+let IfStmtParser = ReservedParser("if") + ExprGroupParser + StmtParser + ReservedParser("else") + StmtParser ^ SemanticActionFactory.DescAction(description: "If Statement") ^ IfStmtAction
 
 let WhileStmtParser = ReservedParser("while") + ExprGroupParser + StmtParser ^ SemanticActionFactory.WrapAction(description: "While Statement")
 
 let PrintStmtParser = ReservedParser("System.out.println") + ExprGroupParser + ReservedParser(";") ^ SemanticActionFactory.DescAction(description: "Print Statement") ^ PrintStmtAction
 
-let AssignmentStmtParser = IdentifierParser + ReservedParser("=") + ExprParser + ReservedParser(";") ^ SemanticActionFactory.WrapAction(description: "Assignment Statement")
+let AssignmentStmtParser = IdentifierParser + ReservedParser("=") + ExprParser + ReservedParser(";") ^ SemanticActionFactory.DescAction(description: "Assignment Statement") ^ AssignmentStmtAction
 
 let SubscriptAssignmentStmtParser = IdentifierParser + ReservedParser("[") + ExprParser + ReservedParser("]") + ReservedParser("=") + ExprParser + ReservedParser(";") ^ SemanticActionFactory.WrapAction(description: "Subscript Assignment Statement")
 
-let ReturnStmtParser = ReservedParser("return") + ExprParser + ReservedParser(";") ^ SemanticActionFactory.WrapAction(description: "Return Statement")
+let ReturnStmtParser = ReservedParser("return") + ExprParser + ReservedParser(";") ^ SemanticActionFactory.DescAction(description: "Return Statement") ^ ReturnStmtAction
 
 // Lazy Statement Parser
 func StmtParserGenerator() -> BaseParser {
@@ -102,7 +102,7 @@ let IntLiteralParser = TagParser(.Int) ^ SemanticActionFactory.WrapAction(descri
 
 let NewIntArrayParser = ReservedParser("new") + ReservedParser("int") + ReservedParser("[") + ExprParser + ReservedParser("]") ^ SemanticActionFactory.WrapAction(description: "New Int Array")
 
-let NewObjectParser = ReservedParser("new") + IdentifierParser + ReservedParser("(") + ReservedParser(")") ^ SemanticActionFactory.DescAction(description: "New Object Expression")
+let NewObjectParser = ReservedParser("new") + IdentifierParser + ReservedParser("(") + ReservedParser(")") ^ SemanticActionFactory.DescAction(description: "New Object Expression") ^ NewObjectAction
 
 let ExprValueParser = IntLiteralParser | ReservedParser("true") | ReservedParser("false") | IdentifierParser | ReservedParser("this") | NewIntArrayParser | NewObjectParser
 

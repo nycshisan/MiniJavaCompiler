@@ -67,9 +67,42 @@ let PreOpAction: SemanticAction = {
 let MainCLassAction: SemanticAction = {
     (inNode: BaseASTNode) in
     inNode.children = [inNode[1], inNode[11], inNode[13]]
-    inNode[0].desc = "Main Class Identifier"
-    inNode[1].desc = "Main Function Arguments Identifier"
-    inNode[2].desc = "Main Function Statements"
+//    inNode[0].desc = "Main Class Identifier"
+//    inNode[1].desc = "Main Function Arguments Identifier"
+//    inNode[2].desc = "Main Function Statements"
+    return inNode
+}
+
+let ClassDeclarationAction: SemanticAction = {
+    (inNode: BaseASTNode) in
+    inNode.children = [inNode[1], inNode[2], inNode[4], inNode[5]]
+    inNode[1].desc = "Extends"
+    return inNode
+}
+
+let VarDeclarationAction: SemanticAction = {
+    (inNode: BaseASTNode) in
+    inNode.children!.removeLast()
+    return inNode
+}
+
+let MethodDeclarationArgumentsAction: SemanticAction = {
+    (inNode: BaseASTNode) in
+    for child in inNode.children! {
+        child.desc = "Argument"
+    }
+    return inNode
+}
+
+let MethodDeclarationAction: SemanticAction = {
+    (inNode: BaseASTNode) in
+    inNode.children = [inNode[1], inNode[2], inNode[3], inNode[5], inNode[6]]
+    return inNode
+}
+
+let IfStmtAction: SemanticAction = {
+    (inNode: BaseASTNode) in
+    inNode.children = [inNode[1], inNode[2], inNode[4]]
     return inNode
 }
 
@@ -79,8 +112,26 @@ let PrintStmtAction: SemanticAction = {
     return inNode
 }
 
+let AssignmentStmtAction: SemanticAction = {
+    (inNode: BaseASTNode) in
+    inNode.children = [inNode[0], inNode[2]]
+    return inNode
+}
+
+let ReturnStmtAction: SemanticAction = {
+    (inNode: BaseASTNode) in
+    inNode.children = [inNode[1]]
+    return inNode
+}
+
 let MethodInvocationExprAction: SemanticAction = {
     (inNode: BaseASTNode) in
     inNode.children = [inNode[0], inNode[2], inNode[4]]
+    return inNode
+}
+
+let NewObjectAction: SemanticAction = {
+    (inNode: BaseASTNode) in
+    inNode.children = [inNode[1]]
     return inNode
 }

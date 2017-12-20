@@ -29,6 +29,13 @@
 		A54933351FE8951900A4A8DD /* ParserTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A58B96101E08E33C002919C6 /* ParserTest.swift */; };
 		A54933371FE907FF00A4A8DD /* Visualize.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54933361FE907FF00A4A8DD /* Visualize.swift */; };
 		A5BB42461E06335D0087362D /* TokenizerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB42451E06335D0087362D /* TokenizerTest.swift */; };
+		A5CB1F871FE9FDC000322312 /* binarysearch.java in CopyFiles */ = {isa = PBXBuildFile; fileRef = A5CB1F7F1FE9FDA800322312 /* binarysearch.java */; };
+		A5CB1F881FE9FDC600322312 /* binarytree.java in CopyFiles */ = {isa = PBXBuildFile; fileRef = A5CB1F791FE9FDA800322312 /* binarytree.java */; };
+		A5CB1F891FE9FDD000322312 /* bubblesort.java in CopyFiles */ = {isa = PBXBuildFile; fileRef = A5CB1F7D1FE9FDA800322312 /* bubblesort.java */; };
+		A5CB1F8A1FE9FDD200322312 /* linearsearch.java in CopyFiles */ = {isa = PBXBuildFile; fileRef = A5CB1F7E1FE9FDA800322312 /* linearsearch.java */; };
+		A5CB1F8B1FE9FDD600322312 /* linkedlist.java in CopyFiles */ = {isa = PBXBuildFile; fileRef = A5CB1F7B1FE9FDA800322312 /* linkedlist.java */; };
+		A5CB1F8C1FE9FDD800322312 /* quicksort.java in CopyFiles */ = {isa = PBXBuildFile; fileRef = A5CB1F7C1FE9FDA800322312 /* quicksort.java */; };
+		A5CB1F8D1FE9FDDB00322312 /* treevisitor.java in CopyFiles */ = {isa = PBXBuildFile; fileRef = A5CB1F7A1FE9FDA800322312 /* treevisitor.java */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -39,6 +46,13 @@
 			dstSubfolderSpec = 16;
 			files = (
 				A502664F1FE533440016D847 /* factorial.java in CopyFiles */,
+				A5CB1F871FE9FDC000322312 /* binarysearch.java in CopyFiles */,
+				A5CB1F881FE9FDC600322312 /* binarytree.java in CopyFiles */,
+				A5CB1F891FE9FDD000322312 /* bubblesort.java in CopyFiles */,
+				A5CB1F8A1FE9FDD200322312 /* linearsearch.java in CopyFiles */,
+				A5CB1F8B1FE9FDD600322312 /* linkedlist.java in CopyFiles */,
+				A5CB1F8C1FE9FDD800322312 /* quicksort.java in CopyFiles */,
+				A5CB1F8D1FE9FDDB00322312 /* treevisitor.java in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -61,6 +75,13 @@
 		A5BB42401E05A3FE0087362D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A5BB42451E06335D0087362D /* TokenizerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = TokenizerTest.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A5BB424C1E063D110087362D /* CombinationsTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CombinationsTest.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		A5CB1F791FE9FDA800322312 /* binarytree.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = binarytree.java; sourceTree = "<group>"; };
+		A5CB1F7A1FE9FDA800322312 /* treevisitor.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = treevisitor.java; sourceTree = "<group>"; };
+		A5CB1F7B1FE9FDA800322312 /* linkedlist.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = linkedlist.java; sourceTree = "<group>"; };
+		A5CB1F7C1FE9FDA800322312 /* quicksort.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = quicksort.java; sourceTree = "<group>"; };
+		A5CB1F7D1FE9FDA800322312 /* bubblesort.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = bubblesort.java; sourceTree = "<group>"; };
+		A5CB1F7E1FE9FDA800322312 /* linearsearch.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = linearsearch.java; sourceTree = "<group>"; };
+		A5CB1F7F1FE9FDA800322312 /* binarysearch.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = binarysearch.java; sourceTree = "<group>"; };
 		A5D6AFEC1E04EA9D006F04FD /* MiniJavaCompiler */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MiniJavaCompiler; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -108,6 +129,13 @@
 			isa = PBXGroup;
 			children = (
 				A502664E1FE5330D0016D847 /* factorial.java */,
+				A5CB1F7F1FE9FDA800322312 /* binarysearch.java */,
+				A5CB1F791FE9FDA800322312 /* binarytree.java */,
+				A5CB1F7D1FE9FDA800322312 /* bubblesort.java */,
+				A5CB1F7E1FE9FDA800322312 /* linearsearch.java */,
+				A5CB1F7B1FE9FDA800322312 /* linkedlist.java */,
+				A5CB1F7C1FE9FDA800322312 /* quicksort.java */,
+				A5CB1F7A1FE9FDA800322312 /* treevisitor.java */,
 			);
 			path = SamplePrograms;
 			sourceTree = "<group>";
