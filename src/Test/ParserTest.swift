@@ -265,14 +265,15 @@ class ParserTest: XCTestCase {
         let parser = PrecedenceExprParser
         let material = "!1 + 1"
         let expected = ParseResult(children: [])
-        expected.append(ParseResult(token: Token(text: "!", tag: .Reserved)))
         let inner = ParseResult(children: [])
-        inner.append(ParseResult(token: Token(text: "1", tag: .Int)))
-        inner.append(ParseResult(token: Token(text: "+", tag: .Reserved)))
+        inner.append(ParseResult(token: Token(text: "!", tag: .Reserved)))
         inner.append(ParseResult(token: Token(text: "1", tag: .Int)))
         expected.append(inner)
+        expected.append(ParseResult(token: Token(text: "+", tag: .Reserved)))
+        expected.append(ParseResult(token: Token(text: "1", tag: .Int)))
         assertParseResultEqual(material: material, parser: parser, expected: expected)
     }
+
     
     func testBiOp() {
         let parser = PrecedenceExprParser
