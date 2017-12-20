@@ -8,7 +8,7 @@
 
 import Foundation
 
-let DEBUG_FILENAME: String? = "SamplePrograms/factorial.java"
+let DEBUG_FILENAME: String? = "SamplePrograms/binarytree.java"
 
 // read file and setup context
 var commandLineArguments = CommandLineArguments()

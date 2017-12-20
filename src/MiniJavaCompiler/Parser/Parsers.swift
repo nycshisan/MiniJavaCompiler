@@ -106,11 +106,13 @@ let ExprValueParser = IntLiteralParser | ReservedParser("true") | ReservedParser
 let ExprGroupParser = ReservedParser("(") + ExprParser + ReservedParser(")") ^! GroupAction
 
 let PreOps = ["!"]
-let ExprPreOpParser = OpsParser(opers: PreOps) + ExprParser ^ SemanticActionFactory.DescAction(description: "Prefix Operator Expression")
-
-let ExprTermParser = ExprValueParser | ExprGroupParser | ExprPreOpParser
+let ExprPreOpParser = OpsParser(opers: PreOps) + ExprTermParser ^ SemanticActionFactory.DescAction(description: "Prefix Operator Expression")
 
 // Lazy Expression Parser
+func ExprTermParserGenerator() -> BaseParser {
+    return ExprValueParser | ExprGroupParser | ExprPreOpParser
+}
+let ExprTermParser = ~ExprTermParserGenerator
 func ExprParserGenerator() -> BaseParser {
     return SubscriptExprParser | LengthExprParser | MethodInvocationExprParser | PrecedenceExprParser
 }
