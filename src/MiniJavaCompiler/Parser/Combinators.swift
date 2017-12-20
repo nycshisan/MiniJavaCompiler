@@ -30,7 +30,7 @@ func + (left: BaseParser, right: BaseParser) -> ConcatParser {
 }
 
 func * (left: BaseParser, right: BaseParser) -> ExpParser {
-    return ExpParser(parser: left, separator: right)
+    return ExpParser(parser: left, separator: right, desc: "Nil Desc")
 }
 
 func | (left: BaseParser, right: BaseParser) -> BaseParser {
@@ -143,15 +143,15 @@ class ConcatParser: BaseParser {
 
 class ExpParser: BaseParser {
     // Parser to parse a combinator of tokens
-    typealias Processor = (ParseResult, ParseResult, ParseResult) -> ParseResult
     /*
      ExpParser.processor must accect an array like [partial, separator, new]
      and return reduced result for next loop
      */
-    typealias Initializer = (ParseResult) -> ParseResult
+    typealias Processor = (ParseResult, ParseResult, ParseResult) -> ParseResult
     /*
      ExpParser.initializer must accept the first parse result and return the first partial result
      */
+    typealias Initializer = (ParseResult) -> ParseResult
     
     let parser: BaseParser
     let separator: BaseParser
@@ -167,26 +167,32 @@ class ExpParser: BaseParser {
         return ParseResult(children: [value], pos: value.pos)
     }
     
-    init(parser: BaseParser, separator: BaseParser) {
+    let desc: String
+    
+    init(parser: BaseParser, separator: BaseParser, desc: String) {
         self.parser = parser
         self.separator = separator
+        self.desc = desc
     }
     
     override func parse(tokens: inout [Token], pos: Int) -> ParseResult? {
-        if var result = parser.parse(tokens: &tokens, pos: pos) {
-            result = initializer(result)
+        var result = parser.parse(tokens: &tokens, pos: pos)
+        if var result_ = result {
+            result_ = initializer(result_)
             let nextParser = separator + (parser ^! { $0 })
             
-            while let nextResult = nextParser.parse(tokens: &tokens, pos: result.pos) {
+            while let nextResult = nextParser.parse(tokens: &tokens, pos: result_.pos) {
                 let separatorResult = nextResult[0]
                 let newResult = nextResult[1]
-                result = processor(result, separatorResult, newResult)
-                result.pos = nextResult.pos
+                result_ = processor(result_, separatorResult, newResult)
+                result_.pos = nextResult.pos
             }
-            return result
+            result = result_
         } else {
-            return ParseResult(children: [] , pos: pos)
+            result = ParseResult(children: [] , pos: pos)
         }
+        result!.desc = self.desc
+        return result
     }
 }
 
@@ -257,9 +263,11 @@ class OptParser: BaseParser {
 class RepParser: BaseParser {
     // Greed parser which will parse as much tokens as possible repeatedly
     let parser: BaseParser
+    let desc: String
     
-    init(parser: BaseParser) {
+    init(parser: BaseParser, desc: String) {
         self.parser = parser
+        self.desc = desc
     }
     
     override func parse(tokens: inout [Token], pos: Int) -> ParseResult? {
@@ -273,7 +281,9 @@ class RepParser: BaseParser {
                 break
             }
         } while (true)
-        return ParseResult(children: results, pos: crtPos)
+        let parseResult = ParseResult(children: results, pos: crtPos)
+        parseResult.desc = self.desc
+        return parseResult
     }
 }
 

@@ -13,7 +13,7 @@ typealias SemanticAction = (BaseASTNode) -> BaseASTNode
 class SemanticActionFactory {
     // Construct an action that makes the input node to be wrapped(fathered) by a null node
     // whose description is the construction argument
-    static func constructWrapAction(description: String) -> SemanticAction {
+    static func WrapAction(description: String) -> SemanticAction {
         let action: SemanticAction = {
             (inNode: BaseASTNode) in
             let outNode = BaseASTNode(children: [inNode], pos: inNode.pos)
@@ -24,7 +24,7 @@ class SemanticActionFactory {
     }
     
     // Construct an action that simply fill the description
-    static func constructDescAction(description: String) -> SemanticAction {
+    static func DescAction(description: String) -> SemanticAction {
         let action: SemanticAction = {
             (inNode: BaseASTNode) in
             inNode.desc = description
@@ -32,6 +32,11 @@ class SemanticActionFactory {
         }
         return action
     }
+}
+
+let IdleAction: SemanticAction = {
+    (inNode: BaseASTNode) in
+    return inNode
 }
 
 let GroupAction: SemanticAction = {
@@ -56,5 +61,26 @@ let PreOpAction: SemanticAction = {
         return inNode[1]
     }
     inNode.desc = "Prefix Operator \(operToken.text)"
+    return inNode
+}
+
+let MainCLassAction: SemanticAction = {
+    (inNode: BaseASTNode) in
+    inNode.children = [inNode[1], inNode[11], inNode[13]]
+    inNode[0].desc = "Main Class Identifier"
+    inNode[1].desc = "Main Function Arguments Identifier"
+    inNode[2].desc = "Main Function Statements"
+    return inNode
+}
+
+let PrintStmtAction: SemanticAction = {
+    (inNode: BaseASTNode) in
+    inNode.children = [inNode[1]]
+    return inNode
+}
+
+let MethodInvocationExprAction: SemanticAction = {
+    (inNode: BaseASTNode) in
+    inNode.children = [inNode[0], inNode[2], inNode[4]]
     return inNode
 }

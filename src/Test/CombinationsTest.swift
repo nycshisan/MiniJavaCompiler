@@ -88,7 +88,7 @@ class CombinationsTest: XCTestCase {
     }
 
     func testRep() {
-        let parser = RepParser(parser: idParser)
+        let parser = RepParser(parser: idParser, desc: "")
         let expected = ParseResult(children: ["x", "y", "z"])
         assertParseResultEqual(material: "x y z", parser: parser, expected: expected)
     }

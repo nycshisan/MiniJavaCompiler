@@ -21,9 +21,12 @@ let tokenizer = Tokenizer()
 var tokens = tokenizer.forceTokenize(material: text)
 
 // Grammar Parsing
-let parseResult = GoalParser.parse(tokens: &tokens, pos: 0)
-
+guard let parseResult = GoalParser.parse(tokens: &tokens, pos: 0) else {
+    print("Parse Error")
+    exit(EXIT_FAILURE)
+}
 
 // Visualization
 let outFilename = commandLineArguments.filename! + ".html"
-parseResult!.serialize().visualizeToHTML(filename: outFilename)
+parseResult.serialize().visualizeToHTML(filename: outFilename)
+print("Outputted to \(outFilename)")

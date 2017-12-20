@@ -15,7 +15,6 @@
 		A50266401FE51A160016D847 /* Combinators.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50266321FE51A160016D847 /* Combinators.swift */; };
 		A50266421FE51A160016D847 /* Parsers.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50266331FE51A160016D847 /* Parsers.swift */; };
 		A50266431FE51A160016D847 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50266341FE51A160016D847 /* main.swift */; };
-		A50266441FE51A160016D847 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50266341FE51A160016D847 /* main.swift */; };
 		A50266481FE51E0A0016D847 /* CommandLineArgumentsParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50266471FE51E0A0016D847 /* CommandLineArgumentsParser.swift */; };
 		A50266491FE51E0A0016D847 /* CommandLineArgumentsParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50266471FE51E0A0016D847 /* CommandLineArgumentsParser.swift */; };
 		A502664B1FE530180016D847 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = A502664A1FE530180016D847 /* File.swift */; };
@@ -257,7 +256,6 @@
 				A54933341FE796D500A4A8DD /* CombinationsTest.swift in Sources */,
 				A502663E1FE51A160016D847 /* ASTNode.swift in Sources */,
 				A50266581FE62BD30016D847 /* SemanticActions.swift in Sources */,
-				A50266441FE51A160016D847 /* main.swift in Sources */,
 				A50266421FE51A160016D847 /* Parsers.swift in Sources */,
 				A50266361FE51A160016D847 /* Error.swift in Sources */,
 				A502663C1FE51A160016D847 /* Tokenizer.swift in Sources */,

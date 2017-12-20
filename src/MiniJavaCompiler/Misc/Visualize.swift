@@ -10,8 +10,13 @@ import Foundation
 
 extension BaseASTNode {
     func serialize() -> SerializableASTNode {
-        var title = desc
-        if token != nil {
+        var title: String
+        if let tag = token?.tag {
+            title = "\(tag).\(desc)"
+        } else {
+            title = desc
+        }
+        if desc == "Nil Desc" && token != nil {
             title += " - Token: \(token!.text)"
         }
         var serializedChildren: [SerializableASTNode] = []
@@ -23,7 +28,9 @@ extension BaseASTNode {
 }
 
 class SerializableASTNode: Codable {
+    // Some attribute for frontend
     let icon = false
+    let expanded = true
     var title: String
     var children: [SerializableASTNode]
     
