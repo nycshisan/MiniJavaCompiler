@@ -19,7 +19,7 @@ class ParserTest: XCTestCase {
     
     func assertParseResultEqual(material: String, parser: BaseParser, expected: ParseResult) {
         let tokenizer = Tokenizer()
-        var tokens = tokenizer.forceTokenize(material: material)
+        var tokens = tokenizer.tokenize(material: material)!
         let actual = PhraseParser(parser: parser).parse(tokens: &tokens, pos: 0)
         XCTAssertEqual(actual!, expected)
     }

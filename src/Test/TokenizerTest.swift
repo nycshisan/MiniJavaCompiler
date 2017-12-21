@@ -18,7 +18,7 @@ extension Token: Equatable {
 class TokenizerTest: XCTestCase {
     func assertTokenEqual(material: String, expected: [Token]) {
         let tokenizer = Tokenizer()
-        let actual = tokenizer.forceTokenize(material: material)
+        let actual = tokenizer.tokenize(material: material)!
         XCTAssertEqual(actual, expected)
     }
     

@@ -12,6 +12,8 @@ typealias ParseResult = BaseASTNode
 
 /* Base Grammar Parser */
 class BaseParser {
+    let errorHandler = ParserErrorHandler.instance
+    
     func parse(tokens: inout [Token], pos: Int) -> ParseResult? {
         fatalError("virtual parse function is invoked")
     }
@@ -64,25 +66,22 @@ prefix func ~ (generator: @escaping () -> BaseParser) -> BaseParser {
 }
 
 /* Combinators */
-var DEBUG_MAX_POS = 0
-
 class ReservedParser: BaseParser {
     // Parser for reversed words
     let word: String
-    let tag: TokenTag
     
-    init(_ word: String, tag: TokenTag = .Reserved) {
+    init(_ word: String) {
         self.word = word
-        self.tag = tag
     }
     
     override func parse(tokens: inout [Token], pos: Int) -> ParseResult? {
-        if pos < tokens.count && tokens[pos].text == word && tokens[pos].tag == tag {
+        if !(pos < tokens.count) { return nil }
+        if tokens[pos].text == word && tokens[pos].tag == .Reserved {
             let result = ParseResult(token: tokens[pos], pos: pos + 1)
-            if pos > DEBUG_MAX_POS { DEBUG_MAX_POS = pos }
             result.desc = tokens[pos].text
             return result
         } else {
+            errorHandler.addMaxPosExpected(value: word, pos: pos)
             return nil
         }
     }
@@ -97,12 +96,13 @@ class TagParser: BaseParser {
     }
     
     override func parse(tokens: inout [Token], pos: Int) -> ParseResult? {
-        if pos < tokens.count && tokens[pos].tag == tag {
+        if !(pos < tokens.count) { return nil }
+        if tokens[pos].tag == tag {
             let result = ParseResult(token: tokens[pos], pos: pos + 1)
-            if pos > DEBUG_MAX_POS { DEBUG_MAX_POS = pos }
             result.desc = tokens[pos].text
             return result
         } else {
+            errorHandler.addMaxPosExpected(value: tag, pos: pos)
             return nil
         }
     }

@@ -8,7 +8,7 @@
 
 import Foundation
 
-let DEBUG_FILENAME: String? = "SamplePrograms/binarytree.java"
+let DEBUG_FILENAME: String? = "SamplePrograms/cyc1.java"
 
 // read file and setup context
 var commandLineArguments = CommandLineArguments()
@@ -20,13 +20,15 @@ SCError.material = text
 
 // Tokenizing
 let tokenizer = Tokenizer()
-var tokens = tokenizer.forceTokenize(material: text)
+guard var tokens = tokenizer.tokenize(material: text) else {
+    exit(EXIT_FAILURE)
+}
 
 // Grammar Parsing
 guard let parseResult = GoalParser.parse(tokens: &tokens, pos: 0) else {
-    let token = tokens[DEBUG_MAX_POS]
-    let error = SCError(code: UnknownError, info: "Parse Error on Token \(DEBUG_MAX_POS) - \(token.text)", token: token)
-    error.print()
+//    let token = tokens[MaxPos]
+//    let error = SCError(code: UnknownError, info: "Parse Error on Token \(MaxPos) - \(token.text)", token: token)
+//    error.print()
     exit(EXIT_FAILURE)
 }
 

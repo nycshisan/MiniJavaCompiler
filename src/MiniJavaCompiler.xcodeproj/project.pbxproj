@@ -36,6 +36,8 @@
 		A5CB1F8B1FE9FDD600322312 /* linkedlist.java in CopyFiles */ = {isa = PBXBuildFile; fileRef = A5CB1F7B1FE9FDA800322312 /* linkedlist.java */; };
 		A5CB1F8C1FE9FDD800322312 /* quicksort.java in CopyFiles */ = {isa = PBXBuildFile; fileRef = A5CB1F7C1FE9FDA800322312 /* quicksort.java */; };
 		A5CB1F8D1FE9FDDB00322312 /* treevisitor.java in CopyFiles */ = {isa = PBXBuildFile; fileRef = A5CB1F7A1FE9FDA800322312 /* treevisitor.java */; };
+		A5CB1F901FEA6B5700322312 /* cyc1.java in CopyFiles */ = {isa = PBXBuildFile; fileRef = A5CB1F8E1FEA6B2100322312 /* cyc1.java */; };
+		A5CB1F921FEA8CA700322312 /* ParserErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5CB1F911FEA8CA700322312 /* ParserErrorHandler.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -53,6 +55,7 @@
 				A5CB1F8B1FE9FDD600322312 /* linkedlist.java in CopyFiles */,
 				A5CB1F8C1FE9FDD800322312 /* quicksort.java in CopyFiles */,
 				A5CB1F8D1FE9FDDB00322312 /* treevisitor.java in CopyFiles */,
+				A5CB1F901FEA6B5700322312 /* cyc1.java in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,6 +85,8 @@
 		A5CB1F7D1FE9FDA800322312 /* bubblesort.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = bubblesort.java; sourceTree = "<group>"; };
 		A5CB1F7E1FE9FDA800322312 /* linearsearch.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = linearsearch.java; sourceTree = "<group>"; };
 		A5CB1F7F1FE9FDA800322312 /* binarysearch.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = binarysearch.java; sourceTree = "<group>"; };
+		A5CB1F8E1FEA6B2100322312 /* cyc1.java */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.java; path = cyc1.java; sourceTree = "<group>"; };
+		A5CB1F911FEA8CA700322312 /* ParserErrorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParserErrorHandler.swift; sourceTree = "<group>"; };
 		A5D6AFEC1E04EA9D006F04FD /* MiniJavaCompiler */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MiniJavaCompiler; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -110,6 +115,7 @@
 				A50266461FE51DB70016D847 /* Misc */,
 				A50266501FE533C90016D847 /* Tokenizer */,
 				A50266511FE54DD50016D847 /* Parser */,
+				A5CB1F931FEB4D0A00322312 /* Semantic */,
 			);
 			path = MiniJavaCompiler;
 			sourceTree = "<group>";
@@ -136,6 +142,7 @@
 				A5CB1F7B1FE9FDA800322312 /* linkedlist.java */,
 				A5CB1F7C1FE9FDA800322312 /* quicksort.java */,
 				A5CB1F7A1FE9FDA800322312 /* treevisitor.java */,
+				A5CB1F8E1FEA6B2100322312 /* cyc1.java */,
 			);
 			path = SamplePrograms;
 			sourceTree = "<group>";
@@ -154,7 +161,7 @@
 				A50266311FE51A160016D847 /* ASTNode.swift */,
 				A50266321FE51A160016D847 /* Combinators.swift */,
 				A50266331FE51A160016D847 /* Parsers.swift */,
-				A50266561FE62BD30016D847 /* SemanticActions.swift */,
+				A5CB1F911FEA8CA700322312 /* ParserErrorHandler.swift */,
 			);
 			path = Parser;
 			sourceTree = "<group>";
@@ -168,6 +175,14 @@
 				A58B96101E08E33C002919C6 /* ParserTest.swift */,
 			);
 			path = Test;
+			sourceTree = "<group>";
+		};
+		A5CB1F931FEB4D0A00322312 /* Semantic */ = {
+			isa = PBXGroup;
+			children = (
+				A50266561FE62BD30016D847 /* SemanticActions.swift */,
+			);
+			path = Semantic;
 			sourceTree = "<group>";
 		};
 		A5D6AFE31E04EA9D006F04FD = {
@@ -303,6 +318,7 @@
 				A50266571FE62BD30016D847 /* SemanticActions.swift in Sources */,
 				A50266541FE624180016D847 /* Parsers.swift in Sources */,
 				A50266531FE624160016D847 /* Combinators.swift in Sources */,
+				A5CB1F921FEA8CA700322312 /* ParserErrorHandler.swift in Sources */,
 				A50266521FE571E80016D847 /* ASTNode.swift in Sources */,
 				A50266351FE51A160016D847 /* Error.swift in Sources */,
 				A502663B1FE51A160016D847 /* Tokenizer.swift in Sources */,

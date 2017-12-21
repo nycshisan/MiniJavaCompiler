@@ -74,10 +74,17 @@ class Tokenizer {
         }
     }
     
-    func tokenize(material: String) throws -> [Token] {
+    func tokenize(material: String) -> [Token]? {
+        var material = material
+        var success = true
+        
         var tokens: [Token] = []
         var lineNum = 0
         var position = 0
+        
+        // some variables for error recovery
+        var lastLength = 0
+        var errorNumberInCurrentLine = 0
         
         var range = NSMakeRange(0, material.count)
         while range.location < material.count {
@@ -99,11 +106,13 @@ class Tokenizer {
                     if newLineNum > 0 {
                         lineNum += newLineNum
                         position = 0
+                        errorNumberInCurrentLine = 0
                     }
                     let lastLine = token.text.components(separatedBy: CharacterSet(charactersIn: "\n")).last!
                     position += lastLine.count + 3 * lastLine.count("\t")
-                    range.location += match.range.length
-                    range.length -= match.range.length
+                    lastLength = match.range.length
+                    range.location += lastLength
+                    range.length -= lastLength
                     
                     matched = true
                     break
@@ -112,17 +121,18 @@ class Tokenizer {
             
             // Throw error when material does not match any of the regexs
             if !matched {
-                throw SCError(code: InvalidCharacterError, info: "Invalid Character", position: position, lineNum: lineNum)
+                let error = SCError(code: InvalidCharacterError, info: "Invalid Character", position: position + errorNumberInCurrentLine, lineNum: lineNum)
+                error.print()
+                material.remove(at: String.Index.init(encodedOffset: range.location))
+                range.location -= lastLength // recover to last matched starting point
+                range.length += lastLength
+                range.length -= 1 // a character has been removed
+                lastLength = 0 // clear last length to prevent multiple back-off
+                errorNumberInCurrentLine += 1
+                success = false
             }
         }
-        return tokens
-    }
-    
-    func forceTokenize(material: String) -> [Token] {
-        do { return try tokenize(material: material) } catch let error as SCError {
-            error.print()
-            exit(error.code)
-        } catch { exit(UnknownError) }
+        return success ? tokens : nil
     }
     
 }
