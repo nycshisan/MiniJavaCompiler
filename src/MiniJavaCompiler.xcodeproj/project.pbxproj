@@ -28,6 +28,7 @@
 		A54933341FE796D500A4A8DD /* CombinationsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB424C1E063D110087362D /* CombinationsTest.swift */; };
 		A54933351FE8951900A4A8DD /* ParserTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A58B96101E08E33C002919C6 /* ParserTest.swift */; };
 		A54933371FE907FF00A4A8DD /* Visualize.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54933361FE907FF00A4A8DD /* Visualize.swift */; };
+		A578CFDE1FEBB33300E096D2 /* cyc3.java in CopyFiles */ = {isa = PBXBuildFile; fileRef = A578CFDD1FEBB32F00E096D2 /* cyc3.java */; };
 		A5BB42461E06335D0087362D /* TokenizerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB42451E06335D0087362D /* TokenizerTest.swift */; };
 		A5CB1F871FE9FDC000322312 /* binarysearch.java in CopyFiles */ = {isa = PBXBuildFile; fileRef = A5CB1F7F1FE9FDA800322312 /* binarysearch.java */; };
 		A5CB1F881FE9FDC600322312 /* binarytree.java in CopyFiles */ = {isa = PBXBuildFile; fileRef = A5CB1F791FE9FDA800322312 /* binarytree.java */; };
@@ -59,6 +60,7 @@
 				A5CB1F8D1FE9FDDB00322312 /* treevisitor.java in CopyFiles */,
 				A5CB1F901FEA6B5700322312 /* cyc1.java in CopyFiles */,
 				A5CB1F951FEB56E300322312 /* cyc2.java in CopyFiles */,
+				A578CFDE1FEBB33300E096D2 /* cyc3.java in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -76,6 +78,7 @@
 		A502664E1FE5330D0016D847 /* factorial.java */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.java; path = factorial.java; sourceTree = "<group>"; };
 		A50266561FE62BD30016D847 /* SemanticActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SemanticActions.swift; sourceTree = "<group>"; };
 		A54933361FE907FF00A4A8DD /* Visualize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Visualize.swift; sourceTree = "<group>"; };
+		A578CFDD1FEBB32F00E096D2 /* cyc3.java */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.java; path = cyc3.java; sourceTree = "<group>"; };
 		A58B96101E08E33C002919C6 /* ParserTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParserTest.swift; sourceTree = "<group>"; };
 		A5BB423C1E05A3FE0087362D /* Test.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Test.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5BB42401E05A3FE0087362D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -149,6 +152,7 @@
 				A5CB1F7A1FE9FDA800322312 /* treevisitor.java */,
 				A5CB1F8E1FEA6B2100322312 /* cyc1.java */,
 				A5CB1F941FEB56CE00322312 /* cyc2.java */,
+				A578CFDD1FEBB32F00E096D2 /* cyc3.java */,
 			);
 			path = SamplePrograms;
 			sourceTree = "<group>";

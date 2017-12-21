@@ -8,7 +8,7 @@
 
 import Foundation
 
-typealias SemanticAction = (BaseASTNode) -> BaseASTNode
+typealias SemanticAction = (BaseASTNode) -> BaseASTNode?
 
 class SemanticActionFactory {
     // Construct an action that makes the input node to be wrapped(fathered) by a null node

@@ -10,10 +10,11 @@ import Foundation
 
 let UnknownError: Int32 = 555
 let InvalidCharacterError: Int32 = 1
-let ExpectedUnconformityError: Int32 = 2
+let TokenUnexpectedError: Int32 = 2
 let TokenNotExhaustedError: Int32 = 3
+let UndeclaredTypeError: Int32 = 4
 
-class SCError: Error {
+class MJCError: Error {
     static var material: String = ""
     
     let code: Int32
@@ -27,7 +28,7 @@ class SCError: Error {
         self.position = position
         self.lineNum = lineNum
         
-        if SCError.material == "" {
+        if MJCError.material == "" {
             fatalError("Compile material for SCError class has not be initialized.")
         }
     }
@@ -36,7 +37,7 @@ class SCError: Error {
     }
     
     func print() {
-        let line = SCError.material.components(separatedBy: "\n")[lineNum]
+        let line = MJCError.material.components(separatedBy: "\n")[lineNum]
         Swift.print("Error: \(info) at line \(lineNum + 1):")
         Swift.print("\(line)")
         Swift.print(String(repeating: " ", count: position) + "^")

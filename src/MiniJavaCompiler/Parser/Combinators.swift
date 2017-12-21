@@ -20,7 +20,7 @@ class BaseParser {
 
     func throwError(tokens: inout [Token], pos: Int, errorInfo: String) {
         if pos < tokens.count {
-            let error = SCError(code: ExpectedUnconformityError, info: errorInfo, token: tokens[pos])
+            let error = MJCError(code: TokenUnexpectedError, info: errorInfo, token: tokens[pos])
             error.print()
         }
     }
@@ -235,12 +235,11 @@ class SemanticActionParser: BaseParser {
     }
     
     override func parse(tokens: inout [Token], pos: Int) -> ParseResult? {
-        if var result = parser.parse(tokens: &tokens, pos: pos) {
+        if let result = parser.parse(tokens: &tokens, pos: pos) {
             if !force && SemanticActionParser.DEBUG_DISABLE_SEMANTIC_ACTION {
                 return result
             }
-            result = action(result)
-            return result
+            return action(result)
         } else {
             return nil
         }
@@ -321,7 +320,7 @@ class PhraseParser: BaseParser {
             if result.pos == tokens.count {
                 return result
             } else {
-                let error = SCError(code: TokenNotExhaustedError, info: "Tokens are not exhausted", token: tokens[result.pos])
+                let error = MJCError(code: TokenNotExhaustedError, info: "Tokens are not exhausted", token: tokens[result.pos])
                 error.print()
             }
         }

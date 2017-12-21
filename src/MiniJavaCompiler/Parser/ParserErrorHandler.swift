@@ -31,8 +31,8 @@ class ParserErrorHandler {
     
     func displayMaxPosExpected(tokens: [Token]) {
         let token = tokens[maxPos]
-        let info = "Expected [\(maxPosExpected.joined(separator: ", "))], not \"\(token.text)\""
-        let error = SCError(code: ExpectedUnconformityError, info: info, token: token)
+        let info = "Expects [\(maxPosExpected.joined(separator: ", "))], not \"\(token.text)\""
+        let error = MJCError(code: TokenUnexpectedError, info: info, token: token)
         error.print()
     }
 }

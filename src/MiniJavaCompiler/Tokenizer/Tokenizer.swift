@@ -121,7 +121,7 @@ class Tokenizer {
             
             // Throw error when material does not match any of the regexs
             if !matched {
-                let error = SCError(code: InvalidCharacterError, info: "Invalid Character", position: position + errorNumberInCurrentLine, lineNum: lineNum)
+                let error = MJCError(code: InvalidCharacterError, info: "Invalid Character", position: position + errorNumberInCurrentLine, lineNum: lineNum)
                 error.print()
                 material.remove(at: String.Index.init(encodedOffset: range.location))
                 range.location -= lastLength // recover to last matched starting point

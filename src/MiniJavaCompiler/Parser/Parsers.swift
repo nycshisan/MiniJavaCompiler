@@ -76,6 +76,13 @@ func ConstructPrecedenceExprParser(precedence: [(opers: [String], type: Operator
             fatalError()
         }
     }
+    parser = parser ^ {
+        (inNode: BaseASTNode) in
+        if inNode.token == nil && (inNode.children == nil || inNode.children!.isEmpty) {
+            return nil
+        }
+        return inNode
+    }
     return parser
 }
 let Precedence: [([String], OperatorType)] = [

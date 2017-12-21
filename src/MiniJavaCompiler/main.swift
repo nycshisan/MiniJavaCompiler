@@ -8,7 +8,7 @@
 
 import Foundation
 
-let DEBUG_FILENAME: String? = "SamplePrograms/factorial.java"
+let DEBUG_FILENAME: String? = "SamplePrograms/cyc3.java"
 
 // read file and setup context
 var commandLineArguments = CommandLineArguments()
@@ -16,7 +16,7 @@ commandLineArguments.parseArgs()
 guard let text = openFile(DEBUG_FILENAME ?? commandLineArguments.filename!) else {
     exit(EXIT_FAILURE)
 }
-SCError.material = text
+MJCError.material = text
 
 // Tokenizing
 let tokenizer = Tokenizer()
@@ -30,8 +30,7 @@ guard let parseResult = GoalParser.parse(tokens: &tokens, pos: 0) else {
 }
 
 // Semantic analyzing
-let analyzer = SemanticAnalyzer()
-analyzer.load(root: parseResult)
+let analyzer = SemanticAnalyzer(root: parseResult)
 guard analyzer.analyze() else {
     exit(EXIT_FAILURE)
 }
