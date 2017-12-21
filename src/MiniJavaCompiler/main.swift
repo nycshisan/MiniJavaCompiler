@@ -8,7 +8,7 @@
 
 import Foundation
 
-let DEBUG_FILENAME: String? = "SamplePrograms/cyc1.java"
+let DEBUG_FILENAME: String? = "SamplePrograms/factorial.java"
 
 // read file and setup context
 var commandLineArguments = CommandLineArguments()
@@ -26,9 +26,13 @@ guard var tokens = tokenizer.tokenize(material: text) else {
 
 // Grammar Parsing
 guard let parseResult = GoalParser.parse(tokens: &tokens, pos: 0) else {
-//    let token = tokens[MaxPos]
-//    let error = SCError(code: UnknownError, info: "Parse Error on Token \(MaxPos) - \(token.text)", token: token)
-//    error.print()
+    exit(EXIT_FAILURE)
+}
+
+// Semantic analyzing
+let analyzer = SemanticAnalyzer()
+analyzer.load(root: parseResult)
+guard analyzer.analyze() else {
     exit(EXIT_FAILURE)
 }
 

@@ -42,9 +42,9 @@ let IdleAction: SemanticAction = {
 let MainCLassAction: SemanticAction = {
     (inNode: BaseASTNode) in
     inNode.children = [inNode[1], inNode[11], inNode[13]]
-//    inNode[0].desc = "Main Class Identifier"
-//    inNode[1].desc = "Main Function Arguments Identifier"
-//    inNode[2].desc = "Main Function Statements"
+    inNode[0].desc = "Main Class Identifier"
+    inNode[1].desc = "Main Function Arguments Identifier"
+    inNode[2].desc = "Main Function Statements"
     return inNode
 }
 
@@ -77,7 +77,7 @@ let MethodDeclarationAction: SemanticAction = {
 
 let IntArrayTypeAction: SemanticAction = {
     (inNode: BaseASTNode) in
-    inNode.children = []
+    inNode.children = [inNode[0]]
     return inNode
 }
 

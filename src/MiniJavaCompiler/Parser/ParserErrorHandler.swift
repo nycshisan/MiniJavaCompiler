@@ -13,23 +13,26 @@ class ParserErrorHandler {
     
     private init() {}
     
-    var MaxPos = 0
-    var MaxPosExpected: [AtomParseResultValue] = []
+    var maxPos = 0
+    var maxPosExpected: [String] = []
     
-    func AddMaxPosExpected(value: AtomParseResultValue, pos: Int) {
-        if pos >= MaxPos {
-            if pos > MaxPos {
-                MaxPos = pos
-                MaxPosExpected = []
+    func addMaxPosExpected(value: AtomParseResultValue, pos: Int) {
+        let valueString = value.parseErrorDisplayValue
+        if pos >= maxPos {
+            if pos > maxPos {
+                maxPos = pos
+                maxPosExpected = []
             }
-            MaxPosExpected.append(value)
+            if !maxPosExpected.contains(valueString) {
+                maxPosExpected.append(valueString)
+            }
         }
     }
     
-    func DisplayMaxPosExpected(tokens: [Token]) {
-        let token = tokens[MaxPos]
-        let info = "Expected , not \"\(1)\""
-        let error = SCError(code: ExpectedUnconformityError, info: info, token: tokens[MaxPos])
+    func displayMaxPosExpected(tokens: [Token]) {
+        let token = tokens[maxPos]
+        let info = "Expected [\(maxPosExpected.joined(separator: ", "))], not \"\(token.text)\""
+        let error = SCError(code: ExpectedUnconformityError, info: info, token: token)
         error.print()
     }
 }

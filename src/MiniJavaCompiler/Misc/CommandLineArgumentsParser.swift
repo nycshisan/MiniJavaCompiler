@@ -14,7 +14,7 @@ class CommandLineArguments {
     func parseArgs() {
         let args = CommandLine.arguments
         
-        if args.contains("-cst") {
+        if args.contains("--CST") {
             SemanticActionParser.DEBUG_DISABLE_SEMANTIC_ACTION = true
         }
         

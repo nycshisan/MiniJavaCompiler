@@ -325,6 +325,7 @@ class PhraseParser: BaseParser {
                 error.print()
             }
         }
+        errorHandler.displayMaxPosExpected(tokens: tokens)
         return nil
     }
 }

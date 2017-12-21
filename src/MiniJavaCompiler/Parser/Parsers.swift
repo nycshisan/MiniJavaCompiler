@@ -21,7 +21,7 @@ let MethodDeclarationParser = ReservedParser("public") + TypeParser + Identifier
 let RepMethodDeclarationParser = RepParser(parser: MethodDeclarationParser, desc: "Method Declarations")
 
 /* Type Parsers */
-let IntArrayTypeParser = ReservedParser("int") + ReservedParser("[") + ReservedParser("]") ^ SemanticActionFactory.DescAction(description: "New Int Array") ^ IntArrayTypeAction
+let IntArrayTypeParser = ReservedParser("int") + ReservedParser("[") + ReservedParser("]") ^ SemanticActionFactory.DescAction(description: "Array Type") ^ IntArrayTypeAction
 
 let TypeParser = IntArrayTypeParser | ReservedParser("boolean") | ReservedParser("int") | IdentifierParser ^ SemanticActionFactory.WrapAction(description: "Type")
 
