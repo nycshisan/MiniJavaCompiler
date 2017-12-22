@@ -8,7 +8,7 @@
 
 import Foundation
 
-let DEBUG_FILENAME: String? = "SamplePrograms/cyc1.java"
+let DEBUG_FILENAME: String? = nil
 
 // read file and setup context
 var commandLineArguments = CommandLineArguments()
@@ -36,8 +36,10 @@ guard analyzer.analyze() else {
 }
 
 // Emulation
-let emulator = Emulator(analyzer: analyzer, root: parseResult)
-emulator.emulate()
+if commandLineArguments.emulate {
+    let emulator = Emulator(analyzer: analyzer, root: parseResult)
+    emulator.emulate()
+}
 
 // Visualization
 let outFilename = commandLineArguments.filename! + ".html"

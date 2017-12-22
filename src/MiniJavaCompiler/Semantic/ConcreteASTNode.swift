@@ -10,13 +10,14 @@ import Foundation
 
 /* Statement Nodes */
 class IfStmtASTNode: BaseASTNode {
-    override func semanticCheck(_ env: SemanticCheckResultEnvironment) -> SemanticCheckResult {
+    override func semanticCheck(_ env: SemanticCheckEnvironment) -> SemanticCheckResult {
         let outResult = SemanticCheckResult(type: .VoidType)
         
         let result = children![0].semanticCheck(env)
         if !result.type.isBool() {
             let error = MJCError(code: InvalidExpressionTypeError, info: "The condition of if statement should be boolean type, not \"\(result.type.toString())\"", token: result.token)
             error.print()
+            env.analyzer.success = false
         }
         
         let _ = children![1].semanticCheck(env)
@@ -50,7 +51,7 @@ class IfStmtASTNode: BaseASTNode {
 class PrintStmtASTNode: BaseASTNode {
     var itemType: SemanticCheckResultType! = nil
     
-    override func semanticCheck(_ env: SemanticCheckResultEnvironment) -> SemanticCheckResult {
+    override func semanticCheck(_ env: SemanticCheckEnvironment) -> SemanticCheckResult {
         let outResult = SemanticCheckResult(type: .VoidType)
         
         let result = children![0].semanticCheck(env)
@@ -79,7 +80,7 @@ class PrintStmtASTNode: BaseASTNode {
 class AssignmentStmtASTNode: BaseASTNode {
     var signToken: Token! = nil
     
-    override func semanticCheck(_ env: SemanticCheckResultEnvironment) -> SemanticCheckResult {
+    override func semanticCheck(_ env: SemanticCheckEnvironment) -> SemanticCheckResult {
         let outResult = SemanticCheckResult(type: .VoidType)
         
         let leftResult = children![0].semanticCheck(env)
@@ -89,6 +90,7 @@ class AssignmentStmtASTNode: BaseASTNode {
             let info = "Can't assign \"\(rightResult.type.toString())\" to \"\(leftResult.type.toString())\""
             let error = MJCError(code: InvalidExpressionTypeError, info: info, token: signToken)
             error.print()
+            env.analyzer.success = false
         }
         
         return outResult
@@ -120,7 +122,7 @@ class AssignmentStmtASTNode: BaseASTNode {
 class ReturnStmtASTNode: BaseASTNode {
     var returnReservedToken: Token! = nil
     
-    override func semanticCheck(_ env: SemanticCheckResultEnvironment) -> SemanticCheckResult {
+    override func semanticCheck(_ env: SemanticCheckEnvironment) -> SemanticCheckResult {
         let outResult = SemanticCheckResult(type: .VoidType)
         outResult.token = returnReservedToken
         outResult.isReturnStatement = true
@@ -134,6 +136,7 @@ class ReturnStmtASTNode: BaseASTNode {
             let info = "Return type should be \"\(expectedReturnTypeString)\", not \"\(actualReturnTypeString)\""
             let error = MJCError(code: InconsistentReturnTypeError, info: info, token: result.token)
             error.print()
+            env.analyzer.success = false
         }
         
         return outResult
@@ -151,7 +154,7 @@ class ReturnStmtASTNode: BaseASTNode {
 }
 
 class RepStmtASTNode: BaseASTNode {
-    override func semanticCheck(_ env: SemanticCheckResultEnvironment) -> SemanticCheckResult {
+    override func semanticCheck(_ env: SemanticCheckEnvironment) -> SemanticCheckResult {
         let outResult = SemanticCheckResult(type: .VoidType)
         
         var index = 0, count = children!.count
@@ -189,7 +192,7 @@ class RepStmtASTNode: BaseASTNode {
 
 /* Expression Nodes */
 class MethodInvocationArgumentsASTNode: BaseASTNode {
-    override func semanticCheck(_ env: SemanticCheckResultEnvironment) -> SemanticCheckResult {
+    override func semanticCheck(_ env: SemanticCheckEnvironment) -> SemanticCheckResult {
         let outResult = SemanticCheckResult(type: .VoidType)
         
         for child in children! {
@@ -208,13 +211,14 @@ class MethodInvocationExprASTNode: BaseASTNode {
     var className: String! = nil
     var methodName: String! = nil
     
-    override func semanticCheck(_ env: SemanticCheckResultEnvironment) -> SemanticCheckResult {
+    override func semanticCheck(_ env: SemanticCheckEnvironment) -> SemanticCheckResult {
         let outResult = SemanticCheckResult(type: .VoidType)
         
         let exprResult = children![0].semanticCheck(env)
         if exprResult.type.isArray || exprResult.type.isInt() || exprResult.type.isBool() {
             let error = MJCError(code: InvalidExpressionTypeError, info: "Type \"\(exprResult.type.toString())\" has no methods", token: exprResult.token)
             error.print()
+            env.analyzer.success = false
         } else {
             className = exprResult.type.toString()
             if let `class` = env.classes[exprResult.type.identifier] {
@@ -234,6 +238,7 @@ class MethodInvocationExprASTNode: BaseASTNode {
                         let errorToken = argsResult.argTokens[min(methodArgs.count, argTypes.count - 1)]
                         let error = MJCError(code: InconsistentMethodArgumentTypeError, info: "Method \"\(exprResult.type.toString()).\(invokedMethodId)\" expects \(methodArgs.count) arguments, not \(argTypes.count)", token: errorToken)
                         error.print()
+                        env.analyzer.success = false
                     } else {
                         let count = methodArgs.count
                         for index in 0 ..< count {
@@ -242,6 +247,7 @@ class MethodInvocationExprASTNode: BaseASTNode {
                                 let info = "The \(index + 1)th argument of Method \"\(exprResult.type.toString()).\(invokedMethodId)\" should be \"\(expectedType.toString())\", not \"\(argTypes[index].toString())\""
                                 let error = MJCError(code: InconsistentMethodArgumentTypeError, info: info, token: argsResult.argTokens[index])
                                 error.print()
+                                env.analyzer.success = false
                             }
                             
                             methodArgIds.append(method.argumentAt(index: index).identifier)
@@ -250,10 +256,12 @@ class MethodInvocationExprASTNode: BaseASTNode {
                 } else {
                     let error = MJCError(code: UndefinedMethodError, info: "Method \"\(exprResult.type.toString()).\(invokedMethodId)\" is not defined", token: children![1][0].token!)
                     error.print()
+                    env.analyzer.success = false
                 }
             } else {
                 let error = MJCError(code: InvalidExpressionTypeError, info: "Can't find type \"\(exprResult.type.toString())\"", token: exprResult.token)
                 error.print()
+                env.analyzer.success = false
             }
         }
         
@@ -286,7 +294,7 @@ class MethodInvocationExprASTNode: BaseASTNode {
 class IntLiteralASTNode: BaseASTNode {
     var literalToken: Token! = nil
     
-    override func semanticCheck(_ env: SemanticCheckResultEnvironment) -> SemanticCheckResult {
+    override func semanticCheck(_ env: SemanticCheckEnvironment) -> SemanticCheckResult {
         let outResult = SemanticCheckResult(type: .IntType)
         literalToken = children![0].token!
         outResult.token = literalToken
@@ -303,7 +311,7 @@ class IntLiteralASTNode: BaseASTNode {
 class BoolLiteralASTNode: BaseASTNode {
     var literalToken: Token! = nil
     
-    override func semanticCheck(_ env: SemanticCheckResultEnvironment) -> SemanticCheckResult {
+    override func semanticCheck(_ env: SemanticCheckEnvironment) -> SemanticCheckResult {
         let outResult = SemanticCheckResult(type: .BoolType)
         literalToken = children![0].token!
         outResult.token = literalToken
@@ -318,7 +326,7 @@ class BoolLiteralASTNode: BaseASTNode {
 }
 
 class ThisLiteralASTNode: BaseASTNode {
-    override func semanticCheck(_ env: SemanticCheckResultEnvironment) -> SemanticCheckResult {
+    override func semanticCheck(_ env: SemanticCheckEnvironment) -> SemanticCheckResult {
         let outResult = SemanticCheckResult(type: SemanticCheckResultType(identifier: env.crtClass.identifier, isArray: false))
         outResult.token = children![0].token!
         return outResult
@@ -326,13 +334,14 @@ class ThisLiteralASTNode: BaseASTNode {
 }
 
 class NewObjectExprASTNode: BaseASTNode {
-    override func semanticCheck(_ env: SemanticCheckResultEnvironment) -> SemanticCheckResult {
+    override func semanticCheck(_ env: SemanticCheckEnvironment) -> SemanticCheckResult {
         let outResult = SemanticCheckResult(type: .VoidType)
         
         let idToken = children![0][0].token!
         if !env.classes.keys.contains(idToken.text) {
             let error = MJCError(code: UndeclaredTypeError, info: "Class \"\(idToken.text)\" is not defined", token: idToken)
             error.print()
+            env.analyzer.success = false
         }
         let type = SemanticCheckResultType(identifier: idToken.text, isArray: false)
         outResult.type = type
@@ -345,7 +354,7 @@ class NewObjectExprASTNode: BaseASTNode {
 class BiOpASTNode: BaseASTNode {
     var operToken: Token! = nil
     
-    override func semanticCheck(_ env: SemanticCheckResultEnvironment) -> SemanticCheckResult {
+    override func semanticCheck(_ env: SemanticCheckEnvironment) -> SemanticCheckResult {
         let outResult = SemanticCheckResult(type: .VoidType)
         
         let leftResult = children![0].semanticCheck(env)
@@ -356,6 +365,7 @@ class BiOpASTNode: BaseASTNode {
             outResult.type = .BoolType
             if !(leftResult.type.isInt() && rightResult.type.isInt()) {
                 printError(left: leftResult, right: rightResult)
+                env.analyzer.success = false
             }
         case "+":
             fallthrough
@@ -365,11 +375,13 @@ class BiOpASTNode: BaseASTNode {
             outResult.type = .IntType
             if !(leftResult.type.isInt() && rightResult.type.isInt()) {
                 printError(left: leftResult, right: rightResult)
+                env.analyzer.success = false
             }
         case "&&":
             outResult.type = .BoolType
             if !(leftResult.type.isBool() && rightResult.type.isBool()) {
                 printError(left: leftResult, right: rightResult)
+                env.analyzer.success = false
             }
         default:
             fatalError()
@@ -416,7 +428,7 @@ class BiOpASTNode: BaseASTNode {
 class IdentifierASTNode: BaseASTNode {
     var id: String! = nil
     
-    override func semanticCheck(_ env: SemanticCheckResultEnvironment) -> SemanticCheckResult {
+    override func semanticCheck(_ env: SemanticCheckEnvironment) -> SemanticCheckResult {
         let outResult = SemanticCheckResult(type: .VoidType)
         
         id = children![0].token!.text
@@ -430,6 +442,7 @@ class IdentifierASTNode: BaseASTNode {
         } else {
             let error = MJCError(code: UndeclaredVariableError, info: "Variable used before declaration", token: children![0].token!)
             error.print()
+            env.analyzer.success = false
         }
         
         outResult.token = children![0].token!

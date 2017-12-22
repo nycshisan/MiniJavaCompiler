@@ -51,7 +51,7 @@ class BaseASTNode {
         children!.append(element)
     }
     
-    func semanticCheck(_ env: SemanticCheckResultEnvironment) -> SemanticCheckResult {
+    func semanticCheck(_ env: SemanticCheckEnvironment) -> SemanticCheckResult {
         print("No semantic checker for \(desc)")
         exit(EXIT_FAILURE)
     }

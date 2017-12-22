@@ -211,7 +211,7 @@ class SemanticAnalyzer {
             }
         }
         // check method statements
-        let env = SemanticCheckResultEnvironment(classes: classes)
+        let env = SemanticCheckEnvironment(classes: classes, analyzer: self)
         for `class` in classes.values {
             env.crtClass = `class`
             for method in `class`.methods.values {
@@ -286,12 +286,15 @@ class SemanticCheckResult {
     }
 }
 
-class SemanticCheckResultEnvironment {
+class SemanticCheckEnvironment {
     let classes: [String: ClassDeclaration]
     var crtClass: ClassDeclaration! = nil
     var crtMethod: MethodDeclaration! = nil
     
-    init(classes: [String: ClassDeclaration]) {
+    let analyzer: SemanticAnalyzer
+    
+    init(classes: [String: ClassDeclaration], analyzer: SemanticAnalyzer) {
         self.classes = classes
+        self.analyzer = analyzer
     }
 }

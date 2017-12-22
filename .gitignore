@@ -112,3 +112,5 @@ fastlane/test_output
 *.html
 
 *.java
+
+*.png
