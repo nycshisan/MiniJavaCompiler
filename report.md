@@ -103,7 +103,7 @@
 
 ## 模拟执行
 
-对应的主要文件为`src/Emulation/*.swift`
+对应的主要文件为`src/Emulation/*.swift`和`src/Semantic/ConcreteASTNode.swift`
 
 为了检测我是否分析出了正确的AST树，我部分实现了简单的模拟执行功能。
 **这并不是编译器的后端，甚至都不是解释器。**

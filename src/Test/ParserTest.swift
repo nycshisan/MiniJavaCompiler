@@ -311,7 +311,7 @@ class ParserTest: XCTestCase {
     }
     
     func testNewObject() {
-        let parser = NewObjectParser
+        let parser = NewObjectExprParser
         let material = "new sth()"
         let expected = ParseResult(children: [])
         expected.append(ParseResult(token: Token(text: "new", tag: .Reserved)))

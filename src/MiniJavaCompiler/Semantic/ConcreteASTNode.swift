@@ -24,13 +24,53 @@ class IfStmtASTNode: BaseASTNode {
         
         return outResult
     }
+    
+    override func emulateRun(_ env: EmulateEnvironment) -> EmulateResult {
+        let outResult = EmulateResult()
+        
+        let exprResult = children![0].emulateRun(env)
+        
+        var selectedChildIndex: Int
+        if exprResult.value as! Bool {
+            selectedChildIndex = 1 // true part
+        } else {
+            selectedChildIndex = 2 // false part
+        }
+        
+        let result = children![selectedChildIndex].emulateRun(env)
+        if result.isReturnStatement {
+            outResult.value = result.value
+            outResult.isReturnStatement = true
+        }
+        
+        return outResult
+    }
 }
 
 class PrintStmtASTNode: BaseASTNode {
+    var itemType: SemanticCheckResultType! = nil
+    
     override func semanticCheck(_ env: SemanticCheckResultEnvironment) -> SemanticCheckResult {
         let outResult = SemanticCheckResult(type: .VoidType)
         
-        let _ = children![0].semanticCheck(env)
+        let result = children![0].semanticCheck(env)
+        itemType = result.type
+        
+        return outResult
+    }
+    
+    override func emulateRun(_ env: EmulateEnvironment) -> EmulateResult {
+        let outResult = EmulateResult()
+        
+        let result = children![0].emulateRun(env)
+        switch itemType.identifier {
+        case "int":
+            print(result.value as! Int)
+        case "boolean":
+            print(result.value as! Bool)
+        default:
+            fatalError()
+        }
         
         return outResult
     }
@@ -52,6 +92,28 @@ class AssignmentStmtASTNode: BaseASTNode {
         }
         
         return outResult
+    }
+    
+    override func emulateRun(_ env: EmulateEnvironment) -> EmulateResult {
+        let outResult = EmulateResult()
+        
+        let id = children![0][0].token!.text
+        let result = children![1].emulateRun(env)
+        setVar(id: id, value: result.value, env: env)
+        
+        return outResult
+    }
+    
+    func setVar(id: String, value: Any, env: EmulateEnvironment) {
+        if env.methodVars.keys.contains(id) {
+            env.methodVars[id] = value
+            return
+        }
+        if EmulateEnvironment.ClassesVars[env.crtClassName]!.keys.contains(id) {
+            EmulateEnvironment.ClassesVars[env.crtClassName]![id] = value
+            return
+        }
+        fatalError()
     }
 }
 
@@ -76,6 +138,16 @@ class ReturnStmtASTNode: BaseASTNode {
         
         return outResult
     }
+    
+    override func emulateRun(_ env: EmulateEnvironment) -> EmulateResult {
+        let outResult = EmulateResult()
+        
+        let result = children![0].emulateRun(env)
+        outResult.value = result.value
+        outResult.isReturnStatement = true
+        
+        return outResult
+    }
 }
 
 class RepStmtASTNode: BaseASTNode {
@@ -93,6 +165,22 @@ class RepStmtASTNode: BaseASTNode {
                 outResult.type = result.type
             }
             index += 1
+        }
+        
+        return outResult
+    }
+    
+    override func emulateRun(_ env: EmulateEnvironment) -> EmulateResult {
+        let outResult = EmulateResult()
+        
+        if children == nil { return outResult }
+        for statement in children! {
+            let result = statement.emulateRun(env)
+            if result.isReturnStatement {
+                outResult.value = result.value
+                outResult.isReturnStatement = true
+                break
+            }
         }
         
         return outResult
@@ -115,6 +203,11 @@ class MethodInvocationArgumentsASTNode: BaseASTNode {
 }
 
 class MethodInvocationExprASTNode: BaseASTNode {
+    var methodStmtsNode: BaseASTNode! = nil
+    var methodArgIds: [String] = []
+    var className: String! = nil
+    var methodName: String! = nil
+    
     override func semanticCheck(_ env: SemanticCheckResultEnvironment) -> SemanticCheckResult {
         let outResult = SemanticCheckResult(type: .VoidType)
         
@@ -123,10 +216,13 @@ class MethodInvocationExprASTNode: BaseASTNode {
             let error = MJCError(code: InvalidExpressionTypeError, info: "Type \"\(exprResult.type.toString())\" has no methods", token: exprResult.token)
             error.print()
         } else {
+            className = exprResult.type.toString()
             if let `class` = env.classes[exprResult.type.identifier] {
                 let invokedMethodId = children![1][0].token!.text
                 if `class`.methods.keys.contains(invokedMethodId) {
                     let method = `class`.methods[invokedMethodId]!
+                    methodStmtsNode = method.statementsNode!
+                    methodName = method.identifier
                     let type = SemanticCheckResultType(identifier: method.returnType.identifier, isArray: method.returnType.isArray)
                     outResult.type = type
                     
@@ -147,6 +243,8 @@ class MethodInvocationExprASTNode: BaseASTNode {
                                 let error = MJCError(code: InconsistentMethodArgumentTypeError, info: info, token: argsResult.argTokens[index])
                                 error.print()
                             }
+                            
+                            methodArgIds.append(method.argumentAt(index: index).identifier)
                         }
                     }
                 } else {
@@ -163,20 +261,58 @@ class MethodInvocationExprASTNode: BaseASTNode {
         outResult.token = exprResult.token
         return outResult
     }
+    
+    override func emulateRun(_ env: EmulateEnvironment) -> EmulateResult {
+        let outResult = EmulateResult()
+        
+        let inEnv = EmulateEnvironment()
+        inEnv.crtClassName = className
+        inEnv.initMethodVars(className: className, methodName: methodName)
+        
+        let argc = methodArgIds.count
+        for index in 0 ..< argc {
+            let argumentNode = children![2].children![index]
+            let result = argumentNode.emulateRun(env)
+            inEnv.methodArgs[methodArgIds[index]] = result.value
+        }
+
+        let result = methodStmtsNode.emulateRun(inEnv)
+        outResult.value = result.value
+
+        return outResult
+    }
 }
 
 class IntLiteralASTNode: BaseASTNode {
+    var literalToken: Token! = nil
+    
     override func semanticCheck(_ env: SemanticCheckResultEnvironment) -> SemanticCheckResult {
         let outResult = SemanticCheckResult(type: .IntType)
-        outResult.token = children![0].token!
+        literalToken = children![0].token!
+        outResult.token = literalToken
+        return outResult
+    }
+    
+    override func emulateRun(_ env: EmulateEnvironment) -> EmulateResult {
+        let outResult = EmulateResult()
+        outResult.value = Int(literalToken.text)
         return outResult
     }
 }
 
 class BoolLiteralASTNode: BaseASTNode {
+    var literalToken: Token! = nil
+    
     override func semanticCheck(_ env: SemanticCheckResultEnvironment) -> SemanticCheckResult {
         let outResult = SemanticCheckResult(type: .BoolType)
-        outResult.token = children![0].token!
+        literalToken = children![0].token!
+        outResult.token = literalToken
+        return outResult
+    }
+    
+    override func emulateRun(_ env: EmulateEnvironment) -> EmulateResult {
+        let outResult = EmulateResult()
+        outResult.value = Bool(literalToken.text)
         return outResult
     }
 }
@@ -248,6 +384,32 @@ class BiOpASTNode: BaseASTNode {
         let error = MJCError(code: InvalidExpressionTypeError, info: info, token: operToken)
         error.print()
     }
+    
+    override func emulateRun(_ env: EmulateEnvironment) -> EmulateResult {
+        let outResult = EmulateResult()
+        
+        let leftResult = children![0].emulateRun(env)
+        let rightResult = children![2].emulateRun(env)
+        let leftValue = leftResult.value
+        let rightValue = rightResult.value
+        
+        switch operToken.text {
+        case "+":
+            outResult.value = (leftValue as! Int) + (rightValue as! Int)
+        case "-":
+            outResult.value = (leftValue as! Int) - (rightValue as! Int)
+        case "*":
+            outResult.value = (leftValue as! Int) * (rightValue as! Int)
+        case "<":
+            outResult.value = (leftValue as! Int) < (rightValue as! Int)
+        case "&&":
+            outResult.value = (leftValue as! Bool) && (rightValue as! Bool)
+        default:
+            fatalError()
+        }
+        
+        return outResult
+    }
 }
 
 /* Identifier Node */
@@ -272,5 +434,24 @@ class IdentifierASTNode: BaseASTNode {
         
         outResult.token = children![0].token!
         return outResult
+    }
+    
+    override func emulateRun(_ env: EmulateEnvironment) -> EmulateResult {
+        let outResult = EmulateResult()
+        outResult.value = getVar(env)
+        return outResult
+    }
+    
+    func getVar(_ env: EmulateEnvironment) -> Any {
+        if env.methodVars.keys.contains(id) {
+            return env.methodVars[id]!
+        }
+        if env.methodArgs.keys.contains(id) {
+            return env.methodArgs[id]!
+        }
+        if EmulateEnvironment.ClassesVars[env.crtClassName]!.keys.contains(id) {
+            return EmulateEnvironment.ClassesVars[env.crtClassName]![id]
+        }
+        fatalError()
     }
 }

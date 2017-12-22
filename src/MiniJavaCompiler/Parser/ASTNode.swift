@@ -55,4 +55,9 @@ class BaseASTNode {
         print("No semantic checker for \(desc)")
         exit(EXIT_FAILURE)
     }
+    
+    func emulateRun(_ env: EmulateEnvironment) -> EmulateResult {
+        print("No emulator for \(desc)")
+        exit(EXIT_FAILURE)
+    }
 }
