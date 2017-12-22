@@ -87,7 +87,7 @@ let IntArrayTypeAction: SemanticAction = {
 let IfStmtAction: SemanticAction = {
     (inNode: BaseASTNode) in
     inNode.children = [inNode[1], inNode[2], inNode[4]]
-    return inNode
+    return IfStmtASTNode(inNode)
 }
 
 let WhileStmtAction: SemanticAction = {
@@ -188,5 +188,11 @@ let BiOpAction: SemanticAction = {
     if inNode.children!.count != 0 {
         inNode.desc = "Binary Operator Expression"
     }
-    return inNode
+    return BiOpASTNode(inNode)
+}
+
+/* Identifier Action */
+let IdentifierAction: SemanticAction = {
+    (inNode: BaseASTNode) in
+    return IdentifierASTNode(inNode)
 }

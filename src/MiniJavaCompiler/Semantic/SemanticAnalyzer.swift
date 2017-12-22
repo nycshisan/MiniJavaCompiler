@@ -202,7 +202,21 @@ class SemanticCheckResultType {
         return aType.identifier == identifier && aType.isArray == isArray
     }
     
+    func isBool() -> Bool {
+        return identifier == "boolean" && !isArray
+    }
+    
+    func isInt() -> Bool {
+        return identifier == "int" && !isArray
+    }
+    
+    func toString() -> String {
+        return identifier + (isArray ? "[]" : "")
+    }
+    
     static let VoidType = SemanticCheckResultType(type: "void", isArray: false)
+    static let BoolType = SemanticCheckResultType(type: "boolean", isArray: false)
+    static let IntType = SemanticCheckResultType(type: "int", isArray: false)
 }
 
 class SemanticCheckResult {
