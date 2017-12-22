@@ -34,6 +34,7 @@
 		A578CFE21FECA5FB00E096D2 /* ConcreteASTNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = A578CFE01FECA5FB00E096D2 /* ConcreteASTNode.swift */; };
 		A578CFE41FECA7D700E096D2 /* cyc4.java in CopyFiles */ = {isa = PBXBuildFile; fileRef = A578CFE31FECA7D100E096D2 /* cyc4.java */; };
 		A5BB42461E06335D0087362D /* TokenizerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB42451E06335D0087362D /* TokenizerTest.swift */; };
+		A5C58F071FED21930043FBFD /* Emulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5C58F061FED21930043FBFD /* Emulator.swift */; };
 		A5CB1F871FE9FDC000322312 /* binarysearch.java in CopyFiles */ = {isa = PBXBuildFile; fileRef = A5CB1F7F1FE9FDA800322312 /* binarysearch.java */; };
 		A5CB1F881FE9FDC600322312 /* binarytree.java in CopyFiles */ = {isa = PBXBuildFile; fileRef = A5CB1F791FE9FDA800322312 /* binarytree.java */; };
 		A5CB1F891FE9FDD000322312 /* bubblesort.java in CopyFiles */ = {isa = PBXBuildFile; fileRef = A5CB1F7D1FE9FDA800322312 /* bubblesort.java */; };
@@ -91,6 +92,12 @@
 		A5BB42401E05A3FE0087362D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A5BB42451E06335D0087362D /* TokenizerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = TokenizerTest.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A5BB424C1E063D110087362D /* CombinationsTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CombinationsTest.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		A5C58F001FED1B950043FBFD /* ui.fancytree.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = ui.fancytree.min.css; sourceTree = "<group>"; };
+		A5C58F011FED1B950043FBFD /* icons.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = icons.gif; sourceTree = "<group>"; };
+		A5C58F021FED1B950043FBFD /* jquery-3.2.1.min.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = "jquery-3.2.1.min.js"; sourceTree = "<group>"; };
+		A5C58F031FED1B950043FBFD /* jquery.fancytree-all-deps.min.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = "jquery.fancytree-all-deps.min.js"; sourceTree = "<group>"; };
+		A5C58F041FED1B950043FBFD /* jquery.fancytree-all-deps.min.js.map */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = "jquery.fancytree-all-deps.min.js.map"; sourceTree = "<group>"; };
+		A5C58F061FED21930043FBFD /* Emulator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Emulator.swift; sourceTree = "<group>"; };
 		A5CB1F791FE9FDA800322312 /* binarytree.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = binarytree.java; sourceTree = "<group>"; };
 		A5CB1F7A1FE9FDA800322312 /* treevisitor.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = treevisitor.java; sourceTree = "<group>"; };
 		A5CB1F7B1FE9FDA800322312 /* linkedlist.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = linkedlist.java; sourceTree = "<group>"; };
@@ -150,6 +157,7 @@
 		A502664D1FE5327A0016D847 /* SamplePrograms */ = {
 			isa = PBXGroup;
 			children = (
+				A5C58EFE1FED1B950043FBFD /* www */,
 				A502664E1FE5330D0016D847 /* factorial.java */,
 				A5CB1F7F1FE9FDA800322312 /* binarysearch.java */,
 				A5CB1F791FE9FDA800322312 /* binarytree.java */,
@@ -199,8 +207,29 @@
 		A5C58EFD1FECEBC10043FBFD /* Emulation */ = {
 			isa = PBXGroup;
 			children = (
+				A5C58F061FED21930043FBFD /* Emulator.swift */,
 			);
 			path = Emulation;
+			sourceTree = "<group>";
+		};
+		A5C58EFE1FED1B950043FBFD /* www */ = {
+			isa = PBXGroup;
+			children = (
+				A5C58EFF1FED1B950043FBFD /* skin-win8 */,
+				A5C58F021FED1B950043FBFD /* jquery-3.2.1.min.js */,
+				A5C58F031FED1B950043FBFD /* jquery.fancytree-all-deps.min.js */,
+				A5C58F041FED1B950043FBFD /* jquery.fancytree-all-deps.min.js.map */,
+			);
+			path = www;
+			sourceTree = "<group>";
+		};
+		A5C58EFF1FED1B950043FBFD /* skin-win8 */ = {
+			isa = PBXGroup;
+			children = (
+				A5C58F001FED1B950043FBFD /* ui.fancytree.min.css */,
+				A5C58F011FED1B950043FBFD /* icons.gif */,
+			);
+			path = "skin-win8";
 			sourceTree = "<group>";
 		};
 		A5CB1F931FEB4D0A00322312 /* Semantic */ = {
@@ -350,6 +379,7 @@
 				A5CB1F971FEB571400322312 /* SemanticAnalyzer.swift in Sources */,
 				A50266541FE624180016D847 /* Parsers.swift in Sources */,
 				A50266531FE624160016D847 /* Combinators.swift in Sources */,
+				A5C58F071FED21930043FBFD /* Emulator.swift in Sources */,
 				A5CB1F921FEA8CA700322312 /* ParserErrorHandler.swift in Sources */,
 				A50266521FE571E80016D847 /* ASTNode.swift in Sources */,
 				A50266351FE51A160016D847 /* Error.swift in Sources */,

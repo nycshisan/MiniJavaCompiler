@@ -108,11 +108,11 @@ let BoolLiteralParser = ReservedParser("true") | ReservedParser("false") ^ Seman
 
 let ThisLiteralParser = ReservedParser("this") ^ SemanticActionFactory.WrapAction(description: "This Literal") ^ ThisLiteralAction
 
-let NewIntArrayParser = ReservedParser("new") + ReservedParser("int") + ReservedParser("[") + ExprParser + ReservedParser("]") ^ SemanticActionFactory.DescAction(description: "New Int Array")
+let NewIntArrayParser = ReservedParser("new") + ReservedParser("int") + ReservedParser("[") + ExprParser + ReservedParser("]") ^ SemanticActionFactory.DescAction(description: "New Int Array") ^ NewIntArrayExprAction
 
-let NewObjectParser = ReservedParser("new") + IdentifierParser + ReservedParser("(") + ReservedParser(")") ^ SemanticActionFactory.DescAction(description: "New Object Expression") ^ NewObjectAction
+let NewObjectExprParser = ReservedParser("new") + IdentifierParser + ReservedParser("(") + ReservedParser(")") ^ SemanticActionFactory.DescAction(description: "New Object Expression") ^ NewObjectExprAction
 
-let ExprValueParser = IntLiteralParser | BoolLiteralParser | IdentifierParser | ThisLiteralParser | NewIntArrayParser | NewObjectParser
+let ExprValueParser = IntLiteralParser | BoolLiteralParser | IdentifierParser | ThisLiteralParser | NewIntArrayParser | NewObjectExprParser
 
 let ExprGroupParser = ReservedParser("(") + ExprParser + ReservedParser(")") ^! GroupAction
 

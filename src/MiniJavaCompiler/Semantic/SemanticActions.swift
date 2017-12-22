@@ -172,13 +172,13 @@ let ThisLiteralAction: SemanticAction = {
     return ThisLiteralASTNode(inNode)
 }
 
-let NewObjectAction: SemanticAction = {
+let NewObjectExprAction: SemanticAction = {
     (inNode: BaseASTNode) in
     inNode.children = [inNode[1]]
-    return inNode
+    return NewObjectExprASTNode(inNode)
 }
 
-let NewIntArrayAction: SemanticAction = {
+let NewIntArrayExprAction: SemanticAction = {
     (inNode: BaseASTNode) in
     inNode.children = [inNode[1], inNode[3]]
     return inNode

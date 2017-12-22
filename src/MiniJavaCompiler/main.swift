@@ -35,6 +35,8 @@ guard analyzer.analyze() else {
     exit(EXIT_FAILURE)
 }
 
+
+
 // Visualization
 let outFilename = commandLineArguments.filename! + ".html"
 parseResult.serialize().visualizeToHTML(filename: outFilename)

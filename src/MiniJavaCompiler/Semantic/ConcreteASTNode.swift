@@ -127,7 +127,7 @@ class MethodInvocationExprASTNode: BaseASTNode {
                 let invokedMethodId = children![1][0].token!.text
                 if `class`.methods.keys.contains(invokedMethodId) {
                     let method = `class`.methods[invokedMethodId]!
-                    let type = SemanticCheckResultType(type: method.returnType.identifier, isArray: method.returnType.isArray)
+                    let type = SemanticCheckResultType(identifier: method.returnType.identifier, isArray: method.returnType.isArray)
                     outResult.type = type
                     
                     let methodArgs = method.arguments.values
@@ -183,8 +183,25 @@ class BoolLiteralASTNode: BaseASTNode {
 
 class ThisLiteralASTNode: BaseASTNode {
     override func semanticCheck(_ env: SemanticCheckResultEnvironment) -> SemanticCheckResult {
-        let outResult = SemanticCheckResult(type: SemanticCheckResultType(type: env.crtClass.identifier, isArray: false))
+        let outResult = SemanticCheckResult(type: SemanticCheckResultType(identifier: env.crtClass.identifier, isArray: false))
         outResult.token = children![0].token!
+        return outResult
+    }
+}
+
+class NewObjectExprASTNode: BaseASTNode {
+    override func semanticCheck(_ env: SemanticCheckResultEnvironment) -> SemanticCheckResult {
+        let outResult = SemanticCheckResult(type: .VoidType)
+        
+        let idToken = children![0][0].token!
+        if !env.classes.keys.contains(idToken.text) {
+            let error = MJCError(code: UndeclaredTypeError, info: "Class \"\(idToken.text)\" is not defined", token: idToken)
+            error.print()
+        }
+        let type = SemanticCheckResultType(identifier: idToken.text, isArray: false)
+        outResult.type = type
+        
+        outResult.token = idToken
         return outResult
     }
 }
@@ -246,7 +263,7 @@ class IdentifierASTNode: BaseASTNode {
         variable = env.crtMethod.variables[id] ?? env.crtMethod.arguments[id] ?? env.crtClass.variables[id]
         
         if variable != nil {
-            let type = SemanticCheckResultType(type: variable.type.identifier, isArray: variable.type.isArray)
+            let type = SemanticCheckResultType(identifier: variable.type.identifier, isArray: variable.type.isArray)
             outResult.type = type
         } else {
             let error = MJCError(code: UndeclaredVariableError, info: "Variable used before declaration", token: children![0].token!)

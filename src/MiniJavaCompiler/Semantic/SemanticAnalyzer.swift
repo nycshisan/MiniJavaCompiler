@@ -240,8 +240,8 @@ class SemanticCheckResultType {
     let identifier: String
     let isArray: Bool
     
-    init(type: String, isArray: Bool) {
-        self.identifier = type
+    init(identifier: String, isArray: Bool) {
+        self.identifier = identifier
         self.isArray = isArray
     }
     
@@ -261,9 +261,9 @@ class SemanticCheckResultType {
         return identifier + (isArray ? "[]" : "")
     }
     
-    static let VoidType = SemanticCheckResultType(type: "void", isArray: false)
-    static let BoolType = SemanticCheckResultType(type: "boolean", isArray: false)
-    static let IntType = SemanticCheckResultType(type: "int", isArray: false)
+    static let VoidType = SemanticCheckResultType(identifier: "void", isArray: false)
+    static let BoolType = SemanticCheckResultType(identifier: "boolean", isArray: false)
+    static let IntType = SemanticCheckResultType(identifier: "int", isArray: false)
 }
 
 extension SemanticCheckResultType: Equatable {
