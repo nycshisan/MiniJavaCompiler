@@ -85,6 +85,7 @@ class Tokenizer {
         // some variables for error recovery
         var lastLength = 0
         var errorNumberInCurrentLine = 0
+        var stridedLine = false
         
         var range = NSMakeRange(0, material.count)
         while range.location < material.count {
@@ -103,10 +104,12 @@ class Tokenizer {
                     }
                     
                     let newLineNum = token.text.count("\n")
+                    stridedLine = false
                     if newLineNum > 0 {
                         lineNum += newLineNum
                         position = 0
                         errorNumberInCurrentLine = 0
+                        stridedLine = true
                     }
                     let lastLine = token.text.components(separatedBy: CharacterSet(charactersIn: "\n")).last!
                     position += lastLine.count + 3 * lastLine.count("\t")
@@ -124,11 +127,13 @@ class Tokenizer {
                 let error = MJCError(code: InvalidCharacterError, info: "Invalid Character", position: position + errorNumberInCurrentLine, lineNum: lineNum)
                 error.print()
                 material.remove(at: String.Index.init(encodedOffset: range.location))
-                range.location -= lastLength // recover to last matched starting point
-                range.length += lastLength
-                range.length -= 1 // a character has been removed
-                lastLength = 0 // clear last length to prevent multiple back-off
+                if !stridedLine {
+                    range.location -= lastLength // recover to last matched starting point
+                    range.length += lastLength
+                    lastLength = 0 // clear last length to prevent multiple back-off
+                }
                 errorNumberInCurrentLine += 1
+                range.length -= 1 // a character has been removed
                 success = false
             }
         }

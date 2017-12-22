@@ -450,7 +450,7 @@ class IdentifierASTNode: BaseASTNode {
             return env.methodArgs[id]!
         }
         if EmulateEnvironment.ClassesVars[env.crtClassName]!.keys.contains(id) {
-            return EmulateEnvironment.ClassesVars[env.crtClassName]![id]
+            return EmulateEnvironment.ClassesVars[env.crtClassName]![id]!
         }
         fatalError()
     }
