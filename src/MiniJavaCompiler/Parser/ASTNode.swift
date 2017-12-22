@@ -6,6 +6,8 @@
 //  Copyright © 2016年 Nycshisan. All rights reserved.
 //
 
+import Foundation
+
 /* Base Abstract Syntax Tree Node */
 class BaseASTNode {
     var desc: String = "Nil"
@@ -26,6 +28,13 @@ class BaseASTNode {
         self.children = children
     }
     
+    init(_ aNode: BaseASTNode) {
+        self.desc = aNode.desc
+        self.token = aNode.token
+        self.pos = aNode.pos
+        self.children = aNode.children
+    }
+    
     subscript(index: Int) -> BaseASTNode {
         get {
             assert(children != nil)
@@ -40,5 +49,10 @@ class BaseASTNode {
     func append(_ element: BaseASTNode) {
         assert(children != nil)
         children!.append(element)
+    }
+    
+    func semanticCheck(_ env: SemanticCheckResultEnvironment) -> SemanticCheckResult {
+        print("No semantic checker for \(desc)")
+        exit(EXIT_FAILURE)
     }
 }

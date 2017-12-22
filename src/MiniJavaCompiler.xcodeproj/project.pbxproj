@@ -29,6 +29,10 @@
 		A54933351FE8951900A4A8DD /* ParserTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A58B96101E08E33C002919C6 /* ParserTest.swift */; };
 		A54933371FE907FF00A4A8DD /* Visualize.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54933361FE907FF00A4A8DD /* Visualize.swift */; };
 		A578CFDE1FEBB33300E096D2 /* cyc3.java in CopyFiles */ = {isa = PBXBuildFile; fileRef = A578CFDD1FEBB32F00E096D2 /* cyc3.java */; };
+		A578CFDF1FEC9EF200E096D2 /* ParserErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5CB1F911FEA8CA700322312 /* ParserErrorHandler.swift */; };
+		A578CFE11FECA5FB00E096D2 /* ConcreteASTNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = A578CFE01FECA5FB00E096D2 /* ConcreteASTNode.swift */; };
+		A578CFE21FECA5FB00E096D2 /* ConcreteASTNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = A578CFE01FECA5FB00E096D2 /* ConcreteASTNode.swift */; };
+		A578CFE41FECA7D700E096D2 /* cyc4.java in CopyFiles */ = {isa = PBXBuildFile; fileRef = A578CFE31FECA7D100E096D2 /* cyc4.java */; };
 		A5BB42461E06335D0087362D /* TokenizerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB42451E06335D0087362D /* TokenizerTest.swift */; };
 		A5CB1F871FE9FDC000322312 /* binarysearch.java in CopyFiles */ = {isa = PBXBuildFile; fileRef = A5CB1F7F1FE9FDA800322312 /* binarysearch.java */; };
 		A5CB1F881FE9FDC600322312 /* binarytree.java in CopyFiles */ = {isa = PBXBuildFile; fileRef = A5CB1F791FE9FDA800322312 /* binarytree.java */; };
@@ -61,6 +65,7 @@
 				A5CB1F901FEA6B5700322312 /* cyc1.java in CopyFiles */,
 				A5CB1F951FEB56E300322312 /* cyc2.java in CopyFiles */,
 				A578CFDE1FEBB33300E096D2 /* cyc3.java in CopyFiles */,
+				A578CFE41FECA7D700E096D2 /* cyc4.java in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -79,6 +84,8 @@
 		A50266561FE62BD30016D847 /* SemanticActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SemanticActions.swift; sourceTree = "<group>"; };
 		A54933361FE907FF00A4A8DD /* Visualize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Visualize.swift; sourceTree = "<group>"; };
 		A578CFDD1FEBB32F00E096D2 /* cyc3.java */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.java; path = cyc3.java; sourceTree = "<group>"; };
+		A578CFE01FECA5FB00E096D2 /* ConcreteASTNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcreteASTNode.swift; sourceTree = "<group>"; };
+		A578CFE31FECA7D100E096D2 /* cyc4.java */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.java; path = cyc4.java; sourceTree = "<group>"; };
 		A58B96101E08E33C002919C6 /* ParserTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParserTest.swift; sourceTree = "<group>"; };
 		A5BB423C1E05A3FE0087362D /* Test.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Test.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5BB42401E05A3FE0087362D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -153,6 +160,7 @@
 				A5CB1F8E1FEA6B2100322312 /* cyc1.java */,
 				A5CB1F941FEB56CE00322312 /* cyc2.java */,
 				A578CFDD1FEBB32F00E096D2 /* cyc3.java */,
+				A578CFE31FECA7D100E096D2 /* cyc4.java */,
 			);
 			path = SamplePrograms;
 			sourceTree = "<group>";
@@ -192,6 +200,7 @@
 			children = (
 				A50266561FE62BD30016D847 /* SemanticActions.swift */,
 				A5CB1F961FEB571400322312 /* SemanticAnalyzer.swift */,
+				A578CFE01FECA5FB00E096D2 /* ConcreteASTNode.swift */,
 			);
 			path = Semantic;
 			sourceTree = "<group>";
@@ -309,6 +318,7 @@
 			files = (
 				A54933351FE8951900A4A8DD /* ParserTest.swift in Sources */,
 				A54933341FE796D500A4A8DD /* CombinationsTest.swift in Sources */,
+				A578CFE21FECA5FB00E096D2 /* ConcreteASTNode.swift in Sources */,
 				A502663E1FE51A160016D847 /* ASTNode.swift in Sources */,
 				A50266581FE62BD30016D847 /* SemanticActions.swift in Sources */,
 				A50266421FE51A160016D847 /* Parsers.swift in Sources */,
@@ -318,6 +328,7 @@
 				A5BB42461E06335D0087362D /* TokenizerTest.swift in Sources */,
 				A50266491FE51E0A0016D847 /* CommandLineArgumentsParser.swift in Sources */,
 				A50266401FE51A160016D847 /* Combinators.swift in Sources */,
+				A578CFDF1FEC9EF200E096D2 /* ParserErrorHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -327,6 +338,7 @@
 			files = (
 				A54933371FE907FF00A4A8DD /* Visualize.swift in Sources */,
 				A50266571FE62BD30016D847 /* SemanticActions.swift in Sources */,
+				A578CFE11FECA5FB00E096D2 /* ConcreteASTNode.swift in Sources */,
 				A5CB1F971FEB571400322312 /* SemanticAnalyzer.swift in Sources */,
 				A50266541FE624180016D847 /* Parsers.swift in Sources */,
 				A50266531FE624160016D847 /* Combinators.swift in Sources */,

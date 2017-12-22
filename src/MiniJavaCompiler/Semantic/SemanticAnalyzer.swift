@@ -27,7 +27,6 @@ class TypeDeclaration: BaseDeclaration {
     let isArray: Bool
     var typeToken: Token!
     
-    
     override init(node: BaseASTNode) {
         let subNode = node[0]
         var idNode = subNode
@@ -165,6 +164,17 @@ class SemanticAnalyzer {
             }
         }
         // check method statements
+        let env = SemanticCheckResultEnvironment(classes: classes)
+        for `class` in classes {
+            env.crtClass = `class`
+            for method in `class`.methods {
+                env.crtMethod = method
+                method.statementsNode!.semanticCheck(env)
+            }
+        }
+        env.crtClass = mainClass
+        env.crtMethod = mainClass.methods[0]
+        let _ = mainClass.methods[0].statementsNode!.semanticCheck(env)
         return success
     }
     
@@ -176,5 +186,42 @@ class SemanticAnalyzer {
             error.print()
             success = false
         }
+    }
+}
+
+class SemanticCheckResultType {
+    let identifier: String
+    let isArray: Bool
+    
+    init(type: String, isArray: Bool) {
+        self.identifier = type
+        self.isArray = isArray
+    }
+    
+    func equals(_ aType: TypeDeclaration) -> Bool {
+        return aType.identifier == identifier && aType.isArray == isArray
+    }
+    
+    static let VoidType = SemanticCheckResultType(type: "void", isArray: false)
+}
+
+class SemanticCheckResult {
+    var type: SemanticCheckResultType
+    var token: Token! = nil
+    
+    var isReturnStatement = false
+    
+    init(type: SemanticCheckResultType) {
+        self.type = type
+    }
+}
+
+class SemanticCheckResultEnvironment {
+    let classes: [ClassDeclaration]
+    var crtClass: ClassDeclaration! = nil
+    var crtMethod: MethodDeclaration! = nil
+    
+    init(classes: [ClassDeclaration]) {
+        self.classes = classes
     }
 }

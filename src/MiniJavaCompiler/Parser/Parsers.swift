@@ -45,7 +45,7 @@ func StmtParserGenerator() -> BaseParser {
     return CompoundStmtParser | IfStmtParser | WhileStmtParser | PrintStmtParser | AssignmentStmtParser | SubscriptAssignmentStmtParser | ReturnStmtParser
 }
 let StmtParser = ~StmtParserGenerator
-let RepStmtParser = RepParser(parser: StmtParser, desc: "Statements")
+let RepStmtParser = RepParser(parser: StmtParser, desc: "Statements") ^ RepStmtAction
 
 /* Expression Parsers */
 // Priority Support
@@ -102,7 +102,7 @@ let MethodInvocationArgumentsParser = ExpParser(parser: ExprParser, separator: R
 let MethodInvocationExprParser = ExprTermParser + ReservedParser(".") + IdentifierParser + ReservedParser("(") + MethodInvocationArgumentsParser + ReservedParser(")") ^ SemanticActionFactory.DescAction(description: "Method Invocation Expression") ^ MethodInvocationExprAction
 
 // Parser for non-left-recursion expressions
-let IntLiteralParser = TagParser(.Int) ^ SemanticActionFactory.WrapAction(description: "Int Literal")
+let IntLiteralParser = TagParser(.Int) ^ SemanticActionFactory.WrapAction(description: "Int Literal") ^ IntLiteralAction
 
 let NewIntArrayParser = ReservedParser("new") + ReservedParser("int") + ReservedParser("[") + ExprParser + ReservedParser("]") ^ SemanticActionFactory.DescAction(description: "New Int Array")
 

@@ -34,11 +34,12 @@ class SemanticActionFactory {
     }
 }
 
-let IdleAction: SemanticAction = {
-    (inNode: BaseASTNode) in
-    return inNode
-}
+//let IdleAction: SemanticAction = {
+//    (inNode: BaseASTNode) in
+//    return inNode
+//}
 
+/* Main Actions */
 let MainCLassAction: SemanticAction = {
     (inNode: BaseASTNode) in
     inNode.children = [inNode[1], inNode[11], inNode[13]]
@@ -75,12 +76,14 @@ let MethodDeclarationAction: SemanticAction = {
     return inNode
 }
 
+/* Type Actions */
 let IntArrayTypeAction: SemanticAction = {
     (inNode: BaseASTNode) in
     inNode.children = [inNode[0]]
     return inNode
 }
 
+/* Statement Actions */
 let IfStmtAction: SemanticAction = {
     (inNode: BaseASTNode) in
     inNode.children = [inNode[1], inNode[2], inNode[4]]
@@ -113,10 +116,20 @@ let SubscriptAssignmentStmtAction: SemanticAction = {
 
 let ReturnStmtAction: SemanticAction = {
     (inNode: BaseASTNode) in
+    let reservedToken = inNode[0].token
     inNode.children = [inNode[1]]
-    return inNode
+    let outNode = ReturnStmtASTNode(inNode)
+    outNode.returnReservedToken = reservedToken
+    return outNode
 }
 
+let RepStmtAction: SemanticAction = {
+    (inNode: BaseASTNode) in
+    return RepStmtASTNode(inNode)
+}
+
+
+/* Expression Actions */
 let SubscriptExprAction: SemanticAction = {
     (inNode: BaseASTNode) in
     inNode.children = [inNode[0], inNode[2]]
@@ -141,6 +154,11 @@ let MethodInvocationExprAction: SemanticAction = {
     (inNode: BaseASTNode) in
     inNode.children = [inNode[0], inNode[2], inNode[4]]
     return inNode
+}
+
+let IntLiteralAction: SemanticAction = {
+    (inNode: BaseASTNode) in
+    return IntLiteralASTNode(inNode)
 }
 
 let NewObjectAction: SemanticAction = {

@@ -8,7 +8,7 @@
 
 import Foundation
 
-let DEBUG_FILENAME: String? = "SamplePrograms/cyc3.java"
+let DEBUG_FILENAME: String? = "SamplePrograms/cyc4.java"
 
 // read file and setup context
 var commandLineArguments = CommandLineArguments()
