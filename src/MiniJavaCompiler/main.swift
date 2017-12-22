@@ -29,6 +29,11 @@ guard let parseResult = GoalParser.parse(tokens: &tokens, pos: 0) else {
     exit(EXIT_FAILURE)
 }
 
+// Visualization
+let outFilename = commandLineArguments.filename! + ".html"
+parseResult.serialize().visualizeToHTML(filename: outFilename)
+print("Outputted to \(outFilename)")
+
 // Semantic analyzing
 let analyzer = SemanticAnalyzer(root: parseResult)
 guard analyzer.analyze() else {
@@ -40,8 +45,3 @@ if commandLineArguments.emulate {
     let emulator = Emulator(analyzer: analyzer, root: parseResult)
     emulator.emulate()
 }
-
-// Visualization
-let outFilename = commandLineArguments.filename! + ".html"
-parseResult.serialize().visualizeToHTML(filename: outFilename)
-print("Outputted to \(outFilename)")

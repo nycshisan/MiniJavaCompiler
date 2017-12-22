@@ -28,6 +28,7 @@
 		A54933341FE796D500A4A8DD /* CombinationsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BB424C1E063D110087362D /* CombinationsTest.swift */; };
 		A54933351FE8951900A4A8DD /* ParserTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A58B96101E08E33C002919C6 /* ParserTest.swift */; };
 		A54933371FE907FF00A4A8DD /* Visualize.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54933361FE907FF00A4A8DD /* Visualize.swift */; };
+		A556868B1FED75A900CDEB9E /* Emulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5C58F061FED21930043FBFD /* Emulator.swift */; };
 		A578CFDE1FEBB33300E096D2 /* cyc3.java in CopyFiles */ = {isa = PBXBuildFile; fileRef = A578CFDD1FEBB32F00E096D2 /* cyc3.java */; };
 		A578CFDF1FEC9EF200E096D2 /* ParserErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5CB1F911FEA8CA700322312 /* ParserErrorHandler.swift */; };
 		A578CFE11FECA5FB00E096D2 /* ConcreteASTNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = A578CFE01FECA5FB00E096D2 /* ConcreteASTNode.swift */; };
@@ -354,6 +355,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A556868B1FED75A900CDEB9E /* Emulator.swift in Sources */,
 				A54933351FE8951900A4A8DD /* ParserTest.swift in Sources */,
 				A54933341FE796D500A4A8DD /* CombinationsTest.swift in Sources */,
 				A502663E1FE51A160016D847 /* ASTNode.swift in Sources */,

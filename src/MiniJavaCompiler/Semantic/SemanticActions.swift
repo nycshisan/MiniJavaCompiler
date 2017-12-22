@@ -53,6 +53,9 @@ let ClassDeclarationAction: SemanticAction = {
     (inNode: BaseASTNode) in
     inNode.children = [inNode[1], inNode[2], inNode[4], inNode[5]]
     inNode[1].desc = "Extends"
+    if inNode[1].children != nil {
+        inNode[1].children = [inNode[1][1]]
+    }
     return inNode
 }
 
