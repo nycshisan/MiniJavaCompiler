@@ -16,6 +16,9 @@ let UndeclaredTypeError: Int32 = 4
 let InconsistentReturnTypeError: Int32 = 5
 let InvalidExpressionTypeError: Int32 = 6
 let UndeclaredVariableError: Int32 = 7
+let DuplicateDeclarationError: Int32 = 8
+let UndefinedMethodError: Int32 = 9
+let InconsistentMethodArgumentTypeError: Int32 = 10
 
 let StatementsAfterReturnWarning: Int32 = 601
 

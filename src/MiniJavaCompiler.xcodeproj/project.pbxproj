@@ -131,6 +131,7 @@
 				A50266501FE533C90016D847 /* Tokenizer */,
 				A50266511FE54DD50016D847 /* Parser */,
 				A5CB1F931FEB4D0A00322312 /* Semantic */,
+				A5C58EFD1FECEBC10043FBFD /* Emulation */,
 			);
 			path = MiniJavaCompiler;
 			sourceTree = "<group>";
@@ -195,12 +196,19 @@
 			path = Test;
 			sourceTree = "<group>";
 		};
+		A5C58EFD1FECEBC10043FBFD /* Emulation */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Emulation;
+			sourceTree = "<group>";
+		};
 		A5CB1F931FEB4D0A00322312 /* Semantic */ = {
 			isa = PBXGroup;
 			children = (
 				A50266561FE62BD30016D847 /* SemanticActions.swift */,
-				A5CB1F961FEB571400322312 /* SemanticAnalyzer.swift */,
 				A578CFE01FECA5FB00E096D2 /* ConcreteASTNode.swift */,
+				A5CB1F961FEB571400322312 /* SemanticAnalyzer.swift */,
 			);
 			path = Semantic;
 			sourceTree = "<group>";

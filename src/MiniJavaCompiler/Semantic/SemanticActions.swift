@@ -99,13 +99,15 @@ let WhileStmtAction: SemanticAction = {
 let PrintStmtAction: SemanticAction = {
     (inNode: BaseASTNode) in
     inNode.children = [inNode[1]]
-    return inNode
+    return PrintStmtASTNode(inNode)
 }
 
 let AssignmentStmtAction: SemanticAction = {
     (inNode: BaseASTNode) in
-    inNode.children = [inNode[0], inNode[2]]
-    return inNode
+    let outNode = AssignmentStmtASTNode(inNode)
+    outNode.children = [inNode[0], inNode[2]]
+    outNode.signToken = inNode[1].token!
+    return outNode
 }
 
 let SubscriptAssignmentStmtAction: SemanticAction = {
@@ -116,10 +118,9 @@ let SubscriptAssignmentStmtAction: SemanticAction = {
 
 let ReturnStmtAction: SemanticAction = {
     (inNode: BaseASTNode) in
-    let reservedToken = inNode[0].token
-    inNode.children = [inNode[1]]
     let outNode = ReturnStmtASTNode(inNode)
-    outNode.returnReservedToken = reservedToken
+    outNode.children = [inNode[1]]
+    outNode.returnReservedToken = inNode[0].token!
     return outNode
 }
 
@@ -147,18 +148,28 @@ let MethodInvocationArgumentsAction: SemanticAction = {
     if inNode.children!.count == 1 && inNode[0].children != nil && inNode[0].children!.count == 0 && inNode[0].desc == "Nil" {
         inNode.children = []
     }
-    return inNode
+    return MethodInvocationArgumentsASTNode(inNode)
 }
 
 let MethodInvocationExprAction: SemanticAction = {
     (inNode: BaseASTNode) in
-    inNode.children = [inNode[0], inNode[2], inNode[4]]
-    return inNode
+    inNode.children = [inNode[0], inNode[2], inNode[4]] // Expr, Id, Args
+    return MethodInvocationExprASTNode(inNode)
 }
 
 let IntLiteralAction: SemanticAction = {
     (inNode: BaseASTNode) in
     return IntLiteralASTNode(inNode)
+}
+
+let BoolLiteralAction: SemanticAction = {
+    (inNode: BaseASTNode) in
+    return BoolLiteralASTNode(inNode)
+}
+
+let ThisLiteralAction: SemanticAction = {
+    (inNode: BaseASTNode) in
+    return ThisLiteralASTNode(inNode)
 }
 
 let NewObjectAction: SemanticAction = {

@@ -10,12 +10,17 @@ import Foundation
 
 class CommandLineArguments {
     var filename: String?
+    var emulate = false
     
     func parseArgs() {
         let args = CommandLine.arguments
         
         if args.contains("--CST") {
             SemanticActionParser.DEBUG_DISABLE_SEMANTIC_ACTION = true
+        }
+        
+        if args.contains("--EMU") {
+            self.emulate = true
         }
         
         self.filename = args.last

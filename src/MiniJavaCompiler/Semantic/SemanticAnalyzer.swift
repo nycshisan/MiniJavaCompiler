@@ -49,10 +49,14 @@ class TypeDeclaration: BaseDeclaration {
         super.init(identifier: identifier)
     }
     
+    func toString() -> String {
+        return identifier + (isArray ? "[]" : "")
+    }
+    
     static let VoidType = TypeDeclaration(identifier: "void")
 }
 
-class VariableDeclaration: BaseDeclaration {
+final class VariableDeclaration: BaseDeclaration, MapableToPair {
     var type: TypeDeclaration
     
     override init(node: BaseASTNode) {
@@ -61,12 +65,19 @@ class VariableDeclaration: BaseDeclaration {
         self.type = TypeDeclaration(node: typeNode)
         super.init(node: idNode)
     }
+    
+    static func MapToPair(node: BaseASTNode) -> (String, VariableDeclaration) {
+        let declaration = VariableDeclaration(node: node)
+        let id = declaration.identifier
+        return (id, declaration)
+    }
 }
 
-class MethodDeclaration: BaseDeclaration {
+final class MethodDeclaration: BaseDeclaration, MapableToPair {
     var returnType: TypeDeclaration
-    var arguments: [VariableDeclaration] = []
-    var variables: [VariableDeclaration] = []
+    var arguments: [String: VariableDeclaration] = [:]
+    var argumentIds: [String] = []
+    var variables: [String: VariableDeclaration] = [:]
     var statementsNode: BaseASTNode?
     
     override init(node: BaseASTNode) {
@@ -75,9 +86,9 @@ class MethodDeclaration: BaseDeclaration {
         let idNode = node[1][0]
         super.init(node: idNode)
         let argumentNodes = node[2].children!
-        arguments = argumentNodes.map { VariableDeclaration(node: $0) }
+        argumentIds = MapToDict(array: argumentNodes, type: "argument", target: &arguments, keepOrder: true)!
         let variableNodes = node[3].children!
-        variables = variableNodes.map { VariableDeclaration(node: $0) }
+        let _ = MapToDict(array: variableNodes, type: "variable", target: &variables)
         statementsNode = node[4]
     }
     
@@ -86,16 +97,26 @@ class MethodDeclaration: BaseDeclaration {
         super.init(identifier: identifier)
     }
     
+    func argumentAt(index: Int) -> VariableDeclaration {
+        return arguments[argumentIds[index]]!
+    }
+    
     static func MainMethodDeclaration(argumentsIdentifier: String) -> MethodDeclaration {
         let declaration = MethodDeclaration(identifier: "main")
         return declaration
     }
+    
+    static func MapToPair(node: BaseASTNode) -> (String, MethodDeclaration) {
+        let declaration = MethodDeclaration(node: node)
+        let id = declaration.identifier
+        return (id, declaration)
+    }
 }
 
-class ClassDeclaration: BaseDeclaration {
+final class ClassDeclaration: BaseDeclaration, MapableToPair {
     var extends: String? = nil
-    var variables: [VariableDeclaration] = []
-    var methods: [MethodDeclaration] = []
+    var variables: [String: VariableDeclaration] = [:]
+    var methods: [String: MethodDeclaration] = [:]
     
     override init(node: BaseASTNode) {
         let idNode = node[0][0]
@@ -107,9 +128,9 @@ class ClassDeclaration: BaseDeclaration {
             extends = extendsNode[0][0].token!.text
         }
         let variableNodes = node[2].children!
-        variables = variableNodes.map { VariableDeclaration(node: $0) }
+        let _ = MapToDict(array: variableNodes, type: "variable", target: &variables)
         let methodNodes = node[3].children!
-        methods = methodNodes.map { MethodDeclaration(node: $0) }
+        let _ = MapToDict(array: methodNodes, type: "method", target: &methods)
     }
     
     override init(identifier: String) {
@@ -121,15 +142,42 @@ class ClassDeclaration: BaseDeclaration {
         let argsNodeTokenText = node[1][0].token!.text
         let mainMethodDeclaration = MethodDeclaration.MainMethodDeclaration(argumentsIdentifier: argsNodeTokenText)
         mainMethodDeclaration.statementsNode = node[2]
-        declaration.methods = [mainMethodDeclaration]
+        declaration.methods[mainMethodDeclaration.identifier] = mainMethodDeclaration
         return declaration
     }
+    
+    static func MapToPair(node: BaseASTNode) -> (String, ClassDeclaration) {
+        let declaration = ClassDeclaration(node: node)
+        let id = declaration.identifier
+        return (id, declaration)
+    }
+}
+
+protocol MapableToPair {
+    static func MapToPair(node: BaseASTNode) -> (String, Self)
+}
+
+func MapToDict<T: MapableToPair & BaseDeclaration>(array: [BaseASTNode], type: String, target: inout [String: T], keepOrder: Bool = false) -> [String]? {
+    var order: [String] = []
+    array.forEach {
+        (node: BaseASTNode) in
+        let (id, declaration) = T.MapToPair(node: node)
+        if target.keys.contains(id) {
+            let error = MJCError(code: DuplicateDeclarationError, info: "Duplicate declared \(type)", token: declaration.idToken)
+            error.print()
+        } else {
+            if keepOrder {
+                order.append(id)
+            }
+            target[id] = declaration
+        }
+    }
+    return keepOrder ? order : nil
 }
 
 class SemanticAnalyzer {
     var mainClass: ClassDeclaration
-    var classes: [ClassDeclaration] = []
-    var classIds: [String] = []
+    var classes: [String: ClassDeclaration] = [:]
     
     let reservedTypes = ["int", "boolean"]
     
@@ -141,46 +189,45 @@ class SemanticAnalyzer {
         mainClass = ClassDeclaration.MainClassDeclaration(node: mainClassNode)
         
         let classNodes = root[1].children!
-        classes = classNodes.map { ClassDeclaration(node: $0) }
-        classIds = classes.map { $0.identifier }
+        let _ = MapToDict(array: classNodes, type: "class", target: &classes)
     }
     
     func analyze() -> Bool {
         success = true
         // process extension - not implemented yet
         // type check: method return type, method arguments type, class variables and method variables type
-        for `class` in classes {
-            for variable in `class`.variables {
+        for `class` in classes.values {
+            for variable in `class`.variables.values {
                 verifyType(type: variable.type)
             }
-            for method in `class`.methods {
+            for method in `class`.methods.values {
                 verifyType(type: method.returnType)
-                for argument in method.arguments {
+                for argument in method.arguments.values {
                     verifyType(type: argument.type)
                 }
-                for variable in method.variables {
+                for variable in method.variables.values {
                     verifyType(type: variable.type)
                 }
             }
         }
         // check method statements
         let env = SemanticCheckResultEnvironment(classes: classes)
-        for `class` in classes {
+        for `class` in classes.values {
             env.crtClass = `class`
-            for method in `class`.methods {
+            for method in `class`.methods.values {
                 env.crtMethod = method
-                method.statementsNode!.semanticCheck(env)
+                let _ = method.statementsNode!.semanticCheck(env)
             }
         }
         env.crtClass = mainClass
-        env.crtMethod = mainClass.methods[0]
-        let _ = mainClass.methods[0].statementsNode!.semanticCheck(env)
+        env.crtMethod = mainClass.methods.values.first!
+        let _ = mainClass.methods.values.first!.statementsNode!.semanticCheck(env)
         return success
     }
     
     func verifyType(type: TypeDeclaration) {
         let id = type.identifier
-        if !reservedTypes.contains(id) && !classIds.contains(id) {
+        if !reservedTypes.contains(id) && !classes.keys.contains(id) {
             let info = "Unknown type \"\(id)\""
             let error = MJCError(code: UndeclaredTypeError, info: info, token: type.typeToken)
             error.print()
@@ -219,11 +266,20 @@ class SemanticCheckResultType {
     static let IntType = SemanticCheckResultType(type: "int", isArray: false)
 }
 
+extension SemanticCheckResultType: Equatable {
+    static func ==(lhs: SemanticCheckResultType, rhs: SemanticCheckResultType) -> Bool {
+        return lhs.identifier == rhs.identifier && lhs.isArray == rhs.isArray
+    }
+}
+
 class SemanticCheckResult {
     var type: SemanticCheckResultType
     var token: Token! = nil
     
     var isReturnStatement = false
+    
+    var argTypes: [SemanticCheckResultType] = []
+    var argTokens: [Token] = []
     
     init(type: SemanticCheckResultType) {
         self.type = type
@@ -231,11 +287,11 @@ class SemanticCheckResult {
 }
 
 class SemanticCheckResultEnvironment {
-    let classes: [ClassDeclaration]
+    let classes: [String: ClassDeclaration]
     var crtClass: ClassDeclaration! = nil
     var crtMethod: MethodDeclaration! = nil
     
-    init(classes: [ClassDeclaration]) {
+    init(classes: [String: ClassDeclaration]) {
         self.classes = classes
     }
 }

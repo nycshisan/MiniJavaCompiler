@@ -104,11 +104,15 @@ let MethodInvocationExprParser = ExprTermParser + ReservedParser(".") + Identifi
 // Parser for non-left-recursion expressions
 let IntLiteralParser = TagParser(.Int) ^ SemanticActionFactory.WrapAction(description: "Int Literal") ^ IntLiteralAction
 
+let BoolLiteralParser = ReservedParser("true") | ReservedParser("false") ^ SemanticActionFactory.WrapAction(description: "Bool Literal") ^ BoolLiteralAction
+
+let ThisLiteralParser = ReservedParser("this") ^ SemanticActionFactory.WrapAction(description: "This Literal") ^ ThisLiteralAction
+
 let NewIntArrayParser = ReservedParser("new") + ReservedParser("int") + ReservedParser("[") + ExprParser + ReservedParser("]") ^ SemanticActionFactory.DescAction(description: "New Int Array")
 
 let NewObjectParser = ReservedParser("new") + IdentifierParser + ReservedParser("(") + ReservedParser(")") ^ SemanticActionFactory.DescAction(description: "New Object Expression") ^ NewObjectAction
 
-let ExprValueParser = IntLiteralParser | ReservedParser("true") | ReservedParser("false") | IdentifierParser | ReservedParser("this") | NewIntArrayParser | NewObjectParser
+let ExprValueParser = IntLiteralParser | BoolLiteralParser | IdentifierParser | ThisLiteralParser | NewIntArrayParser | NewObjectParser
 
 let ExprGroupParser = ReservedParser("(") + ExprParser + ReservedParser(")") ^! GroupAction
 
@@ -126,4 +130,4 @@ func ExprParserGenerator() -> BaseParser {
 let ExprParser = ~ExprParserGenerator
 
 /* Identifier Parser */
-let IdentifierParser = TagParser(.Id) ^ SemanticActionFactory.WrapAction(description: "Identifier")
+let IdentifierParser = TagParser(.Id) ^ SemanticActionFactory.WrapAction(description: "Identifier") ^ IdentifierAction
